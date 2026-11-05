@@ -42,6 +42,11 @@ xp:
   # false = pet chỉ nhận EXP từ kẹo (cho ăn), bỏ qua mọi nguồn trong xp-sources.yml
   from-activities: false
 
+# Đột phá: tới các cấp này và đầy EXP thì pet đứng lại, phải dùng Đá Đột Phá mới lên cấp tiếp.
+# Chỉ tính cấp nhỏ hơn cấp tối đa của độ hiếm (Thường tối đa 30: đột phá ở 9, 19, 29). Để [] là tắt.
+breakthrough:
+  levels: [9, 19, 29, 39, 49, 59]
+
 incubator:
   # ô ấp mặc định; thêm bằng quyền boxpet.incubator.<số> (tối đa max-slots, không quá 7)
   default-slots: 1

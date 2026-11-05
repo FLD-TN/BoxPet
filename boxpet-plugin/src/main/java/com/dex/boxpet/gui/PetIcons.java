@@ -178,6 +178,7 @@ public final class PetIcons {
         Rarity r = rarity(plugin, type);
         boolean max = d.level >= r.maxLevel();
         double need = plugin.levels().need(d.level);
+        boolean gate = !max && plugin.xp().needsBreakthrough(d);
         return new String[]{
                 "name", plugin.pets().displayName(d),
                 "type", type.colouredName(),
@@ -185,9 +186,9 @@ public final class PetIcons {
                 "role", roleName(plugin, type),
                 "rarity", r.coloured(),
                 "level", level(plugin, d.level),
-                "xp", max ? plugin.menus().text("pet-card.xp-max") : plugin.menus().text("pet-card.xp-value",
+                "xp", max ? plugin.menus().text("pet-card.xp-max") : gate ? plugin.menus().text("pet-card.xp-breakthrough") : plugin.menus().text("pet-card.xp-value",
                         "xp", Format.number((long) Math.floor(d.xp)), "need", Format.number((long) Math.ceil(need))),
-                "xp_bar", max ? Format.bar(1, 1, 10, "<#FFD166>", "<dark_gray>") : Format.bar(d.xp, need, 10, "<#7CFC9A>", "<dark_gray>"),
+                "xp_bar", max ? Format.bar(1, 1, 10, "<#FFD166>", "<dark_gray>") : gate ? Format.bar(1, 1, 10, "<#FF9F5A>", "<dark_gray>") : Format.bar(d.xp, need, 10, "<#7CFC9A>", "<dark_gray>"),
                 "bond", String.valueOf(d.bond),
                 "bond_tier", plugin.settings().bondTier(d.bond).name(),
                 "bond_bar", Format.bar(d.bond, 100, 10, BOND, "<dark_gray>"),

@@ -42,9 +42,18 @@ toggle:
   chat-off: '<success>✔ Đã tắt trò chuyện của pet'
 
 autofeed:
+  locked: '<error>✘ Bạn chưa sở hữu tính năng tự động cho ăn'
   not-food: '<error>✘ Chỉ bỏ được kẹo hoặc thức ăn pet vào hộp'
   box-full: '<error>✘ Hộp thức ăn đã đầy'
   inventory-full: '<error>✘ Túi đồ đã đầy'
+
+breakthrough:
+  ready: '<#FF9F5A>(!) %pet% <#FF9F5A>đã đầy EXP cấp %level%, cần đột phá để lên cấp tiếp'
+  need: '<error>✘ %pet% <error>đã đầy EXP cấp %level%, hãy đột phá trước'
+  not-full: '<error>✘ %pet% <error>chưa đầy EXP cấp %level%, chưa đột phá được'
+  not-needed: '<error>✘ %pet% <error>không cần đột phá ở cấp này'
+  success: '<success>✔ Đột phá thành công! %pet% <success>lên cấp <text>%level%'
+  failed: '<error>✘ Đột phá thất bại <muted>(tỉ lệ %chance%%)<error>, mất 1 Đá Đột Phá'
 
 care:
   petted-gain: '<success>✔ Vuốt ve %pet%<success>, thân thiết <text>+%amount% <muted>(%bond%/100)'
@@ -122,6 +131,7 @@ usage:
     - '<gray>• <white>/boxpet give egg <người> <pet> [số]'
     - '<gray>• <white>/boxpet give randomegg <người> <độ hiếm> [số]'
     - '<gray>• <white>/boxpet give candy|food <người> <mã> [số]'
+    - '<gray>• <white>/boxpet give breakthrough <người> <tỉ lệ 1-100> [số]'
     - '<gray>• <white>/boxpet give pet <người> <pet> [cấp]'
     - '<gray>• <white>/boxpet pets <người> <dark_gray>(xem kho, kể cả offline)'
     - '<gray>• <white>/boxpet transfer <mã pet> <người>'
@@ -147,6 +157,7 @@ admin:
   bad-pet: '<error>✘ Không có pet <text>%pet%'
   bad-rarity: '<error>✘ Độ hiếm <text>%rarity% <error>không có hoặc không có pet nào'
   bad-item: '<error>✘ Không có vật phẩm <text>%item%'
+  bad-chance: '<error>✘ Tỉ lệ phải từ 1 tới 100: <text>%chance%'
   given: '<success>✔ Đã tặng <text>x%amount% %item% <success>cho <text>%player%'
   received-pet: '<success>✔ Bạn nhận được pet %pet% <muted>(/pet → Kho pet)'
   db-error: '<error>✘ Lỗi cơ sở dữ liệu, xem console'

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.0 (2026-11-05)
+
+- Đột phá: ở cấp 9, 19, 29, 39, 49, 59 (nhỏ hơn cấp tối đa của độ hiếm; config breakthrough.levels) pet đầy EXP thì đứng lại, kẹo báo lỗi. Dùng Đá Đột Phá (tỉ lệ 1-100% nằm trên từng viên, /boxpet give breakthrough <người> <tỉ lệ> [số]): thành công lên cấp kế tiếp, thất bại mất đá. Dùng bằng cầm đá chuột phải vào pet, hoặc nút Đột phá trong Quản lý pet (ô 32, chỉ hiện khi cần). Lore EXP hiện "Cần đột phá".
+- Tự động cho ăn chỉ cho người có quyền boxpet.autofeed (rank Champion trở lên). Nút trong Quản lý pet: chuột trái bật/tắt, chuột phải mở hộp thức ăn.
+- Sửa lỗi: cầm kẹo/thức ăn chuột phải ở đâu cũng cho pet ăn. Giờ phải chuột phải vào pet.
+
 ## 0.6.0 (2026-11-05)
 
 - Tự động cho ăn: nút mới trong Quản lý pet (ô 39), mở hộp thức ăn 21 ô dùng chung cho mọi pet. Bấm kẹo/thức ăn trong túi đồ để bỏ vào, bấm ô trong hộp để lấy ra. Chọn mức bắt đầu ăn (độ no 60 / 50 / 40 / 30 / 20 / 10) và ưu tiên Kẹo trước / Thức ăn trước. Pet đang thả tới mức đó thì ăn tới khi no, mỗi loại theo thứ tự ô từ trái qua phải. Hộp và túi đồ được lưu cùng lúc (không nhân đồ khi crash). Bảng mới boxpet_autofeed.

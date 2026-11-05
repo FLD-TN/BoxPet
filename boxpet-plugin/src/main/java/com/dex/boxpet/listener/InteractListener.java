@@ -91,6 +91,10 @@ public final class InteractListener implements Listener {
             useConsumable(p, pet, slot, c, p.isSneaking());
             return;
         }
+        if (plugin.itemFactory().breakChance(info) > 0) {
+            useBreakthrough(p, pet.data, slot);
+            return;
+        }
         Integer vanilla = held.getType().isAir() ? null : plugin.items().vanillaFood.get(held.getType());
         if (vanilla != null && info == null) {
             if (plugin.care().feedVanilla(pet, vanilla)) take(p, slot, held, 1);
@@ -126,7 +130,27 @@ public final class InteractListener implements Listener {
             plugin.messages().send(p, "care.full", "pet", petName, "fullness", String.valueOf(pet.fullness));
         } else if (why[0] == CareService.FeedResult.MAX_LEVEL) {
             plugin.messages().send(p, "care.max-level", "pet", petName);
+        } else if (why[0] == CareService.FeedResult.BREAKTHROUGH) {
+            plugin.messages().send(p, "breakthrough.need", "pet", petName, "level", String.valueOf(pet.level));
         }
+    }
+
+    /** Uses one breakthrough stone from inventory slot {@code slot} on any pet of the player. */
+    public void useBreakthrough(Player p, com.dex.boxpet.data.PetData pet, int slot) {
+        ItemStack held = p.getInventory().getItem(slot);
+        int chance = plugin.itemFactory().breakChance(plugin.itemFactory().read(held));
+        if (held == null || chance <= 0) return;
+        String petName = plugin.pets().displayName(pet);
+        if (!plugin.xp().needsBreakthrough(pet)) {
+            plugin.messages().send(p, plugin.xp().onBreakthroughLevel(pet) ? "breakthrough.not-full" : "breakthrough.not-needed",
+                    "pet", petName, "level", String.valueOf(pet.level));
+            return;
+        }
+        take(p, slot, held, 1);
+        plugin.xp().breakthrough(p, pet, chance);
+        // stone and result are saved in the same moment
+        var pd = plugin.pets().data(p.getUniqueId());
+        if (pd != null) plugin.pets().save(pd);
     }
 
     /** Removes {@code amount} from the stack and writes the slot back. */
@@ -143,7 +167,10 @@ public final class InteractListener implements Listener {
         if (pd != null) pd.inventoryChanged = true;
     }
 
-    /** Right-click in the air / on a block with a candy or food: goes to the active pet. Eggs: never thrown. */
+    /**
+     * BoxPet items are never used on air / blocks (eggs not thrown, food not eaten by the player). Feeding and
+     * breakthroughs only happen by clicking the pet's model ({@link #onModelClick}).
+     */
     @EventHandler(priority = EventPriority.LOW)
     public void onUse(PlayerInteractEvent e) {
         if (e.getHand() != EquipmentSlot.HAND && e.getHand() != EquipmentSlot.OFF_HAND) return;
@@ -155,24 +182,9 @@ public final class InteractListener implements Listener {
         e.setUseInteractedBlock(Event.Result.DENY);
         if (e.getHand() != EquipmentSlot.HAND) return;
         Player p = e.getPlayer();
-        ItemsConfig.Consumable c = plugin.itemFactory().consumable(info);
-        if (c == null) {
-            if (info.kind() == ItemFactory.Kind.EGG || info.kind() == ItemFactory.Kind.RANDOM_EGG) {
-                if (!debounce(p)) plugin.messages().send(p, "egg.hint");
-            }
-            return;
+        if (info.kind() == ItemFactory.Kind.EGG || info.kind() == ItemFactory.Kind.RANDOM_EGG) {
+            if (!debounce(p)) plugin.messages().send(p, "egg.hint");
         }
-        if (debounce(p)) return;
-        ActivePet pet = plugin.pets().active(p.getUniqueId());
-        if (pet == null) {
-            plugin.messages().send(p, "care.no-active");
-            return;
-        }
-        if (plugin.pets().combat().tagged(p.getUniqueId())) {
-            lockMessage(p);
-            return;
-        }
-        useConsumable(p, pet, p.getInventory().getHeldItemSlot(), c, p.isSneaking());
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)

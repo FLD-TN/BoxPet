@@ -169,6 +169,7 @@ pet-card:
     - '%actions%'
   xp-value: '<white>%xp%<gray>/%need%'
   xp-max: '<#FFD166>Đã tối đa'
+  xp-breakthrough: '<#FF9F5A>Cần đột phá'
   level-inline: '<gray>Cấp độ: %level%'
   stat-row: '<gray>• %stat%: <white>%value%'
   no-stats: '<gray>• Không có'
@@ -194,6 +195,7 @@ actions:
   admin-manage: '<dark_gray>[<#7CFC9A>Chuột trái để quản lý<dark_gray>]'
   feed-one: '<dark_gray>[<#7CFC9A>Chuột trái để cho ăn 1 cái<dark_gray>]'
   feed-all: '<dark_gray>[<#7FDBFF>Shift + chuột trái để ăn tới khi no<dark_gray>]'
+  breakthrough: '<dark_gray>[<#7CFC9A>Chuột trái để đột phá<dark_gray>]'
   restore: '<dark_gray>[<#7CFC9A>Chuột trái để khôi phục<dark_gray>]'
 
 common:
@@ -425,7 +427,8 @@ manage:
       - ''
       - '<gray>• Trạng thái: <#7CFC9A>✔ Đang bật'
       - ''
-      - '<dark_gray>[<#7CFC9A>Chuột trái để mở<dark_gray>]'
+      - '<dark_gray>[<#FF8A8A>Chuột trái để tắt<dark_gray>]'
+      - '<dark_gray>[<#7FDBFF>Chuột phải để mở hộp thức ăn<dark_gray>]'
   autofeed-off:
     name: '<#9FE6A0>Tự động cho ăn'
     lore:
@@ -434,7 +437,22 @@ manage:
       - ''
       - '<gray>• Trạng thái: <#FF4D4D>✘ Đang tắt'
       - ''
-      - '<dark_gray>[<#7CFC9A>Chuột trái để mở<dark_gray>]'
+      - '<dark_gray>[<#7CFC9A>Chuột trái để bật<dark_gray>]'
+      - '<dark_gray>[<#7FDBFF>Chuột phải để mở hộp thức ăn<dark_gray>]'
+  autofeed-locked:
+    name: '<#9FE6A0>Tự động cho ăn'
+    lore:
+      - '<#BFC7D5>Pet đang thả tự ăn đồ trong'
+      - '<#BFC7D5>hộp khi đói'
+      - ''
+      - '<gray>• Trạng thái: <#FF4D4D>✘ Chưa sở hữu'
+  breakthrough:
+    name: '<#FF9F5A>Đột phá'
+    lore:
+      - '<#BFC7D5>Pet đã đầy EXP cấp %level%'
+      - '<#BFC7D5>Đột phá để lên cấp %next%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để chọn Đá Đột Phá<dark_gray>]'
   sit:
     name: '<#BFC7D5>Ngồi yên'
     lore:
@@ -536,6 +554,23 @@ food:
     name: '<#BFC7D5>Không có đồ ăn'
     lore:
       - '<#BFC7D5>Túi đồ không có kẹo hay thức ăn pet'
+
+# ------------------------------------------------------------------ đột phá
+
+breakthrough:
+  title: '<dark_gray>Đột phá'
+  info:
+    name: '<#FF9F5A>Đột phá %pet%'
+    lore:
+      - '<gray>1. Chọn một Đá Đột Phá bên dưới'
+      - '<gray>2. Thành công: lên cấp %next%'
+      - '<gray>3. Thất bại: mất đá, giữ cấp %level%'
+      - ''
+      - '<dark_gray>Tỉ lệ ghi trên từng viên đá'
+  none:
+    name: '<#FF8A8A>Không có Đá Đột Phá'
+    lore:
+      - '<#BFC7D5>Túi đồ không có Đá Đột Phá'
 
 # ------------------------------------------------------------------ tự động cho ăn
 
@@ -681,6 +716,16 @@ items:
       - '<gray>• Thời gian ấp: <white>%time%'
       - ''
       - '<#BFC7D5>Đặt vào Lò ấp (/pet) để ấp'
+  breakthrough:
+    lore:
+      - '<#BFC7D5>Giúp pet vượt mốc cấp'
+      - '<#BFC7D5>khi đã đầy EXP'
+      - ''
+      - '<#FFD166>Thông tin:'
+      - '<gray>• Tỉ lệ thành công: <#7CFC9A>%chance%%'
+      - '<gray>• Thất bại: mất đá'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột phải vào pet để đột phá<dark_gray>]'
   candy:
     lore:
       - '<#FFD166>Thông tin:'
@@ -689,8 +734,8 @@ items:
       - ''
       - '<#BFC7D5>No rồi thì pet không ăn được'
       - ''
-      - '<dark_gray>[<#7CFC9A>Chuột phải để cho pet ăn<dark_gray>]'
-      - '<dark_gray>[<#7FDBFF>Shift + chuột phải: ăn tới khi no<dark_gray>]'
+      - '<dark_gray>[<#7CFC9A>Chuột phải vào pet để cho ăn<dark_gray>]'
+      - '<dark_gray>[<#7FDBFF>Shift + chuột phải vào pet: ăn tới khi no<dark_gray>]'
   food:
     lore:
       - '<#FFD166>Thông tin:'
@@ -699,4 +744,4 @@ items:
       - ''
       - '<#BFC7D5>Thân thiết từ đồ ăn tối đa 5 mỗi ngày'
       - ''
-      - '<dark_gray>[<#7CFC9A>Chuột phải để cho pet ăn<dark_gray>]'
+      - '<dark_gray>[<#7CFC9A>Chuột phải vào pet để cho ăn<dark_gray>]'

@@ -55,6 +55,15 @@ foods:
     fullness: 40
     bond: 2
 
+# Đá Đột Phá: tỉ lệ thành công nằm trên từng viên (/boxpet give breakthrough <người> <1-100> [số])
+# Thất bại thì mất đá, pet giữ nguyên cấp và EXP.
+breakthrough:
+  name: '<#FF9F5A>Đá Đột Phá'
+  material: ECHO_SHARD
+  itemsadder: ''
+  custom-model-data: 0
+  lore: []
+
 eggs:
   # trứng của một pet cụ thể: hình là icon ItemsAdder của pet (icon trong file pet), %pet% = tên pet
   fixed:

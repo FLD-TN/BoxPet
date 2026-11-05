@@ -65,17 +65,65 @@ public final class XpService {
             d.xp = 0;
             return false;
         }
+        if (needsBreakthrough(d)) return false;
         int before = d.level;
         d.xp += amount;
         while (d.level < max) {
             double need = plugin.levels().need(d.level);
             if (d.xp < need) break;
+            // a breakthrough level: EXP stops at full, the rest is lost
+            if (gateLevel(d.level, max)) {
+                d.xp = need;
+                break;
+            }
             d.xp -= need;
             d.level++;
         }
         if (d.level >= max) d.xp = 0;
         d.dirty = true;
         if (d.level > before) levelUp(owner, d, before);
+        if (needsBreakthrough(d)) {
+            plugin.messages().send(owner, "breakthrough.ready", "pet", plugin.pets().displayName(d),
+                    "level", String.valueOf(d.level));
+        }
+        return true;
+    }
+
+    private boolean gateLevel(int level, int max) {
+        return level < max && plugin.settings().breakthroughLevels.contains(level);
+    }
+
+    /** The pet is on a breakthrough level (full EXP or not). */
+    public boolean onBreakthroughLevel(PetData d) {
+        return gateLevel(d.level, plugin.pets().rarity(d).maxLevel());
+    }
+
+    /** Full EXP on a breakthrough level: no more EXP until a breakthrough succeeds. */
+    public boolean needsBreakthrough(PetData d) {
+        return onBreakthroughLevel(d) && d.xp >= plugin.levels().need(d.level) - 1e-6;
+    }
+
+    /**
+     * Rolls a breakthrough with {@code chance}% (the stone is already taken). Success: next level with 0 EXP;
+     * failure: nothing changes.
+     */
+    public boolean breakthrough(Player owner, PetData d, int chance) {
+        boolean ok = java.util.concurrent.ThreadLocalRandom.current().nextInt(100) < chance;
+        String name = plugin.pets().displayName(d);
+        ActivePet p = plugin.pets().active(owner.getUniqueId());
+        boolean out = p != null && p.data == d;
+        if (!ok) {
+            plugin.messages().send(owner, "breakthrough.failed", "pet", name, "chance", String.valueOf(chance));
+            Effects.sound(out ? p.pos : owner.getLocation(), "entity.item.break", 0.8f, 0.8f);
+            return false;
+        }
+        int before = d.level;
+        d.level++;
+        d.xp = 0;
+        d.dirty = true;
+        plugin.messages().send(owner, "breakthrough.success", "pet", name, "level", String.valueOf(d.level));
+        Effects.sound(owner.getLocation(), "ui.toast.challenge_complete", 0.7f, 1.2f);
+        levelUp(owner, d, before);
         return true;
     }
 

@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 public final class CareService {
 
     public enum FeedResult {
-        OK, FULL, MAX_LEVEL, NOTHING
+        OK, FULL, MAX_LEVEL, BREAKTHROUGH, NOTHING
     }
 
     private final BoxPetPlugin plugin;
@@ -80,6 +80,8 @@ public final class CareService {
      * At or under the chosen fullness, the pet out eats from the auto feed box: the chosen kind first (candies or
      * foods), each kind slot by slot from left to right, as much of a slot as still fits, then the next slot.
      */
+    public static final String AUTOFEED_PERMISSION = "boxpet.autofeed";
+
     private void autoFeed(ActivePet p) {
         com.dex.boxpet.data.PlayerData pd = p.player;
         if (!pd.autoFeed || p.deadHidden) return;
@@ -87,6 +89,7 @@ public final class CareService {
             pd.autoFeedWarned = false;
             return;
         }
+        if (!p.owner.hasPermission(AUTOFEED_PERMISSION)) return;
         int eaten = 0;
         FeedResult[] result = new FeedResult[1];
         for (int pass = 0; pass < 2; pass++) {
@@ -161,6 +164,10 @@ public final class CareService {
         for (int i = 0; i < max; i++) {
             if (c.candy() && d.level >= maxLevel) {
                 why = FeedResult.MAX_LEVEL;
+                break;
+            }
+            if (c.candy() && plugin.xp().needsBreakthrough(d)) {
+                why = FeedResult.BREAKTHROUGH;
                 break;
             }
             if (d.fullness + c.fullness() > 100) {

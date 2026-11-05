@@ -68,8 +68,28 @@ public final class ManageMenu extends Menu {
         }
         set(29, button("manage.feed", Material.COOKIE, "pet", name, "fullness", String.valueOf(pet.fullness)),
                 click -> new FoodMenu(plugin, player, owner, pet).open());
-        set(38, button(owner.autoFeed ? "manage.autofeed-on" : "manage.autofeed-off", Material.HOPPER,
-                "at", String.valueOf(owner.autoFeedAt)), click -> new AutoFeedMenu(plugin, player, owner, pet).open());
+        // auto feed (rank perk): left = on / off, right = open the food box
+        if (!player.hasPermission(com.dex.boxpet.pet.CareService.AUTOFEED_PERMISSION)) {
+            set(38, button("manage.autofeed-locked", Material.HOPPER), click -> plugin.messages().send(player, "autofeed.locked"));
+        } else {
+            set(38, button(owner.autoFeed ? "manage.autofeed-on" : "manage.autofeed-off", Material.HOPPER,
+                    "at", String.valueOf(owner.autoFeedAt)), click -> {
+                if (click.isRightClick()) {
+                    new AutoFeedMenu(plugin, player, owner, pet).open();
+                    return;
+                }
+                owner.autoFeed = !owner.autoFeed;
+                owner.autoFeedWarned = false;
+                owner.dirty = true;
+                sound("ui.button.click");
+                refresh();
+            });
+        }
+        // breakthrough: only at full EXP on a breakthrough level
+        if (plugin.xp().needsBreakthrough(pet)) {
+            set(31, button("manage.breakthrough", Material.ECHO_SHARD, "level", String.valueOf(pet.level),
+                    "next", String.valueOf(pet.level + 1)), click -> new BreakthroughMenu(plugin, player, owner, pet).open());
+        }
         long now = System.currentTimeMillis();
         String next = now >= pet.bondGainAt ? plugin.menus().text("manage.bond-ready")
                 : plugin.menus().text("manage.bond-wait", "time", Format.duration((pet.bondGainAt - now + 999) / 1000));

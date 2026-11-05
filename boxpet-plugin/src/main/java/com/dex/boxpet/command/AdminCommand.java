@@ -161,6 +161,23 @@ public final class AdminCommand implements TabExecutor {
                 deliver(target, plugin.itemFactory().consumable(c, 1), n);
                 plugin.messages().send(sender, "admin.given", "amount", String.valueOf(n), "item", "<" + c.color() + ">" + c.name(), "player", target.getName());
             }
+            case "breakthrough" -> {
+                int chance;
+                try {
+                    chance = Integer.parseInt(args[3].replace("%", ""));
+                } catch (NumberFormatException ex) {
+                    chance = 0;
+                }
+                if (chance < 1 || chance > 100) {
+                    plugin.messages().send(sender, "admin.bad-chance", "chance", args[3]);
+                    return;
+                }
+                int n = amount(args, 4);
+                ItemStack stone = plugin.itemFactory().breakthrough(chance, 1);
+                deliver(target, stone, n);
+                plugin.messages().send(sender, "admin.given", "amount", String.valueOf(n), "item",
+                        plugin.items().breakthrough.name() + " <dark_gray>[<#7CFC9A>" + chance + "%<dark_gray>]", "player", target.getName());
+            }
             case "pet" -> {
                 PetType t = plugin.types().get(args[3]);
                 PlayerData pd = plugin.pets().data(target.getUniqueId());
@@ -319,7 +336,7 @@ public final class AdminCommand implements TabExecutor {
         List<String> options = switch (args.length) {
             case 1 -> SUBS;
             case 2 -> switch (args[0].toLowerCase(Locale.ROOT)) {
-                case "give" -> List.of("egg", "randomegg", "candy", "food", "pet");
+                case "give" -> List.of("egg", "randomegg", "candy", "food", "breakthrough", "pet");
                 case "pets", "incubator" -> players();
                 case "transfer", "set", "delete", "restore" -> loadedIds();
                 default -> List.of();
@@ -336,6 +353,7 @@ public final class AdminCommand implements TabExecutor {
                     case "randomegg" -> plugin.rarities().ids();
                     case "candy" -> plugin.items().ids(true);
                     case "food" -> plugin.items().ids(false);
+                    case "breakthrough" -> List.of("10", "25", "50", "75", "100");
                     default -> List.of();
                 };
                 default -> List.of();

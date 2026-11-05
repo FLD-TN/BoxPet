@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public final class ItemFactory {
 
     public enum Kind {
-        EGG, RANDOM_EGG, CANDY, FOOD
+        EGG, RANDOM_EGG, CANDY, FOOD, BREAKTHROUGH
     }
 
     /** Data read from an item. {@code id}: pet type (eggs) or consumable id; {@code rarity} only for eggs. */
@@ -78,6 +78,27 @@ public final class ItemFactory {
             lore.addAll(0, c.lore());
         }
         return finish(item, "<" + c.color() + ">" + c.name(), lore, c.candy() ? Kind.CANDY : Kind.FOOD, c.id(), "", amount);
+    }
+
+    /** Breakthrough stone (0.7.0): {@code chance} 1-100 % success, kept in the id. */
+    public ItemStack breakthrough(int chance, int amount) {
+        chance = Math.max(1, Math.min(100, chance));
+        ItemsConfig.EggLook look = plugin.items().breakthrough;
+        ItemStack item = base(look.itemsAdder(), look.material(), look.customModelData());
+        List<String> lore = new ArrayList<>(plugin.menus().lore("items.breakthrough", "chance", String.valueOf(chance)));
+        lore.addAll(look.lore());
+        return finish(item, look.name() + " <dark_gray>[<#7CFC9A>" + chance + "%<dark_gray>]", lore, Kind.BREAKTHROUGH,
+                String.valueOf(chance), "", amount);
+    }
+
+    /** Success chance of a breakthrough stone, 0 when the item is not one. */
+    public int breakChance(@Nullable Info info) {
+        if (info == null || info.kind() != Kind.BREAKTHROUGH) return 0;
+        try {
+            return Math.max(1, Math.min(100, Integer.parseInt(info.id())));
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
     }
 
     private ItemStack base(String itemsAdder, Material fallback, int customModelData) {

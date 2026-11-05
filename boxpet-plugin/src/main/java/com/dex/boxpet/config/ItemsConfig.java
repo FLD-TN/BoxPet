@@ -28,6 +28,8 @@ public final class ItemsConfig {
     private final Map<String, EggLook> randomEggs = new HashMap<>();
     public final EggLook fixedEgg;
     public final EggLook randomEggDefault;
+    /** Breakthrough stone look (0.7.0). */
+    public final EggLook breakthrough;
     public final Map<Material, Integer> vanillaFood = new HashMap<>();
 
     public ItemsConfig(YamlConfiguration y) {
@@ -46,6 +48,7 @@ public final class ItemsConfig {
         }
         fixedEgg = look(y.getConfigurationSection("eggs.fixed"), "Trứng %pet%", Material.TURTLE_EGG);
         randomEggDefault = look(y.getConfigurationSection("eggs.random"), "Trứng Ngẫu Nhiên", Material.SNIFFER_EGG);
+        breakthrough = look(y.getConfigurationSection("breakthrough"), "<#FF9F5A>Đá Đột Phá", Material.ECHO_SHARD);
         ConfigurationSection per = y.getConfigurationSection("eggs.random-by-rarity");
         if (per != null) {
             for (String r : per.getKeys(false)) {
