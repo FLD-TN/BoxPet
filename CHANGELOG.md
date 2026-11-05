@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.0 (2026-11-06)
+
+- Pet huyền thoại có 2 kỹ năng (ability-2 trong file pet, hồi chiêu riêng, lore hiện 2 khối Kỹ năng).
+- Rồng Lửa lên Huyền thoại (Cầu Lửa + Hơi Thở Rồng xuyên hàng). Rồng Lửa Thánh đổi tên Rồng Thánh Quang (Cầu Thánh Quang, lấy lại hiệu ứng cầu lửa thánh gốc + Mưa Thiên Hỏa).
+- Tinh Linh Bóng Tối lên Huyền thoại (thêm Hắc Tinh Khai Khoáng: đào mỏ x2, x3 từ khoảng cấp 40). Tinh Linh Thiên Hà thêm Tinh Tú May Mắn (hạ mob x2, x3 từ khoảng cấp 40).
+- Hiệp Sĩ Thánh thêm Phán Xét (nổ lan 4 ô). Sư Điểu Phượng Hoàng: Lông Vũ Phượng Hoàng + Lửa Phượng Hoàng. Kỳ Lân Thiên Đường thêm Thánh Quang Hộ Thể (giảm sát thương PvP khi bị đánh).
+- Dùng thêm model hiệu ứng của pack: mũi giáo 2/3/4 (Băng Giá, Ender, Thánh), nhát chém 2/3/4 (Rừng Trúc, Samurai 2 nhát 2 hướng, Phán Xét), dấu máu trên mục tiêu chảy máu. Vệt xuyên hàng theo hạt của kỹ năng.
+- Cập nhật server: thay abilities.yml và các file pet fire_dragon_fire, fire_dragon_holyfire, knight_holy, griffon_phoenix, unicorn_heavenly, cubee_galaxy, cubee_darkness (cùng các file của 0.8.0 / 0.8.1).
+
 ## 0.8.1 (2026-11-05)
 
 - Kỹ năng theo bậc: Thường đánh 1 đòn không hiệu ứng phụ, hồi lâu hơn 2 giây, hệ số PvP 0,4 (Lưỡi Dính, Nhát Chém Tre, Đánh Dấu Mục Tiêu chỉ đánh dấu, Mũi Giáo Xuyên, Hộp Quà Bất Ngờ); Hiếm có 1 hiệu ứng phụ, PvP 0,5 (Mũi Giáo Băng mới cho Hiệp Sĩ Băng Giá); Sử thi 0,6; Huyền thoại 0,7.

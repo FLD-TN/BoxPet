@@ -314,6 +314,9 @@ public final class AdminCommand implements TabExecutor {
                     plugin.messages().send(sender, "admin.model-missing", "pet", t.id, "model", s.model());
                 }
             }
+            if (!t.ability2.isEmpty() && plugin.abilities().get(t.ability2) == null) {
+                plugin.messages().send(sender, "admin.ability-missing", "pet", t.id, "ability", t.ability2);
+            }
             var a = plugin.abilities().get(t.ability);
             if (!t.ability.isEmpty() && a == null) {
                 missing++;

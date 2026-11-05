@@ -118,6 +118,7 @@ public final class PetManager {
             p.type = type;
             p.rarity = rarity;
             p.ability = plugin.abilities().get(type.ability);
+            p.ability2 = plugin.abilities().get(type.ability2);
             reposition(p, false);
             refreshStats(p);
             refreshBonus(p);
@@ -361,6 +362,7 @@ public final class PetManager {
         }
         if (pet.activeSince <= 0) pet.activeSince = System.currentTimeMillis();
         ActivePet ap = new ActivePet(player, pd, pet, type, rarity(pet), plugin.abilities().get(type.ability));
+        ap.ability2 = plugin.abilities().get(type.ability2);
         ap.nextIdleChat = System.currentTimeMillis() + randomIdle();
         ap.nextInteract = 400;
         ap.lastDrainCheck = System.currentTimeMillis();
@@ -698,11 +700,11 @@ public final class PetManager {
     /** Recomputes the boost bonus of the active pet and tells BoxCore (spec 8). */
     public void refreshBonus(ActivePet p) {
         Map<String, Integer> m = new HashMap<>();
-        Ability a = p.ability;
-        if (a != null && a.type == Ability.Type.BOOST && !a.boostType.isEmpty() && !p.abilityPaused()) {
+        for (Ability a : new Ability[]{p.ability, p.ability2}) {
+            if (a == null || a.type != Ability.Type.BOOST || a.boostType.isEmpty() || p.abilityPaused()) continue;
             int tenths = (int) Math.floor(a.boostTenths.at(p.data.level, p.rarity.statMultiplier()));
             if (a.boostWhole) tenths -= tenths % 10;
-            if (tenths > 0) m.put(a.boostType, tenths);
+            if (tenths > 0) m.merge(a.boostType, tenths, Integer::sum);
         }
         if (m.isEmpty()) bonus.remove(p.ownerId);
         else bonus.put(p.ownerId, m);

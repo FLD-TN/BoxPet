@@ -83,8 +83,10 @@ public final class AbilityService {
         long now = System.currentTimeMillis();
         long ability = now + Math.max(0, p.cooldown) * 50L;
         long shield = Math.max(p.shieldReadyAt, 0);
-        if (ability <= now && shield <= now) cooldowns.remove(p.data.id);
-        else cooldowns.put(p.data.id, new long[]{ability, shield});
+        long ability2 = now + Math.max(0, p.cooldown2) * 50L;
+        long shield2 = Math.max(p.shieldReadyAt2, 0);
+        if (ability <= now && shield <= now && ability2 <= now && shield2 <= now) cooldowns.remove(p.data.id);
+        else cooldowns.put(p.data.id, new long[]{ability, shield, ability2, shield2});
     }
 
     /** The pet comes back: same cooldowns as when it left. */
@@ -94,11 +96,27 @@ public final class AbilityService {
         long now = System.currentTimeMillis();
         p.cooldown = (int) Math.max(0, (c[0] - now) / 50L);
         p.shieldReadyAt = c[1];
+        if (c.length >= 4) {
+            p.cooldown2 = (int) Math.max(0, (c[2] - now) / 50L);
+            p.shieldReadyAt2 = c[3];
+        }
     }
 
     // ------------------------------------------------------------------ per pet tick
 
     public void tick(ActivePet p) {
+        tickSkill(p);
+        if (p.ability2 == null) return;
+        // 0.9.0: the second skill runs with its own cooldowns
+        p.swapSkills();
+        try {
+            tickSkill(p);
+        } finally {
+            p.swapSkills();
+        }
+    }
+
+    private void tickSkill(ActivePet p) {
         Ability a = p.ability;
         if (a == null || a.type == Ability.Type.NONE || a.type == Ability.Type.BOOST) return;
         if (p.cooldown > 0) p.cooldown--;
@@ -222,11 +240,20 @@ public final class AbilityService {
                 && validTarget(p.owner, target);
     }
 
+    /** Counts the hits of one cast so each can show its own vfx animation. */
+    private final Map<UUID, Integer> hitCount = new HashMap<>();
+
+    private int hitIndex(ActivePet p, Ability a, boolean first) {
+        int i = first ? 0 : hitCount.getOrDefault(p.ownerId, 0) + 1;
+        hitCount.put(p.ownerId, i);
+        return i;
+    }
+
     private void act(ActivePet p, Ability a, LivingEntity target, boolean first) {
         switch (a.type) {
             case PROJECTILE -> launch(p, a, target);
             case STRIKE -> {
-                showAt(p, a, target);
+                showAt(p, a, target, hitIndex(p, a, first));
                 strike(p, a, target);
             }
             case MARK -> {
@@ -259,8 +286,10 @@ public final class AbilityService {
             return;
         }
         Vector dir = seg.clone().normalize();
+        String trail = a.particles.stream().filter(x -> x.at().equalsIgnoreCase("path")).map(Ability.ParticleFx::particle)
+                .findFirst().orElse("CRIT");
         for (double d = 0; d <= len; d += 0.6) {
-            Effects.particle(from.clone().add(dir.clone().multiply(d)), "CRIT", 1, 0.02, 0);
+            Effects.particle(from.clone().add(dir.clone().multiply(d)), trail, 2, 0.05, 0);
         }
         Location mid = from.clone().add(dir.clone().multiply(len / 2));
         int n = 0;
@@ -274,6 +303,15 @@ public final class AbilityService {
             hit(p, a, e);
             n++;
         }
+    }
+
+    /** A model that follows {@code target} for {@code ticks} (bleed mark). */
+    private void attachVfx(LivingEntity target, String model, String animation, int ticks, double yOffset) {
+        Location at = target.getLocation().add(0, yOffset, 0);
+        PetVisual visual = PetVisual.create(at, model, 1.0, plugin.settings().viewDistance, null, null, false, plugin.getLogger());
+        if (visual == null) return;
+        if (!animation.isEmpty()) visual.play(animation);
+        vfx.add(new Vfx(visual, at, target, 0, ticks, false, yOffset));
     }
 
     /** Valid enemies of {@code owner} within {@code radius} of {@code at}, at most 8. */
@@ -417,13 +455,18 @@ public final class AbilityService {
     }
 
     private void showAt(ActivePet p, Ability a, LivingEntity target) {
+        showAt(p, a, target, 0);
+    }
+
+    private void showAt(ActivePet p, Ability a, LivingEntity target, int hit) {
         if (a.vfx == null) return;
         Location at = target.getLocation().add(0, a.vfx.yOffset(), 0);
         at.setYaw(yawTo(p.pos, target.getLocation()));
         PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
                 plugin.getLogger());
         if (visual == null) return;
-        if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
+        String anim = a.vfxAnimations.isEmpty() ? a.vfx.animation() : a.vfxAnimations.get(hit % a.vfxAnimations.size());
+        if (!anim.isEmpty()) visual.play(anim);
         int life = a.type == Ability.Type.MARK ? a.markTicks : a.vfx.life();
         Vfx v = new Vfx(visual, at, a.type == Ability.Type.MARK ? target : null, 0, life, false, a.vfx.yOffset());
         vfx.add(v);
@@ -493,6 +536,7 @@ public final class AbilityService {
             case SLOW -> target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, a.debuffTicks, a.debuffAmplifier, false, true, true));
             case WEAKNESS -> target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, a.debuffTicks, a.debuffAmplifier, false, true, true));
             case BLEED -> {
+                if (!a.debuffVfx.isEmpty()) attachVfx(target, a.debuffVfx, "loop", a.debuffTicks, 0.2);
                 int times = Math.max(1, a.debuffTicks / 20);
                 double each = base * a.debuffDamageRatio;
                 for (int i = 1; i <= times; i++) {
@@ -543,6 +587,17 @@ public final class AbilityService {
 
     /** {@code attacker}: whoever hit the owner, when known (buffs may burn / weaken them). */
     public void onOwnerDamaged(ActivePet p, double healthAfter, @Nullable LivingEntity attacker) {
+        ownerDamaged(p, healthAfter, attacker);
+        if (p.ability2 == null) return;
+        p.swapSkills();
+        try {
+            ownerDamaged(p, healthAfter, attacker);
+        } finally {
+            p.swapSkills();
+        }
+    }
+
+    private void ownerDamaged(ActivePet p, double healthAfter, @Nullable LivingEntity attacker) {
         Ability a = p.ability;
         if (a == null || p.abilityPaused()) return;
         long now = System.currentTimeMillis();
@@ -660,7 +715,7 @@ public final class AbilityService {
         if (marks.size() > 64) marks.values().removeIf(m -> m.until() < System.currentTimeMillis());
         if (++ticks % 1200 == 0 && !cooldowns.isEmpty()) {
             long now = System.currentTimeMillis();
-            cooldowns.values().removeIf(c -> c[0] <= now && c[1] <= now);
+            cooldowns.values().removeIf(c -> { for (long x : c) if (x > now) return false; return true; });
         }
     }
 

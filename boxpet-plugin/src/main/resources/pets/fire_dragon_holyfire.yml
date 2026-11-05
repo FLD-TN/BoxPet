@@ -1,5 +1,5 @@
-# Rồng Lửa Thánh (fire_dragon) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
-name: 'Rồng Lửa Thánh'
+# Rồng Thánh Quang (fire_dragon) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
+name: 'Rồng Thánh Quang'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
 color: '#FFFBE6:#FFD166:#FF9F1C'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
@@ -33,4 +33,6 @@ stats:
     base: 0.5
     per-level: 0.02
 # kỹ năng trong abilities.yml
-ability: fire_ball_holyfire
+ability: holy_orb
+# kỹ năng thứ 2 (pet huyền thoại), hồi chiêu riêng
+ability-2: fire_ball_holyfire

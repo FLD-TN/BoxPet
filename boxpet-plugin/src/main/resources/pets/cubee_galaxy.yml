@@ -35,3 +35,5 @@ stats:
     per-level: 0.02
 # kỹ năng trong abilities.yml
 ability: cubee_luck
+# kỹ năng thứ 2 (pet huyền thoại), hồi chiêu riêng
+ability-2: cubee_galaxy_mob

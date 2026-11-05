@@ -133,9 +133,20 @@ public final class PetIcons {
      * cooldown on its own line (0.5.2 layout).
      */
     public static List<String> abilityLines(BoxPetPlugin plugin, PetType type, int level) {
-        MenuTexts m = plugin.menus();
         Ability a = plugin.abilities().get(type.ability);
-        if (a == null) return List.of(m.text("pet-card.no-ability"));
+        if (a == null) return List.of(plugin.menus().text("pet-card.no-ability"));
+        List<String> out = new ArrayList<>(skillLines(plugin, type, level, a));
+        // 0.9.0: legendary pets have a second skill, one blank line under the first
+        Ability b = plugin.abilities().get(type.ability2);
+        if (b != null) {
+            out.add("");
+            out.addAll(skillLines(plugin, type, level, b));
+        }
+        return out;
+    }
+
+    private static List<String> skillLines(BoxPetPlugin plugin, PetType type, int level, Ability a) {
+        MenuTexts m = plugin.menus();
         Rarity r = rarity(plugin, type);
         double mul = r.statMultiplier();
         int tenths = (int) Math.floor(a.boostTenths.at(level, mul));

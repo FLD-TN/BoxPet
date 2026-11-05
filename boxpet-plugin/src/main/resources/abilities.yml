@@ -18,6 +18,8 @@
 #   heal + shield (hồi máu kèm khiên), shield + blast (radius / power: đẩy lùi kẻ địch khi khiên bật).
 #   Hạ mob và đào mỏ chỉ nhận hệ số chẵn (x2, x3).
 #   %radius% %chain% %hits% %count% %buff% %buff_stat% %enemy% %enemy_stat% %debuff_seconds%
+# Thêm (0.9.0): fx.vfx.animations (mỗi nhát một hoạt ảnh), debuff.vfx (model trên mục tiêu khi chảy máu).
+#   Pet huyền thoại có kỹ năng thứ 2: "ability-2" trong file pet, hồi chiêu riêng.
 # Kỹ năng chiến đấu chỉ dùng khi chủ đang giao tranh, chỉ đánh người chủ vừa đánh hoặc người vừa đánh chủ.
 # Sát thương tính là đòn kỹ năng của chủ (MythicLib SKILL + MAGIC). pvp-multiplier: sát thương lên người chơi
 # (thiếu thì dùng abilities.pvp-multiplier trong config.yml), pve-multiplier: lên mob.
@@ -37,7 +39,7 @@ abilities:
       - 'gây %damage% sát thương và đốt'
       - 'cháy %seconds% giây'
     cooldown: 8
-    pvp-multiplier: 0.5
+    pvp-multiplier: 0.7
     range: 14
     cast-delay-ticks: 18
     damage:
@@ -141,13 +143,13 @@ abilities:
       - 'mục tiêu sau 1 giây, mỗi viên'
       - 'gây %damage% sát thương trong'
       - '%radius% ô và đốt cháy %seconds% giây'
-    cooldown: 9
+    cooldown: 20
     pvp-multiplier: 0.7
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 3.5
-      per-level: 0.12
+      base: 4.5
+      per-level: 0.15
     pve-multiplier: 1.0
     area:
       radius: 2.5
@@ -372,6 +374,8 @@ abilities:
       type: bleed
       seconds: 3
       damage-ratio: 0.3
+      # dấu máu trên mục tiêu khi chảy máu
+      vfx: vfx_blood_mark
     fx:
       animation: skill
       sounds:
@@ -749,7 +753,7 @@ abilities:
       particles:
         - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
       vfx:
-        model: vfx_pet_pierce_1
+        model: vfx_pet_pierce_3
         animation: skill
         life-ticks: 20
         scale: 1.0
@@ -784,7 +788,7 @@ abilities:
       particles:
         - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
       vfx:
-        model: vfx_pet_pierce_1
+        model: vfx_pet_pierce_4
         animation: skill
         life-ticks: 20
         scale: 1.0
@@ -810,6 +814,8 @@ abilities:
       type: bleed
       seconds: 3
       damage-ratio: 0.3
+      # dấu máu trên mục tiêu khi chảy máu
+      vfx: vfx_blood_mark
     fx:
       animation: skill
       sounds:
@@ -817,8 +823,9 @@ abilities:
       particles:
         - {particle: SWEEP_ATTACK, count: 2, spread: 0.2, speed: 0, at: target}
       vfx:
-        model: vfx_light_slash_1
+        model: vfx_light_slash_3
         animation: left-right-horiz
+        animations: [left-right-horiz, right-left-diag]
         life-ticks: 14
         scale: 1.2
         y-offset: 1.0
@@ -958,7 +965,7 @@ abilities:
       particles:
         - {particle: SWEEP_ATTACK, count: 2, spread: 0.2, speed: 0, at: target}
       vfx:
-        model: vfx_light_slash_1
+        model: vfx_light_slash_2
         animation: left-right-horiz
         life-ticks: 14
         scale: 1.2
@@ -1020,7 +1027,7 @@ abilities:
       particles:
         - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
       vfx:
-        model: vfx_pet_pierce_1
+        model: vfx_pet_pierce_2
         animation: skill
         life-ticks: 20
         scale: 1.0
@@ -1065,3 +1072,164 @@ abilities:
         - {sound: entity.experience_orb.pickup, volume: 0.8, pitch: 1.3}
       particles:
         - {particle: HAPPY_VILLAGER, count: 8, spread: 0.5, speed: 0.02, at: owner}
+  dragon_breath:
+    type: strike
+    name: 'Hơi Thở Rồng'
+    color: '#FF4D00:#FFB347'
+    description:
+      - 'Phun lửa xuyên cả hàng kẻ địch'
+      - 'giữa pet và mục tiêu, gây'
+      - '%damage% sát thương và đốt cháy'
+      - '%seconds% giây'
+    cooldown: 18
+    pvp-multiplier: 0.7
+    range: 10
+    cast-delay-ticks: 20
+    damage:
+      base: 4.5
+      per-level: 0.14
+    pierce: true
+    debuff:
+      type: burn
+      seconds: 4
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.growl, volume: 0.6, pitch: 1.6, delay: 4}
+        - {sound: item.firecharge.use, volume: 0.9, pitch: 0.8, delay: 20}
+      particles:
+        - {particle: FLAME, count: 2, spread: 0.1, speed: 0.02, at: path}
+        - {particle: LAVA, count: 6, spread: 0.4, speed: 0.05, at: target}
+  holy_orb:
+    type: projectile
+    name: 'Cầu Thánh Quang'
+    color: '#FFF1A8:#FFB347'
+    description:
+      - 'Bắn cầu thánh quang vào mục tiêu,'
+      - 'gây %damage% sát thương và làm'
+      - 'suy yếu %seconds% giây'
+    cooldown: 8
+    pvp-multiplier: 0.7
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 3.5
+      per-level: 0.12
+    pve-multiplier: 1.0
+    debuff:
+      type: weakness
+      seconds: 3
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.blaze.shoot, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: END_ROD, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: END_ROD, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_flame_shot_holyfire
+        animation: idle
+        speed: 0.7
+        life-ticks: 40
+        scale: 1.0
+  knight_judgement:
+    type: strike
+    name: 'Phán Xét'
+    color: '#FFE066:#FFFFFF'
+    description:
+      - 'Chém phán xét nổ trong %radius% ô'
+      - 'quanh mục tiêu, gây %damage% sát'
+      - 'thương mỗi kẻ'
+    cooldown: 22
+    pvp-multiplier: 0.7
+    range: 10
+    cast-delay-ticks: 22
+    damage:
+      base: 5
+      per-level: 0.15
+    area:
+      radius: 4
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.player.attack.sweep, volume: 1.0, pitch: 0.7, delay: 20}
+        - {sound: block.anvil.land, volume: 0.5, pitch: 1.6, delay: 22}
+      particles:
+        - {particle: END_ROD, count: 20, spread: 0.8, speed: 0.05, at: target}
+      vfx:
+        model: vfx_light_slash_4
+        animation: up-down-vert
+        life-ticks: 14
+        scale: 2.0
+        y-offset: 1.0
+  griffon_phoenix_heal:
+    type: heal
+    name: 'Lông Vũ Phượng Hoàng'
+    color: '#FF7B00:#FFD000'
+    description:
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'hồi %heal% máu cho chủ nhân'
+    cooldown: 10
+    heal:
+      amount:
+        base: 2.5
+        per-level: 0.06
+      percent: false
+      below-percent: 60
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.allay.item_taken, volume: 1.0, pitch: 1.3}
+      particles:
+        - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
+        - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+  unicorn_heavenly_guard:
+    type: buff
+    name: 'Thánh Quang Hộ Thể'
+    color: '#B8E6FF:#FFFFFF'
+    description:
+      - 'Khi chủ nhân bị đánh: +%buff%%'
+      - '%buff_stat% trong %seconds% giây'
+    cooldown: 30
+    trigger: hurt
+    buff:
+      stat: PVP_DAMAGE_REDUCTION
+      amount:
+        base: 2
+        per-level: 0.08
+      seconds: 5
+    fx:
+      animation: skill
+      sounds:
+        - {sound: block.beacon.power_select, volume: 0.6, pitch: 1.6}
+      particles:
+        - {particle: END_ROD, count: 14, spread: 0.6, speed: 0.03, at: owner}
+  cubee_galaxy_mob:
+    type: boost
+    name: 'Tinh Tú May Mắn'
+    color: '#4CC9F0:#FFD6FF'
+    description:
+      - 'Nhân phần thưởng khi hạ mob,'
+      - 'boss lên %boost%'
+    boost:
+      type: mob
+      tenths:
+        base: 4
+        per-level: 0.105
+      whole: true
+  cubee_dark_mining:
+    type: boost
+    name: 'Hắc Tinh Khai Khoáng'
+    color: '#7209B7:#F72585'
+    description:
+      - 'Nhân vật phẩm khi đào mỏ'
+      - 'lên %boost%'
+    boost:
+      type: mining
+      tenths:
+        base: 4
+        per-level: 0.105
+      whole: true

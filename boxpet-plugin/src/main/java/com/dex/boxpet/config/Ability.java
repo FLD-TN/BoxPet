@@ -134,6 +134,9 @@ public final class Ability {
     /** Shield: enemies around the owner are pushed away when the shield comes up. */
     public final double blastRadius;
     public final double blastPower;
+    /** 0.9.0: vfx animation per hit ({@code fx.vfx.animations}), and a model on a bleeding target ({@code debuff.vfx}). */
+    public final List<String> vfxAnimations;
+    public final String debuffVfx;
     public final String boostType;
     public final Scaled boostTenths;
     public final boolean boostWhole;
@@ -204,6 +207,8 @@ public final class Ability {
         enemyStat = en == null ? "" : en.getString("stat", "").toUpperCase(Locale.ROOT);
         enemyAmount = en == null ? Scaled.ZERO : Scaled.read(en, "amount", 0);
         enemyRadius = en == null ? 0 : Math.max(0, Math.min(10, en.getDouble("radius", 0)));
+        vfxAnimations = s.getStringList("fx.vfx.animations");
+        debuffVfx = d == null ? "" : d.getString("vfx", "");
         ConfigurationSection bl = s.getConfigurationSection("blast");
         blastRadius = bl == null ? 0 : Math.max(0, Math.min(8, bl.getDouble("radius", 4)));
         blastPower = bl == null ? 0 : Math.max(0, Math.min(3, bl.getDouble("power", 1)));

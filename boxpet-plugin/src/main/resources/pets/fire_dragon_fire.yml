@@ -1,13 +1,13 @@
 # Rồng Lửa (fire_dragon) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Rồng Lửa'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#FF5A1F'
+color: '#7B1E1E:#FF4D00:#FFB347'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: fire_dragon
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
 role: combat
 # độ hiếm của pet này (một model = một pet = một độ hiếm). Độ hiếm cao hơn thì chỉ số gốc cao hơn
-rarity: rare
+rarity: legendary
 # icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
 icon: 'companions_1:icon_fire_dragon_fire'
 icon-fallback: DRAGON_HEAD
@@ -34,3 +34,5 @@ stats:
     per-level: 0.02
 # kỹ năng trong abilities.yml
 ability: fire_ball_fire
+# kỹ năng thứ 2 (pet huyền thoại), hồi chiêu riêng
+ability-2: dragon_breath

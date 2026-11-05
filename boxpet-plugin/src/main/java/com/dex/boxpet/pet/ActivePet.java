@@ -69,6 +69,27 @@ public final class ActivePet {
     public int cooldown;
     public int potionRefresh;
     public long shieldReadyAt;
+    /** 0.9.0: the second skill and its own cooldowns (AbilityService swaps them in while it runs that skill). */
+    public @Nullable Ability ability2;
+    public int cooldown2;
+    public long shieldReadyAt2;
+    public int potionRefresh2;
+
+    /** Puts the second skill in the first slot and back (main thread only, always called in pairs). */
+    public void swapSkills() {
+        Ability a = ability;
+        ability = ability2;
+        ability2 = a;
+        int c = cooldown;
+        cooldown = cooldown2;
+        cooldown2 = c;
+        long s = shieldReadyAt;
+        shieldReadyAt = shieldReadyAt2;
+        shieldReadyAt2 = s;
+        int r = potionRefresh;
+        potionRefresh = potionRefresh2;
+        potionRefresh2 = r;
+    }
     public @Nullable Float faceYaw;
     public int faceTicks;
 
