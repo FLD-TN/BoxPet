@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.4 (2026-11-05)
+
+- Lore kỹ năng: "Kỹ năng:", dòng trống, tên dạng "- Tên kỹ năng", dòng mô tả đầu có •, các dòng sau thụt vào; Hồi chiêu giữ nguyên.
+- "[Đang được thả]" chuyển lên tên item thay vì nằm trong lore.
+- Dòng cảnh báo pet đói nằm dưới kỹ năng (cách 1 dòng trống), trên các dòng [Chuột ...]. menus.yml cũ không có %warning% thì vẫn hiện ở cuối.
+- Tên trên đầu pet: [Lv.X] cùng màu với cấp độ trong lore (%level_colour%). Server cũ: sửa visibility.nametag trong config.yml để dùng.
+- /pet: Shift + chuột trái vào pet đang thả để cất; bỏ nút Cất pet; Ẩn pet người khác và Trò chuyện nhích sang trái 1 ô.
+- Quản lý pet: ô 30/31 cho ăn, vuốt ve; 33/34 ngồi yên, đặt tên; 41 thả/cất pet; tiến hóa ở ô 43 (đếm từ 1).
+
 ## 0.5.3 (2026-11-05)
 
 - Màu tên pet làm lại: Thường và Hiếm một màu, mỗi pet một vùng màu riêng; Sử thi gradient 2-5 màu; Huyền thoại gradient 3-4 màu.

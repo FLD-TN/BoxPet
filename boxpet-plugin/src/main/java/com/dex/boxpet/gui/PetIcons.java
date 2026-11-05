@@ -134,8 +134,13 @@ public final class PetIcons {
         };
         List<String> out = new ArrayList<>();
         out.add(m.text("pet-card.ability-title"));
+        out.add("");
         out.add(m.text("pet-card.ability-name", "ability", PetType.paint(a.color, a.name)));
-        for (String line : a.description) out.add(m.text("pet-card.ability-line", "line", Messages.apply(line, ph)));
+        // first description line with a bullet, the next ones indented under it
+        for (int i = 0; i < a.description.size(); i++) {
+            out.add(m.text(i == 0 ? "pet-card.ability-line-first" : "pet-card.ability-line", "line",
+                    Messages.apply(a.description.get(i), ph)));
+        }
         if (a.type != Ability.Type.BOOST && a.type != Ability.Type.POTION && a.type != Ability.Type.NONE) {
             out.add(m.text("pet-card.ability-cooldown", "value", Format.decimal(a.cooldownTicks / 20.0)));
         }
@@ -208,9 +213,13 @@ public final class PetIcons {
         blocks.put("ability", abilityLines(plugin, type, d.level));
         blocks.put("status", statusLines);
         blocks.put("actions", actions);
+        blocks.put("warning", List.of(WARNING_MARKER));
         String[] ph = placeholders(plugin, d, type);
-        return Menu.decorate(icon(plugin, type), plugin.menus().name("pet-card", ph),
-                withWarning(plugin, plugin.menus().lore("pet-card", blocks, ph)));
+        var owner = plugin.pets().data(d.owner);
+        boolean active = owner != null && d.id.equals(owner.activePet);
+        String name = plugin.menus().name("pet-card", ph);
+        if (active) name = name + plugin.menus().text("pet-card.name-active");
+        return Menu.decorate(icon(plugin, type), name, withWarning(plugin, plugin.menus().lore("pet-card", blocks, ph)));
     }
 
     /** Library card: what a pet type gives, at level 1 and at its max level. */
@@ -220,6 +229,7 @@ public final class PetIcons {
         blocks.put("stats", statBaseLines(plugin, type));
         blocks.put("ability", abilityLines(plugin, type, 1));
         blocks.put("actions", actions);
+        blocks.put("warning", List.of(WARNING_MARKER));
         String[] ph = {
                 "name", type.colouredName(),
                 "role", roleName(plugin, type),
@@ -231,24 +241,39 @@ public final class PetIcons {
                 withWarning(plugin, plugin.menus().lore("library.card", blocks, ph)));
     }
 
-    /** Adds the hunger warning (menus.yml pet-card.warning) as the last line, centred under the widest line. */
+    /** Placeholder line of the %warning% block, replaced by the centred warning once the lore is built. */
+    private static final String WARNING_MARKER = "\u0000warning";
+
+    /**
+     * Replaces the %warning% line (menus.yml pet-card.warning, under the skill, above the click lines) with the
+     * warning centred under the widest line of the lore.
+     */
     static List<String> withWarning(BoxPetPlugin plugin, List<String> lore) {
-        String warning = plugin.menus().text("pet-card.warning");
-        if (warning.isEmpty() || warning.equals("pet-card.warning")) return lore;
         List<String> out = new ArrayList<>(lore);
+        int at = out.indexOf(WARNING_MARKER);
+        if (at < 0) {
+            // an older menus.yml without %warning%: keep it as the last line
+            out.add("");
+            out.add(WARNING_MARKER);
+            at = out.size() - 1;
+        }
+        String warning = plugin.menus().text("pet-card.warning");
+        if (warning.isEmpty() || warning.equals("pet-card.warning")) {
+            out.remove(at);
+            if (at < out.size() && at > 0 && out.get(at).isEmpty() && out.get(at - 1).isEmpty()) out.remove(at);
+            return out;
+        }
         int widest = 0;
-        for (String line : out) widest = Math.max(widest, com.dex.boxpet.text.Text.plain(line).length());
+        for (String line : out) if (!line.equals(WARNING_MARKER)) widest = Math.max(widest, com.dex.boxpet.text.Text.plain(line).length());
         int len = com.dex.boxpet.text.Text.plain(warning).length();
         // a space is narrower than a letter in the Minecraft font: about 1.5 spaces per missing character
         int pad = Math.max(0, (int) Math.round((widest - len) * 1.5 / 2));
-        out.add("");
-        out.add(" ".repeat(pad) + warning);
+        out.set(at, " ".repeat(pad) + warning);
         return out;
     }
 
     public static List<String> status(BoxPetPlugin plugin, PetData d, boolean active) {
         List<String> out = new ArrayList<>();
-        if (active) out.add(plugin.menus().text("pet-card.status-active"));
         if (d.fullness <= 0) out.add(plugin.menus().text("pet-card.status-hungry"));
         return out;
     }

@@ -489,8 +489,11 @@ public final class PetManager {
     }
 
     public String nametagText(ActivePet p) {
+        String level = com.dex.boxpet.gui.PetIcons.level(plugin, p.data.level);
+        String colour = level.substring(0, level.indexOf('>') + 1);
         return com.dex.boxpet.config.Messages.apply(s().nametagFormat, "name", displayName(p.data),
-                "level", String.valueOf(p.data.level), "hungry", p.hungry() ? plugin.messages().raw("nametag.hungry") : "");
+                "level_colour", colour, "level", String.valueOf(p.data.level),
+                "hungry", p.hungry() ? plugin.messages().raw("nametag.hungry") : "");
     }
 
     public void refreshNametag(ActivePet p) {

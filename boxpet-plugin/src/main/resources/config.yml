@@ -54,8 +54,8 @@ visibility:
   view-distance: 24
   # mỗi người chơi thấy tối đa bao nhiêu pet của người khác (gần nhất trước), pet của mình luôn thấy
   max-visible-per-player: 10
-  # tên trên đầu pet. %name% %level% %hungry%
-  nametag: '%name% <dark_gray>[<gray>Lv.%level%<dark_gray>]%hungry%'
+  # tên trên đầu pet. %name% %level% %level_colour% (màu của cấp độ, giống lore) %hungry%
+  nametag: '%name% <dark_gray>[%level_colour%Lv.%level%<dark_gray>]%hungry%'
   nametag-offset: 0.35
   # di chuyển tên trên đầu pet mỗi bao nhiêu tick (có nội suy nên vẫn mượt); 1 = mỗi tick, tốn gói tin nhất
   nametag-update-ticks: 3

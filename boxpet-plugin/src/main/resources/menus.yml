@@ -162,6 +162,8 @@ pet-card:
     - ''
     - '%ability%'
     - ''
+    - '%warning%'
+    - ''
     - '%status%'
     - ''
     - '%actions%'
@@ -171,18 +173,22 @@ pet-card:
   stat-row: '<gray>• %stat%: <white>%value%'
   no-stats: '<gray>• Không có'
   ability-title: '<#FFD166>Kỹ năng:'
-  ability-name: '<gray>〈 %ability% <gray>〉'
-  ability-line: '<#BFC7D5>%line%'
+  ability-name: '<gray>- %ability%'
+  # dòng mô tả đầu có dấu •, các dòng sau thụt vào 1 khoảng trắng
+  ability-line-first: '<gray>• <#BFC7D5>%line%'
+  ability-line: '  <#BFC7D5>%line%'
   ability-cooldown: '<gray>• Hồi chiêu: <#7FDBFF>%value% giây'
-  # dòng cảnh báo cuối lore, tự canh giữa
+  # dòng cảnh báo dưới kỹ năng (%warning%), tự canh giữa
   warning: '<#FF4D4D>(!) Pet đói sẽ mất chỉ số và kỹ năng (!)'
   no-ability: '<#FFD166>Kỹ năng: <gray>không có'
-  status-active: '<#7CFC9A>✔ Đang được thả'
+  # thêm sau tên pet khi đang được thả
+  name-active: ' <dark_gray>[<#7CFC9A>Đang được thả<dark_gray>]'
   status-hungry: '<#FF4D4D>✘ Đang đói: không có chỉ số và kỹ năng'
   unknown-type: '<#FF8A8A>Loại pet này không còn tồn tại'
 
 actions:
   manage: '<dark_gray>[<#7CFC9A>Chuột trái để quản lý<dark_gray>]'
+  shift-dismiss: '<dark_gray>[<#FF8A8A>Shift + chuột trái để cất pet<dark_gray>]'
   quick-summon: '<dark_gray>[<#7FDBFF>Chuột phải để thả pet<dark_gray>]'
   quick-dismiss: '<dark_gray>[<#FF8A8A>Chuột phải để cất pet<dark_gray>]'
   admin-manage: '<dark_gray>[<#7CFC9A>Chuột trái để quản lý<dark_gray>]'
@@ -353,6 +359,8 @@ library:
       - '%stats%'
       - ''
       - '%ability%'
+      - ''
+      - '%warning%'
       - ''
       - '%owned%'
 

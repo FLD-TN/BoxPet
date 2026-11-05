@@ -26,11 +26,14 @@ public final class MainMenu extends Menu {
         PetData active = pd.active();
         if (active != null) {
             set(22, PetIcons.card(plugin, active, PetIcons.status(plugin, active, true),
-                    List.of(plugin.menus().text("actions.manage"))), click -> new ManageMenu(plugin, player, pd, active, false).open());
-            set(47, button("main.dismiss", Material.GRAY_DYE, "pet", plugin.pets().displayName(active)), click -> {
-                plugin.pets().dismiss(player, true, "menu");
-                plugin.messages().send(player, "dismiss.done", "pet", plugin.pets().displayName(active));
-                refresh();
+                    List.of(plugin.menus().text("actions.manage"), plugin.menus().text("actions.shift-dismiss"))), click -> {
+                if (click == org.bukkit.event.inventory.ClickType.SHIFT_LEFT) {
+                    plugin.pets().dismiss(player, true, "menu");
+                    plugin.messages().send(player, "dismiss.done", "pet", plugin.pets().displayName(active));
+                    refresh();
+                    return;
+                }
+                new ManageMenu(plugin, player, pd, active, false).open();
             });
         } else {
             set(22, button("main.no-active", Material.LEAD), click -> new StorageMenu(plugin, player, pd, false, 0).open());
@@ -51,14 +54,14 @@ public final class MainMenu extends Menu {
         set(42, button("main.collection", Material.BOOK, "score", String.valueOf(plugin.collectionService().score(pd)),
                 "owned", String.valueOf(pd.collection.size()), "total", String.valueOf(plugin.types().size())),
                 click -> new CollectionMenu(plugin, player, pd, 0).open());
-        set(49, button("main.hide-others", Material.ENDER_EYE, "state", onOff(pd.hideOthers)), click -> {
+        set(48, button("main.hide-others", Material.ENDER_EYE, "state", onOff(pd.hideOthers)), click -> {
             pd.hideOthers = !pd.hideOthers;
             pd.dirty = true;
             plugin.pets().applyHiddenFor(player);
             plugin.messages().send(player, pd.hideOthers ? "toggle.hide-others-on" : "toggle.hide-others-off");
             refresh();
         });
-        set(51, button("main.pet-chat", Material.WRITABLE_BOOK, "state", onOff(pd.petChat)), click -> {
+        set(50, button("main.pet-chat", Material.WRITABLE_BOOK, "state", onOff(pd.petChat)), click -> {
             pd.petChat = !pd.petChat;
             pd.dirty = true;
             plugin.messages().send(player, pd.petChat ? "toggle.chat-on" : "toggle.chat-off");

@@ -55,23 +55,23 @@ public final class ManageMenu extends Menu {
         String name = plugin.pets().displayName(pet);
         // row 1: out / feed / pet / talk / sit
         if (active) {
-            set(29, button("manage.dismiss", Material.GRAY_DYE, "pet", name), click -> {
+            set(40, button("manage.dismiss", Material.GRAY_DYE, "pet", name), click -> {
                 plugin.pets().dismiss(player, true, "menu");
                 plugin.messages().send(player, "dismiss.done", "pet", name);
                 refresh();
             });
         } else {
-            set(29, button("manage.summon", Material.LIME_DYE, "pet", name), click -> {
+            set(40, button("manage.summon", Material.LIME_DYE, "pet", name), click -> {
                 StorageMenu.summon(plugin, player, pet);
                 refresh();
             });
         }
-        set(30, button("manage.feed", Material.COOKIE, "pet", name, "fullness", String.valueOf(pet.fullness)),
+        set(29, button("manage.feed", Material.COOKIE, "pet", name, "fullness", String.valueOf(pet.fullness)),
                 click -> new FoodMenu(plugin, player, owner, pet).open());
         long now = System.currentTimeMillis();
         String next = now >= pet.bondGainAt ? plugin.menus().text("manage.bond-ready")
                 : plugin.menus().text("manage.bond-wait", "time", Format.duration((pet.bondGainAt - now + 999) / 1000));
-        set(31, button("manage.pet", Material.PINK_DYE, "pet", name, "bond", String.valueOf(pet.bond), "next", next,
+        set(30, button("manage.pet", Material.PINK_DYE, "pet", name, "bond", String.valueOf(pet.bond), "next", next,
                 "gain", String.valueOf(plugin.settings().bondPetGain)), click -> {
             ActivePet p = out();
             if (p == null) {
@@ -93,7 +93,7 @@ public final class ManageMenu extends Menu {
             refresh();
         });
         // row 2: rename / evolve
-        set(39, button("manage.rename", Material.NAME_TAG, "min", String.valueOf(plugin.settings().renameMin),
+        set(33, button("manage.rename", Material.NAME_TAG, "min", String.valueOf(plugin.settings().renameMin),
                 "max", String.valueOf(plugin.settings().renameMax)), click -> {
             player.closeInventory();
             plugin.messages().send(player, "rename.prompt", "pet", plugin.pets().displayName(pet));
@@ -107,7 +107,7 @@ public final class ManageMenu extends Menu {
         PetType.Stage next2 = plugin.actions().nextStage(pet);
         if (next2 != null) {
             String cost = costText(next2);
-            set(41, button(pet.level >= next2.minLevel() ? "manage.evolve" : "manage.evolve-locked", Material.EXPERIENCE_BOTTLE,
+            set(42, button(pet.level >= next2.minLevel() ? "manage.evolve" : "manage.evolve-locked", Material.EXPERIENCE_BOTTLE,
                     "level", String.valueOf(next2.minLevel()), "cost", cost), click -> {
                 if (pet.level < next2.minLevel()) {
                     plugin.messages().send(player, "evolve.level", "level", String.valueOf(next2.minLevel()));

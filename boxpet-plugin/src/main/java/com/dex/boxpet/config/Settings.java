@@ -136,7 +136,7 @@ public final class Settings {
 
         viewDistance = Math.max(8, c.getInt("visibility.view-distance", 24));
         maxVisiblePerPlayer = Math.max(1, c.getInt("visibility.max-visible-per-player", 10));
-        nametagFormat = c.getString("visibility.nametag", "%name% &8[&7Lv.%level%&8]%hungry%");
+        nametagFormat = c.getString("visibility.nametag", "%name% <dark_gray>[%level_colour%Lv.%level%<dark_gray>]%hungry%");
         nametagOffset = c.getDouble("visibility.nametag-offset", 0.35);
         nametagUpdateTicks = Math.max(1, Math.min(20, c.getInt("visibility.nametag-update-ticks", 3)));
 
