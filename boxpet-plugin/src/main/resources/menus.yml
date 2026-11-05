@@ -79,6 +79,13 @@ stat-display:
 
 # Tên ngắn của chỉ số (mốc thưởng bộ sưu tập)
 stat-names:
+  PVP_DAMAGE: 'Sát thương PvP'
+  PVE_DAMAGE: 'Sát thương PvE'
+  SKILL_CRITICAL_STRIKE_CHANCE: 'Tỉ lệ chí mạng kỹ năng'
+  HEALTH_REGENERATION: 'Hồi máu'
+  PVP_DAMAGE_REDUCTION: 'Giảm sát thương PvP'
+  PVE_DAMAGE_REDUCTION: 'Giảm sát thương PvE'
+  DAMAGE_REDUCTION: 'Giảm sát thương'
   ATTACK_DAMAGE: 'Sát thương'
   CRITICAL_STRIKE_CHANCE: 'Tỉ lệ chí mạng'
   CRITICAL_STRIKE_POWER: 'Sát thương chí mạng'
@@ -175,6 +182,8 @@ pet-card:
   level-inline: '<gray>Cấp độ: %level%'
   stat-row: '<gray>• %stat%: <white>%value%'
   no-stats: '<gray>• Không có'
+  # dòng chỉ số thứ 3 khi chưa đột phá tới cấp mở
+  bonus-locked: '<dark_gray>✘ %stat% <dark_gray>(mở khoá khi đột phá cấp %level%)'
   # dòng đầu của kỹ năng: Kỹ năng: <tên kỹ năng>
   ability-header: '<#FFD166>Kỹ năng: %ability%'
   # dòng mô tả đầu có dấu •, các dòng sau thụt vào 1 khoảng trắng

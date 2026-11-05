@@ -83,6 +83,7 @@ public final class PetTypes {
                 }
             }
         }
+        PetType.StatDef bonus = bonusStat(y, stats);
         Material fallback = Material.matchMaterial(y.getString("icon-fallback", "EGG"));
         if (fallback == null || !fallback.isItem()) fallback = Material.EGG;
         String family = y.getString("family", id).toLowerCase(Locale.ROOT);
@@ -90,7 +91,45 @@ public final class PetTypes {
                 PetType.Role.of(y.getString("role", "support")), y.getString("icon", ""), fallback, rarity.id(),
                 Math.max(0, y.getInt("egg-weight", 1)), stages, anims, dbl(y, "follow.side"), dbl(y, "follow.back"),
                 dbl(y, "follow.height"), y.getBoolean("follow.fly", false), stats, y.getString("ability", ""),
-                y.getString("dialogue", family).toLowerCase(Locale.ROOT));
+                y.getString("dialogue", family).toLowerCase(Locale.ROOT), bonus);
+    }
+
+    /** 3rd stat per family when the pet file has no {@code bonus-stat} (MMOItems stat the pet does not have yet). */
+    private static final Map<String, String> FAMILY_BONUS = Map.ofEntries(
+            Map.entry("frog", "PVP_DAMAGE"), Map.entry("knight", "CRITICAL_STRIKE_POWER"),
+            Map.entry("samurai_shiba", "CRITICAL_STRIKE_CHANCE"), Map.entry("fire_dragon", "CRITICAL_STRIKE_POWER"),
+            Map.entry("necromancer_cat", "SKILL_CRITICAL_STRIKE_CHANCE"), Map.entry("outlaw", "PVP_DAMAGE"),
+            Map.entry("griffon", "HEALTH_REGENERATION"), Map.entry("cacti", "PVP_DAMAGE_REDUCTION"),
+            Map.entry("unicorn", "DAMAGE_REDUCTION"), Map.entry("shark", "PVE_DAMAGE_REDUCTION"),
+            Map.entry("palcat", "PVE_DAMAGE"), Map.entry("cubee_dragon", "PVE_DAMAGE"));
+    /** Default {base, per level} of a 3rd stat (before rarity and the other multipliers). */
+    private static final Map<String, double[]> BONUS_VALUES = Map.ofEntries(
+            Map.entry("PVP_DAMAGE", new double[]{0.5, 0.03}), Map.entry("CRITICAL_STRIKE_POWER", new double[]{2, 0.08}),
+            Map.entry("CRITICAL_STRIKE_CHANCE", new double[]{0.5, 0.03}),
+            Map.entry("SKILL_CRITICAL_STRIKE_CHANCE", new double[]{0.5, 0.03}),
+            Map.entry("HEALTH_REGENERATION", new double[]{0.1, 0.01}), Map.entry("PVP_DAMAGE_REDUCTION", new double[]{0.5, 0.03}),
+            Map.entry("DAMAGE_REDUCTION", new double[]{0.3, 0.02}), Map.entry("PVE_DAMAGE_REDUCTION", new double[]{0.5, 0.03}),
+            Map.entry("PVE_DAMAGE", new double[]{0.5, 0.03}));
+
+    private static @org.jetbrains.annotations.Nullable PetType.StatDef bonusStat(YamlConfiguration y, List<PetType.StatDef> stats) {
+        String stat;
+        double base;
+        double per;
+        ConfigurationSection b = y.getConfigurationSection("bonus-stat");
+        if (b != null) {
+            stat = b.getString("stat", "").toUpperCase(Locale.ROOT);
+            if (stat.isEmpty()) return null;
+            base = b.getDouble("base", 0);
+            per = b.getDouble("per-level", 0);
+        } else {
+            stat = FAMILY_BONUS.get(y.getString("family", "").toLowerCase(Locale.ROOT));
+            if (stat == null) return null;
+            double[] v = BONUS_VALUES.getOrDefault(stat, new double[]{0.5, 0.03});
+            base = v[0];
+            per = v[1];
+        }
+        for (PetType.StatDef d : stats) if (d.stat().equals(stat)) return null;
+        return new PetType.StatDef(stat, base, per, false);
     }
 
     private static @Nullable Double dbl(YamlConfiguration y, String path) {

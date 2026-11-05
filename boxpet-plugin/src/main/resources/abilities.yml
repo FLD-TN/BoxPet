@@ -8,7 +8,16 @@
 #   heal        hồi máu cho chủ khi máu dưới below-percent %
 #   shield      khi máu chủ dưới below-percent %: khiên hấp thụ (hearts tim) trong seconds giây
 #   potion      giữ 1 hiệu ứng tốt cho chủ (amplifier-by-rarity: cấp hiệu ứng theo độ hiếm, 0 = cấp I)
+#   meteor      (0.8.0) thiên thạch rơi quanh mục tiêu sau warn-ticks (né được): meteor.count / spread / warn-ticks, area.radius
+#   buff        (0.8.0) tăng chỉ số MMOItems cho riêng chủ nhân trong buff.seconds giây. trigger: combat (khi giao tranh),
+#               hurt (khi chủ bị đánh), low-hp (khi máu chủ dưới buff.below-percent %). enemy-stat: lấy chỉ số của
+#               người địch (mục tiêu / kẻ vừa đánh, hoặc mọi kẻ địch trong radius ô); debuff: lên kẻ vừa đánh / mục tiêu
 #   boost       cộng hệ số BoxCore (mining / quest / mob) theo phần mười (tenths: 5 = +x0,5); whole: true = chỉ số nguyên
+# Thêm (0.8.0): area.radius (nổ trúng mọi kẻ địch quanh chỗ trúng), chain (targets / range / ratio: bật sang mục tiêu
+#   khác, mỗi lần còn ratio sát thương), pierce: true (đâm xuyên cả hàng), hits (count / interval-ticks: đánh nhiều lần),
+#   heal + shield (hồi máu kèm khiên), shield + blast (radius / power: đẩy lùi kẻ địch khi khiên bật).
+#   Hạ mob và đào mỏ chỉ nhận hệ số chẵn (x2, x3).
+#   %radius% %chain% %hits% %count% %buff% %buff_stat% %enemy% %enemy_stat% %debuff_seconds%
 # Kỹ năng chiến đấu chỉ dùng khi chủ đang giao tranh, chỉ đánh người chủ vừa đánh hoặc người vừa đánh chủ.
 # Sát thương tính là đòn kỹ năng của chủ (MythicLib SKILL + MAGIC). pvp-multiplier: sát thương lên người chơi
 # (thiếu thì dùng abilities.pvp-multiplier trong config.yml), pve-multiplier: lên mob.
@@ -57,10 +66,12 @@ abilities:
     name: 'Cầu Lửa Linh Hồn'
     color: '#5FE1E8:#B8FFF9'
     description:
-      - 'Phun cầu lửa vào mục tiêu,'
+      - 'Phun cầu lửa nổ trong %radius% ô,'
       - 'gây %damage% sát thương và đốt'
       - 'cháy %seconds% giây'
     cooldown: 8
+    area:
+      radius: 3
     range: 14
     cast-delay-ticks: 18
     damage:
@@ -90,10 +101,12 @@ abilities:
     name: 'Cầu Lửa Bóng Tối'
     color: '#9B6BFF:#E3B6FF'
     description:
-      - 'Phun cầu lửa vào mục tiêu,'
+      - 'Phun cầu lửa nổ trong %radius% ô,'
       - 'gây %damage% sát thương và đốt'
       - 'cháy %seconds% giây'
     cooldown: 8
+    area:
+      radius: 3
     range: 14
     cast-delay-ticks: 18
     damage:
@@ -119,20 +132,27 @@ abilities:
         life-ticks: 40
         scale: 1.0
   fire_ball_holyfire:
-    type: projectile
-    name: 'Cầu Lửa Thánh'
+    type: meteor
+    name: 'Mưa Thiên Hỏa'
     color: '#FFF1A8:#FFB347'
     description:
-      - 'Phun cầu lửa vào mục tiêu,'
-      - 'gây %damage% sát thương và đốt'
-      - 'cháy %seconds% giây'
-    cooldown: 8
+      - 'Gọi %count% thiên thạch rơi quanh'
+      - 'mục tiêu sau 1 giây, mỗi viên'
+      - 'gây %damage% sát thương trong'
+      - '%radius% ô và đốt cháy %seconds% giây'
+    cooldown: 9
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 3
-      per-level: 0.1
+      base: 3.5
+      per-level: 0.12
     pve-multiplier: 1.0
+    area:
+      radius: 2.5
+    meteor:
+      count: 3
+      spread: 2.5
+      warn-ticks: 20
     debuff:
       type: burn
       seconds: 3
@@ -141,16 +161,9 @@ abilities:
       animation: skill
       sounds:
         - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
-        - {sound: entity.blaze.shoot, volume: 0.8, pitch: 1.3, delay: 18}
+        - {sound: entity.blaze.shoot, volume: 0.8, pitch: 0.8, delay: 18}
       particles:
-        - {particle: END_ROD, count: 3, spread: 0.05, speed: 0.01, at: path}
         - {particle: END_ROD, count: 15, spread: 0.4, speed: 0.05, at: target}
-      vfx:
-        model: vfx_flame_shot_holyfire
-        animation: idle
-        speed: 0.7
-        life-ticks: 40
-        scale: 1.0
   frog_tongue:
     type: projectile
     name: 'Lưỡi Dính'
@@ -249,10 +262,12 @@ abilities:
     name: 'Đầu Lâu Ma'
     color: '#8E7CFF:#C9B8FF'
     description:
-      - 'Ném đầu lâu ma vào mục tiêu,'
+      - 'Ném đầu lâu ma nổ trong %radius% ô,'
       - 'gây %damage% sát thương và làm'
       - 'suy yếu %seconds% giây'
     cooldown: 8
+    area:
+      radius: 3
     range: 14
     cast-delay-ticks: 18
     damage:
@@ -480,8 +495,12 @@ abilities:
     description:
       - 'Khi máu chủ nhân dưới %percent%%,'
       - 'tạo khiên %hearts% tim trong'
-      - '%seconds% giây'
+      - '%seconds% giây và đẩy lùi kẻ địch'
+      - 'trong %radius% ô'
     cooldown: 45
+    blast:
+      radius: 4
+      power: 1.2
     shield:
       below-percent: 40
       hearts:
@@ -501,73 +520,109 @@ abilities:
         scale: 1.0
         y-offset: 0.0
   unicorn_heavenly:
-    type: potion
-    name: 'Phước Lành Thiên Đường'
+    type: buff
+    name: 'Thiên Giới'
     color: '#FFFFFF:#B8E6FF'
     description:
-      - 'Chủ nhân luôn có hiệu ứng'
-      - '%potion% %level% khi pet được thả'
-    cooldown: 30
-    potion:
-      effect: resistance
-      amplifier-by-rarity: [0, 0, 1, 1]
+      - 'Chủ nhân +%buff%% %buff_stat%,'
+      - 'kẻ địch trong %radius% ô quanh chủ'
+      - 'nhân -%enemy%% %enemy_stat%'
+      - 'trong %seconds% giây'
+    cooldown: 25
+    range: 12
+    trigger: combat
+    buff:
+      stat: PVP_DAMAGE
+      amount:
+        base: 2
+        per-level: 0.08
+      seconds: 6
+    enemy-stat:
+      stat: PVP_DAMAGE
+      radius: 5
+      amount:
+        base: 2
+        per-level: 0.08
     fx:
-      animation: interact
+      animation: skill
       sounds:
         - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
+        - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
-        - {particle: END_ROD, count: 8, spread: 0.5, speed: 0.02, at: owner}
+        - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
   unicorn_nature:
-    type: potion
-    name: 'Sức Sống Rừng Xanh'
+    type: buff
+    name: 'Giáp Lá Rừng Xanh'
     color: '#8EE07A:#D8F8C6'
     description:
-      - 'Chủ nhân luôn có hiệu ứng'
-      - '%potion% %level% khi pet được thả'
+      - 'Khi chủ nhân bị đánh: +%buff%'
+      - '%buff_stat% trong %seconds% giây'
     cooldown: 30
-    potion:
-      effect: regeneration
-      amplifier-by-rarity: [0, 0, 1, 1]
+    trigger: hurt
+    buff:
+      stat: DEFENSE
+      amount:
+        base: 2
+        per-level: 0.08
+      seconds: 5
     fx:
-      animation: interact
+      animation: skill
       sounds:
         - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
+        - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
-        - {particle: END_ROD, count: 8, spread: 0.5, speed: 0.02, at: owner}
+        - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
   unicorn_rainbow:
-    type: potion
+    type: buff
     name: 'Bước Chân Cầu Vồng'
     color: '#FF8FB1:#8FD3FF'
     description:
-      - 'Chủ nhân luôn có hiệu ứng'
-      - '%potion% %level% khi pet được thả'
-    cooldown: 30
-    potion:
-      effect: speed
-      amplifier-by-rarity: [0, 0, 1, 1]
+      - 'Khi chủ nhân bị đánh: +%buff%%'
+      - '%buff_stat% trong %seconds% giây'
+    cooldown: 25
+    trigger: hurt
+    buff:
+      stat: DODGE_RATING
+      amount:
+        base: 3
+        per-level: 0.12
+      seconds: 5
     fx:
-      animation: interact
+      animation: skill
       sounds:
         - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
+        - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
-        - {particle: END_ROD, count: 8, spread: 0.5, speed: 0.02, at: owner}
+        - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
   unicorn_undead:
-    type: potion
-    name: 'Sức Mạnh Bất Tử'
+    type: buff
+    name: 'Đoạt Lực'
     color: '#A3B18A:#E2E8CE'
     description:
-      - 'Chủ nhân luôn có hiệu ứng'
-      - '%potion% %level% khi pet được thả'
-    cooldown: 30
-    potion:
-      effect: strength
-      amplifier-by-rarity: [0, 0, 1, 1]
+      - 'Cướp %enemy% %enemy_stat% của'
+      - 'mục tiêu cho chủ nhân trong'
+      - '%seconds% giây'
+    cooldown: 20
+    range: 10
+    trigger: combat
+    buff:
+      stat: ATTACK_DAMAGE
+      amount:
+        base: 1
+        per-level: 0.05
+      seconds: 6
+    enemy-stat:
+      stat: ATTACK_DAMAGE
+      amount:
+        base: 1
+        per-level: 0.05
     fx:
-      animation: interact
+      animation: skill
       sounds:
         - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
+        - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
-        - {particle: END_ROD, count: 8, spread: 0.5, speed: 0.02, at: owner}
+        - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
   shark_treasure:
     type: boost
     name: 'Mũi Săn Mồi'
@@ -578,9 +633,9 @@ abilities:
     boost:
       type: mob
       tenths:
-        base: 1
-        per-level: 0.1
-      whole: false
+        base: 7
+        per-level: 0.12
+      whole: true
   cubee_luck:
     type: boost
     name: 'Tinh Linh May Mắn'
@@ -633,3 +688,220 @@ abilities:
         base: 1
         per-level: 0.1
       whole: false
+  frog_tongue_gold:
+    type: projectile
+    name: 'Lưỡi Quấn Đôi'
+    color: '#FFD84D:#FFF3A8'
+    description:
+      - 'Phóng lưỡi gây %damage% sát thương,'
+      - 'bật sang %chain% mục tiêu gần đó'
+      - 'và làm chậm %seconds% giây'
+    cooldown: 8
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 2.8
+      per-level: 0.11
+    chain:
+      targets: 1
+      range: 5
+      ratio: 0.7
+    debuff:
+      type: slow
+      seconds: 2
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.frog.tongue, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+  knight_ender:
+    type: strike
+    name: 'Mũi Giáo Hư Không'
+    color: '#B57BFF:#E6CCFF'
+    description:
+      - 'Đâm xuyên cả hàng kẻ địch giữa'
+      - 'pet và mục tiêu, gây %damage%'
+      - 'sát thương mỗi kẻ'
+    cooldown: 7
+    range: 12
+    cast-delay-ticks: 22
+    damage:
+      base: 4
+      per-level: 0.13
+    pierce: true
+    fx:
+      animation: skill
+      sounds:
+        - {sound: item.trident.throw, volume: 0.8, pitch: 1.2, delay: 18}
+        - {sound: entity.player.attack.strong, volume: 0.8, pitch: 1.0, delay: 22}
+      particles:
+        - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
+      vfx:
+        model: vfx_pet_pierce_1
+        animation: skill
+        life-ticks: 20
+        scale: 1.0
+        y-offset: 0.3
+  knight_holy:
+    type: mark
+    name: 'Thánh Thương'
+    color: '#FFF1A8:#FFFFFF'
+    description:
+      - 'Đâm xuyên cả hàng, gây %damage%'
+      - 'sát thương và đánh dấu mục tiêu'
+      - '%seconds% giây: chủ nhân đánh nó'
+      - 'mạnh hơn %bonus%%'
+    cooldown: 7
+    range: 12
+    cast-delay-ticks: 22
+    damage:
+      base: 4.5
+      per-level: 0.14
+    pierce: true
+    mark:
+      seconds: 4
+      bonus-percent:
+        base: 6
+        per-level: 0.12
+    fx:
+      animation: skill
+      sounds:
+        - {sound: item.trident.throw, volume: 0.8, pitch: 1.2, delay: 18}
+        - {sound: entity.player.attack.strong, volume: 0.8, pitch: 1.0, delay: 22}
+      particles:
+        - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
+      vfx:
+        model: vfx_pet_pierce_1
+        animation: skill
+        life-ticks: 20
+        scale: 1.0
+        y-offset: 0.3
+  shiba_samurai:
+    type: strike
+    name: 'Song Kiếm Ánh Sáng'
+    color: '#FF4D6D:#FFC2CF'
+    description:
+      - 'Chém mục tiêu %hits% nhát, mỗi nhát'
+      - '%damage% sát thương và chảy máu'
+      - '%seconds% giây'
+    cooldown: 9
+    range: 10
+    cast-delay-ticks: 20
+    damage:
+      base: 3
+      per-level: 0.1
+    hits:
+      count: 2
+      interval-ticks: 8
+    debuff:
+      type: bleed
+      seconds: 3
+      damage-ratio: 0.3
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.player.attack.sweep, volume: 0.9, pitch: 1.3, delay: 20}
+      particles:
+        - {particle: SWEEP_ATTACK, count: 2, spread: 0.2, speed: 0, at: target}
+      vfx:
+        model: vfx_light_slash_1
+        animation: left-right-horiz
+        life-ticks: 14
+        scale: 1.2
+        y-offset: 1.0
+  outlaw_cyborg:
+    type: mark
+    name: 'Loạt Đạn Đánh Dấu'
+    color: '#4DD8FF:#C2F3FF'
+    description:
+      - 'Đánh dấu mục tiêu %seconds% giây'
+      - '(chủ nhân đánh mạnh hơn %bonus%%)'
+      - 'rồi bắn %hits% viên, mỗi viên'
+      - '%damage% sát thương'
+    cooldown: 12
+    range: 16
+    cast-delay-ticks: 30
+    damage:
+      base: 1.6
+      per-level: 0.06
+    hits:
+      count: 3
+      interval-ticks: 6
+    mark:
+      seconds: 6
+      bonus-percent:
+        base: 4
+        per-level: 0.08
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.arrow.shoot, volume: 0.8, pitch: 0.8, delay: 28}
+        - {sound: block.note_block.bell, volume: 0.7, pitch: 1.6, delay: 30}
+      particles:
+        - {particle: CRIT, count: 10, spread: 0.3, speed: 0.1, at: target}
+      vfx:
+        model: vfx_red_target
+        animation: skill
+        life-ticks: 120
+        scale: 1.0
+        y-offset: 2.3
+  griffon_ra:
+    type: heal
+    name: 'Ánh Dương Thần Ra'
+    color: '#FFB347:#FFF1A8'
+    description:
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'hồi %heal% máu và tạo khiên'
+      - '%hearts% tim trong %seconds% giây'
+    cooldown: 14
+    heal:
+      amount:
+        base: 2
+        per-level: 0.05
+      percent: false
+      below-percent: 60
+    shield:
+      hearts:
+        base: 1
+        per-level: 0.03
+      seconds: 5
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.allay.item_taken, volume: 1.0, pitch: 1.3}
+      particles:
+        - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
+        - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+  griffon_phoenix:
+    type: buff
+    name: 'Lửa Phượng Hoàng'
+    color: '#FF5E3A:#FFD24D'
+    description:
+      - 'Khi máu chủ nhân dưới %percent%%:'
+      - '+%buff% %buff_stat% trong %seconds% giây'
+      - 'và đốt kẻ vừa đánh chủ nhân'
+      - '%debuff_seconds% giây'
+    cooldown: 60
+    trigger: low-hp
+    buff:
+      stat: DEFENSE
+      amount:
+        base: 3
+        per-level: 0.12
+      seconds: 8
+      below-percent: 40
+    debuff:
+      type: burn
+      seconds: 4
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.blaze.shoot, volume: 0.9, pitch: 1.2}
+        - {sound: item.firecharge.use, volume: 0.8, pitch: 1.0}
+      particles:
+        - {particle: FLAME, count: 25, spread: 0.6, speed: 0.05, at: owner}

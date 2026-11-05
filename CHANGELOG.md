@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.0 (2026-11-05)
+
+- Chỉ số: toàn bộ x1,7 (config stats.multiplier), mỗi lần đột phá đã qua +5% chỉ số (breakthrough.stat-bonus-percent).
+- Dòng chỉ số thứ 3 (chỉ số MMOItems pet chưa có, theo họ pet; pets/*.yml bonus-stat để đổi): Hiếm mở ở cấp 30, Sử thi 20, Huyền thoại 10 (breakthrough.bonus-stat-unlock), tăng theo cấp từ lúc mở. Trước đó lore hiện dòng mờ.
+- Kiểu kỹ năng mới: area (nổ lan), chain (bật sang mục tiêu khác), pierce (xuyên hàng), hits (đánh nhiều lần), meteor (thiên thạch có báo trước), buff (chỉ số tạm thời cho riêng chủ nhân, kích hoạt khi giao tranh / bị đánh / máu thấp; có thể lấy chỉ số của kẻ địch), heal + khiên, khiên + đẩy lùi.
+- Kỹ năng Sử thi / Huyền thoại mới: Lưỡi Quấn Đôi, Mũi Giáo Hư Không, Thánh Thương, Song Kiếm Ánh Sáng, Loạt Đạn Đánh Dấu, Ánh Dương Thần Ra, Lửa Phượng Hoàng, Mưa Thiên Hỏa; Đầu Lâu Ma, Cầu Lửa Bóng Tối / Linh Hồn nổ lan 3 ô; Khiên Gai Sculk đẩy lùi.
+- Kỳ Lân bỏ hiệu ứng vĩnh viễn: Giáp Lá Rừng Xanh, Bước Chân Cầu Vồng, Đoạt Lực, Thiên Giới (chỉ buff chủ nhân).
+- Hạ mob chỉ nhận hệ số chẵn như đào mỏ (Mũi Săn Mồi: x2, Sử thi tới x3).
+- Cập nhật server: thay abilities.yml và 7 file pet (frog_golden, knight_ender, knight_holy, samurai_shiba_samurai, outlaw_cyborg, griffon_ra, griffon_phoenix).
+
 ## 0.7.3 (2026-11-05)
 
 - Pet dùng kỹ năng thì chat của chủ hiện "Tên pet: Tên kỹ năng!". Bật/tắt: /pet thongbao (bảng mới boxpet_options).

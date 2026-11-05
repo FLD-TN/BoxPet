@@ -77,9 +77,27 @@ public final class Settings {
     public final boolean activityXp;
     /** 0.8.0: every skill's damage / heal + shield, on top of abilities.yml. */
     public final double abilityDamageMultiplier;
+    /** 0.8.0: every pet stat × this (pets/*.yml values stay as written). */
+    public final double statMultiplier;
+    /** 0.8.0: % more stats for each breakthrough passed. */
+    public final double breakthroughStatBonus;
+    /** 0.8.0: rarity id -> level the 3rd stat unlocks at (0 = never). */
+    public final java.util.Map<String, Integer> bonusStatUnlock;
     public final double abilityHealMultiplier;
     /** 0.7.0: levels where the pet stops at full EXP until a breakthrough (only below the rarity's max level). */
     public final java.util.Set<Integer> breakthroughLevels;
+
+    /** Breakthroughs passed by a pet of this level (breakthrough levels under it and under the max level). */
+    public int breakthroughsPassed(int level, int maxLevel) {
+        int n = 0;
+        for (int l : breakthroughLevels) if (l < level && l < maxLevel) n++;
+        return n;
+    }
+
+    /** Level the 3rd stat unlocks at for this rarity, 0 = never. */
+    public int bonusUnlock(String rarity) {
+        return bonusStatUnlock.getOrDefault(rarity, 0);
+    }
     public final long bondPetCooldownMillis;
     public final int bondFoodMaxPerDay;
     public final long neglectMillis;
@@ -177,6 +195,17 @@ public final class Settings {
         bondPetGain = Math.max(0, c.getInt("bond.pet-gain", 1));
         activityXp = c.getBoolean("xp.from-activities", false);
         abilityDamageMultiplier = Math.max(0, c.getDouble("abilities.damage-multiplier", 1.4));
+        statMultiplier = Math.max(0, c.getDouble("stats.multiplier", 1.7));
+        breakthroughStatBonus = Math.max(0, c.getDouble("breakthrough.stat-bonus-percent", 5));
+        java.util.Map<String, Integer> unlock = new java.util.HashMap<>();
+        var us = c.getConfigurationSection("breakthrough.bonus-stat-unlock");
+        if (us != null) for (String k : us.getKeys(false)) unlock.put(k.toLowerCase(Locale.ROOT), Math.max(0, us.getInt(k)));
+        else {
+            unlock.put("rare", 30);
+            unlock.put("epic", 20);
+            unlock.put("legendary", 10);
+        }
+        bonusStatUnlock = java.util.Map.copyOf(unlock);
         abilityHealMultiplier = Math.max(0, c.getDouble("abilities.heal-multiplier", 1.3));
         breakthroughLevels = java.util.Set.copyOf(c.contains("breakthrough.levels")
                 ? c.getIntegerList("breakthrough.levels") : List.of(9, 19, 29, 39, 49, 59));

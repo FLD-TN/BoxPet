@@ -43,6 +43,24 @@ public final class StatService {
         return out;
     }
 
+    /**
+     * 0.8.0 final stats: the pet's stats × rarity × config stats.multiplier × (1 + breakthroughs × bonus%) × stage ×
+     * bond, plus the 3rd stat once unlocked (it grows from its unlock level).
+     */
+    public static Map<String, Double> petStats(com.dex.boxpet.config.Settings s, PetType type,
+                                               com.dex.boxpet.config.Rarity r, int level, int stage, double bondMultiplier) {
+        double bt = 1 + s.breakthroughsPassed(level, r.maxLevel()) * s.breakthroughStatBonus / 100.0;
+        double mul = r.statMultiplier() * s.statMultiplier * bt;
+        Map<String, Double> out = petStats(type, level, mul, stage, bondMultiplier);
+        int unlock = s.bonusUnlock(r.id());
+        if (type.bonusStat != null && unlock > 0 && level >= unlock) {
+            double v = (type.bonusStat.base() + type.bonusStat.perLevel() * (level - unlock)) * mul
+                    * type.stage(stage).statMultiplier() * bondMultiplier;
+            out.merge(type.bonusStat.stat(), Math.round(v * 100.0) / 100.0, Double::sum);
+        }
+        return out;
+    }
+
     public static boolean relative(PetType type, String stat) {
         for (PetType.StatDef d : type.stats) if (d.stat().equals(stat)) return d.relative();
         return false;
@@ -64,7 +82,7 @@ public final class StatService {
     /** @return false when MythicLib has not loaded the player yet (retry later) */
     public boolean applyPet(Player player, ActivePet pet, Settings settings) {
         // a hungry pet (fullness 0) gives no stats at all: at least 1 fullness is needed (0.5.2)
-        Map<String, Double> stats = pet.hungry() ? Map.of() : petStats(pet.type, pet.data.level, pet.rarity.statMultiplier(),
+        Map<String, Double> stats = pet.hungry() ? Map.of() : petStats(settings, pet.type, pet.rarity, pet.data.level,
                 pet.data.stage, settings.bondTier(pet.data.bond).stats());
         return apply(player, PET_KEY, stats, pet.type);
     }
@@ -101,6 +119,59 @@ public final class StatService {
         if (map == null) return;
         clear(map, PET_KEY);
         clear(map, COLLECTION_KEY);
+        clear(map, com.dex.boxpet.ability.AbilityService.BUFF_KEY);
+        clear(map, com.dex.boxpet.ability.AbilityService.DEBUFF_KEY);
+    }
+
+    /** "player|key|stat" -> when the temporary modifier ends (epoch ms). */
+    private final Map<String, Long> tempUntil = new java.util.HashMap<>();
+
+    /**
+     * 0.8.0: a stat modifier for {@code ticks} (skill buffs on the owner, stats taken from an enemy). Re-applying the
+     * same key and stat refreshes it instead of stacking.
+     */
+    public void tempStat(org.bukkit.plugin.Plugin plugin, Player player, String key, String stat, double value,
+                         boolean relative, int ticks) {
+        StatMap map = map(player);
+        if (map == null || value == 0) return;
+        try {
+            map.getInstance(stat).removeIf(key::equals);
+            new StatModifier(key, stat, value, relative ? ModifierType.RELATIVE : ModifierType.FLAT,
+                    io.lumine.mythic.lib.api.player.EquipmentSlot.OTHER,
+                    io.lumine.mythic.lib.player.modifier.ModifierSource.OTHER).register(map.getData());
+        } catch (RuntimeException ex) {
+            log.warning("MythicLib refused stat " + stat + " (" + ex.getMessage() + "): check abilities.yml");
+            return;
+        }
+        String id = player.getUniqueId() + "|" + key + "|" + stat;
+        long until = System.currentTimeMillis() + ticks * 50L;
+        tempUntil.put(id, until);
+        org.bukkit.Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Long u = tempUntil.get(id);
+            if (u == null || u > System.currentTimeMillis() + 60) return;
+            tempUntil.remove(id);
+            StatMap m = map(player);
+            if (m == null) return;
+            try {
+                m.getInstance(stat).removeIf(key::equals);
+            } catch (RuntimeException ignored) {
+                // gone already
+            }
+        }, ticks);
+    }
+
+    public void clearOwnBuff(Player player) {
+        tempUntil.keySet().removeIf(k -> k.startsWith(player.getUniqueId() + "|" + com.dex.boxpet.ability.AbilityService.BUFF_KEY + "|"));
+        StatMap map = map(player);
+        if (map != null) clear(map, com.dex.boxpet.ability.AbilityService.BUFF_KEY);
+    }
+
+    public void clearTemp(Player player) {
+        tempUntil.keySet().removeIf(k -> k.startsWith(player.getUniqueId() + "|"));
+        StatMap map = map(player);
+        if (map == null) return;
+        clear(map, com.dex.boxpet.ability.AbilityService.BUFF_KEY);
+        clear(map, com.dex.boxpet.ability.AbilityService.DEBUFF_KEY);
     }
 
     private static void clear(StatMap map, String key) {

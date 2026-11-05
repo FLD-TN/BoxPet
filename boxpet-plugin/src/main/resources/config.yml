@@ -46,6 +46,17 @@ xp:
 # Chỉ tính cấp nhỏ hơn cấp tối đa của độ hiếm (Thường tối đa 30: đột phá ở 9, 19, 29). Để [] là tắt.
 breakthrough:
   levels: [9, 19, 29, 39, 49, 59]
+  # mỗi lần đột phá đã qua: + bao nhiêu % toàn bộ chỉ số
+  stat-bonus-percent: 5
+  # cấp mở dòng chỉ số thứ 3 (đột phá lên cấp này), 0 hoặc không ghi = không có
+  bonus-stat-unlock:
+    rare: 30
+    epic: 20
+    legendary: 10
+
+stats:
+  # nhân toàn bộ chỉ số pet (file pets/*.yml giữ nguyên số gốc)
+  multiplier: 1.7
 
 incubator:
   # ô ấp mặc định; thêm bằng quyền boxpet.incubator.<số> (tối đa max-slots, không quá 7)

@@ -59,11 +59,22 @@ public final class PetType {
     public final List<StatDef> stats;
     public final String ability;
     public final String dialogue;
+    /** 0.8.0: the 3rd stat, unlocked by a breakthrough (rare 30, epic 20, legendary 10); grows from that level. */
+    public final @Nullable StatDef bonusStat;
 
     public PetType(String id, String name, String color, String family, Role role, String icon, Material iconFallback,
                    String rarity, int eggWeight, List<Stage> stages, Map<String, String> animations,
                    @Nullable Double side, @Nullable Double back, @Nullable Double height, boolean fly,
                    List<StatDef> stats, String ability, String dialogue) {
+        this(id, name, color, family, role, icon, iconFallback, rarity, eggWeight, stages, animations, side, back, height, fly,
+                stats, ability, dialogue, null);
+    }
+
+    public PetType(String id, String name, String color, String family, Role role, String icon, Material iconFallback,
+                   String rarity, int eggWeight, List<Stage> stages, Map<String, String> animations,
+                   @Nullable Double side, @Nullable Double back, @Nullable Double height, boolean fly,
+                   List<StatDef> stats, String ability, String dialogue, @Nullable StatDef bonusStat) {
+        this.bonusStat = bonusStat;
         this.id = id;
         this.name = name;
         this.color = color;

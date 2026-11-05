@@ -390,6 +390,8 @@ public final class PetManager {
             despawnVisual(p, true);
         }
         plugin.stats().clearPet(player);
+        // 0.8.0: a skill buff ends with the pet (stats taken by enemies stay until they run out)
+        plugin.stats().clearOwnBuff(player);
         bonus.remove(player.getUniqueId());
         plugin.boxCore().ifPresent(h -> h.refreshBonus(player.getUniqueId()));
         if (pet != null) {

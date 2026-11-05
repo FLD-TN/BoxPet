@@ -72,6 +72,7 @@ public final class CombatListener implements Listener {
         ActivePet pet = plugin.pets().active(p.getUniqueId());
         if (pet == null) return;
         double after = p.getHealth() - e.getFinalDamage();
-        plugin.abilityService().onOwnerDamaged(pet, after);
+        LivingEntity by = e instanceof EntityDamageByEntityEvent ed ? attacker(ed.getDamager()) : null;
+        plugin.abilityService().onOwnerDamaged(pet, after, by == p ? null : by);
     }
 }

@@ -91,22 +91,39 @@ public final class PetIcons {
 
     public static List<String> statLines(BoxPetPlugin plugin, PetData d, PetType type) {
         Rarity r = rarity(plugin, type);
-        Map<String, Double> stats = StatService.petStats(type, d.level, r.statMultiplier(), d.stage,
+        Map<String, Double> stats = StatService.petStats(plugin.settings(), type, r, d.level, d.stage,
                 plugin.settings().bondTier(d.bond).stats());
         List<String> out = new ArrayList<>();
         for (Map.Entry<String, Double> e : stats.entrySet()) out.add(statRow(plugin, e.getKey(), signed(e.getValue())));
         if (out.isEmpty()) out.add(plugin.menus().text("pet-card.no-stats"));
+        bonusLocked(plugin, type, r, d.level, out);
         return out;
     }
 
     /** Library: the base value of each stat (level 1, with the pet's rarity). */
     public static List<String> statBaseLines(BoxPetPlugin plugin, PetType type) {
         Rarity r = rarity(plugin, type);
-        Map<String, Double> base = StatService.petStats(type, 1, r.statMultiplier(), 0, 1.0);
+        Map<String, Double> base = StatService.petStats(plugin.settings(), type, r, 1, 0, 1.0);
         List<String> out = new ArrayList<>();
         for (Map.Entry<String, Double> e : base.entrySet()) out.add(statRow(plugin, e.getKey(), signed(e.getValue())));
         if (out.isEmpty()) out.add(plugin.menus().text("pet-card.no-stats"));
+        bonusLocked(plugin, type, r, 1, out);
         return out;
+    }
+
+    private static String statName(BoxPetPlugin plugin, String stat) {
+        if (stat == null || stat.isEmpty()) return "";
+        String n = plugin.menus().text("stat-names." + stat);
+        return n.startsWith("stat-names.") ? stat : n;
+    }
+
+    /** The 3rd stat before its breakthrough: a grey "locked" line. */
+    private static void bonusLocked(BoxPetPlugin plugin, PetType type, Rarity r, int level, List<String> out) {
+        int unlock = plugin.settings().bonusUnlock(r.id());
+        if (type.bonusStat == null || unlock <= 0 || level >= unlock) return;
+        String name = plugin.menus().text("stat-names." + type.bonusStat.stat());
+        if (name.startsWith("stat-names.")) name = type.bonusStat.stat();
+        out.add(plugin.menus().text("pet-card.bonus-locked", "stat", name, "level", String.valueOf(unlock)));
     }
 
     // ------------------------------------------------------------------ skill
@@ -129,14 +146,26 @@ public final class PetIcons {
                 "damage", num(m, "damage", round1(a.damage.at(level, mul))),
                 "heal", num(m, "heal", round1(a.heal.at(level, mul))),
                 "hearts", num(m, "shield", round1(a.shieldHearts.at(level, mul))),
-                "percent", num(m, "percent", a.type == Ability.Type.SHIELD ? a.shieldBelowPercent : a.healBelowPercent),
+                "percent", num(m, "percent", a.type == Ability.Type.SHIELD ? a.shieldBelowPercent
+                        : a.type == Ability.Type.BUFF ? a.buffBelowPercent : a.healBelowPercent),
                 "bonus", num(m, "bonus", round1(a.markBonus.at(level, mul))),
                 "boost", paint(m, "boost", boostText(a.boostType, tenths)),
                 "boost_type", m.text("boost-types." + a.boostType),
-                "seconds", num(m, "time", (a.type == Ability.Type.MARK ? a.markTicks : a.type == Ability.Type.SHIELD ? a.shieldTicks : a.debuffTicks) / 20.0),
+                "seconds", num(m, "time", (a.type == Ability.Type.MARK ? a.markTicks : a.type == Ability.Type.SHIELD
+                        || (a.type == Ability.Type.HEAL && a.shieldHearts.base() > 0) ? a.shieldTicks
+                        : a.type == Ability.Type.BUFF ? a.buffTicks : a.debuffTicks) / 20.0),
+                "debuff_seconds", num(m, "time", a.debuffTicks / 20.0),
                 "level", paint(m, "effect", roman(a.potionAmplifier(r.index()) + 1)),
                 "potion", paint(m, "effect", potion),
                 "range", num(m, "time", a.range),
+                "radius", num(m, "time", a.areaRadius > 0 ? a.areaRadius : a.enemyRadius > 0 ? a.enemyRadius : a.blastRadius),
+                "chain", num(m, "time", a.chainTargets),
+                "hits", num(m, "time", a.hits),
+                "count", num(m, "time", a.meteors),
+                "buff", num(m, "bonus", round1(a.buffAmount.at(level, mul))),
+                "buff_stat", statName(plugin, a.buffStat),
+                "enemy", num(m, "damage", round1(a.enemyAmount.at(level, mul))),
+                "enemy_stat", statName(plugin, a.enemyStat),
                 "pvp", num(m, "percent", Math.round(a.pvp(plugin.settings().defaultPvpMultiplier) * 100))
         };
         List<String> out = new ArrayList<>();

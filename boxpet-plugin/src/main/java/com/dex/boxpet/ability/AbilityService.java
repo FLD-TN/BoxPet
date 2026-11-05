@@ -72,6 +72,7 @@ public final class AbilityService {
         for (Vfx v : vfx) v.remove();
         vfx.clear();
         marks.clear();
+        for (Player pl : Bukkit.getOnlinePlayers()) clearBuffs(pl);
         cooldowns.clear();
     }
 
@@ -113,6 +114,12 @@ public final class AbilityService {
                 double amount = a.heal.at(p.data.level, p.rarity.statMultiplier());
                 if (a.healPercent) amount = max.getValue() * amount / 100.0;
                 o.setHealth(Math.min(max.getValue(), o.getHealth() + amount));
+                // 0.8.0: a heal may also give a shield (Thần Ra)
+                double hearts = a.shieldHearts.at(p.data.level, p.rarity.statMultiplier());
+                if (hearts > 0) {
+                    int amp = Math.max(0, (int) Math.ceil(hearts / 2.0) - 1);
+                    o.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, a.shieldTicks, amp, true, false, true));
+                }
                 fx(p, a, o);
                 announce(p, a);
                 p.cooldown = a.cooldownTicks;
@@ -131,7 +138,20 @@ public final class AbilityService {
                     p.cooldown = a.cooldownTicks;
                 }
             }
-            case PROJECTILE, STRIKE, MARK -> {
+            case BUFF -> {
+                // hurt / low-hp buffs go off in onOwnerDamaged
+                if (!a.trigger.equals("combat")) return;
+                if (p.cooldown > 0 || !plugin.pets().combat().tagged(o.getUniqueId())) return;
+                LivingEntity target = plugin.pets().combat().target(o.getUniqueId(), 5000);
+                if (target == null || target.getWorld() != o.getWorld()
+                        || origin(p).distanceSquared(target.getLocation()) > a.range * a.range || !validTarget(o, target)) {
+                    p.cooldown = RETRY_TICKS;
+                    return;
+                }
+                p.cooldown = a.cooldownTicks;
+                buff(p, a, target);
+            }
+            case PROJECTILE, STRIKE, MARK, METEOR -> {
                 if (p.cooldown > 0 || !plugin.pets().combat().tagged(o.getUniqueId())) return;
                 LivingEntity target = plugin.pets().combat().target(o.getUniqueId(), 5000);
                 // cheap checks first, WorldGuard last; a failed try waits RETRY_TICKS instead of retrying every tick
@@ -181,25 +201,198 @@ public final class AbilityService {
         sounds(p, a);
         particles(p, a, target, false);
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (plugin.pets().active(p.ownerId) != p || p.abilityPaused() || !target.isValid() || target.isDead()) return;
-            if (!validTarget(p.owner, target)) return;
-            switch (a.type) {
-                case PROJECTILE -> launch(p, a, target);
-                case STRIKE -> {
-                    showAt(p, a, target);
-                    hit(p, a, target);
-                }
-                case MARK -> {
+            if (!stillOn(p, target)) return;
+            if (a.type == Ability.Type.METEOR) {
+                meteor(p, a, target);
+                return;
+            }
+            // 0.8.0: some skills hit several times (Samurai, Cyborg)
+            for (int i = 0; i < a.hits; i++) {
+                boolean first = i == 0;
+                if (first) act(p, a, target, true);
+                else Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if (stillOn(p, target)) act(p, a, target, false);
+                }, (long) i * a.hitInterval);
+            }
+        }, a.castDelay);
+    }
+
+    private boolean stillOn(ActivePet p, LivingEntity target) {
+        return plugin.pets().active(p.ownerId) == p && !p.abilityPaused() && target.isValid() && !target.isDead()
+                && validTarget(p.owner, target);
+    }
+
+    private void act(ActivePet p, Ability a, LivingEntity target, boolean first) {
+        switch (a.type) {
+            case PROJECTILE -> launch(p, a, target);
+            case STRIKE -> {
+                showAt(p, a, target);
+                strike(p, a, target);
+            }
+            case MARK -> {
+                if (first) {
                     double bonus = a.markBonus.at(p.data.level, p.rarity.statMultiplier());
                     marks.put(target.getUniqueId(), new Mark(p.ownerId, bonus, System.currentTimeMillis() + a.markTicks * 50L));
                     showAt(p, a, target);
-                    if (a.damage.base() > 0) hit(p, a, target);
-                    particles(p, a, target, true);
+                } else {
+                    sounds(p, a);
                 }
-                default -> {
-                }
+                if (a.damage.base() > 0) strike(p, a, target);
+                particles(p, a, target, true);
             }
-        }, a.castDelay);
+            default -> {
+            }
+        }
+    }
+
+    /** Strike / mark damage: the target, or every target on the line from the pet with {@code pierce}. */
+    private void strike(ActivePet p, Ability a, LivingEntity target) {
+        if (!a.pierce) {
+            hit(p, a, target);
+            return;
+        }
+        Location from = origin(p);
+        Vector seg = target.getLocation().add(0, target.getHeight() * 0.5, 0).toVector().subtract(from.toVector());
+        double len = seg.length();
+        if (len < 0.01) {
+            hit(p, a, target);
+            return;
+        }
+        Vector dir = seg.clone().normalize();
+        for (double d = 0; d <= len; d += 0.6) {
+            Effects.particle(from.clone().add(dir.clone().multiply(d)), "CRIT", 1, 0.02, 0);
+        }
+        Location mid = from.clone().add(dir.clone().multiply(len / 2));
+        int n = 0;
+        for (LivingEntity e : from.getWorld().getNearbyLivingEntities(mid, len / 2 + 1.5)) {
+            if (n >= 8) break;
+            if (!e.equals(target) && !validTarget(p.owner, e)) continue;
+            Vector rel = e.getLocation().add(0, e.getHeight() * 0.5, 0).toVector().subtract(from.toVector());
+            double along = rel.dot(dir);
+            if (along < 0 || along > len + 0.5) continue;
+            if (rel.clone().subtract(dir.clone().multiply(along)).lengthSquared() > 1.6 * 1.6 && !e.equals(target)) continue;
+            hit(p, a, e);
+            n++;
+        }
+    }
+
+    /** Valid enemies of {@code owner} within {@code radius} of {@code at}, at most 8. */
+    private List<LivingEntity> around(Player owner, Location at, double radius) {
+        List<LivingEntity> out = new ArrayList<>();
+        if (at.getWorld() == null) return out;
+        for (LivingEntity e : at.getWorld().getNearbyLivingEntities(at, radius)) {
+            if (out.size() >= 8) break;
+            if (e.getLocation().distanceSquared(at) > radius * radius + 1) continue;
+            if (validTarget(owner, e)) out.add(e);
+        }
+        return out;
+    }
+
+    /** Chain: bounces from {@code from} to the nearest enemy not hit yet, weaker each time. */
+    private void chain(ActivePet p, Ability a, LivingEntity from, double dmg, int left, java.util.Set<UUID> done) {
+        if (left <= 0 || dmg <= 0) return;
+        LivingEntity next = null;
+        double best = a.chainRange * a.chainRange;
+        for (LivingEntity e : from.getWorld().getNearbyLivingEntities(from.getLocation(), a.chainRange)) {
+            if (done.contains(e.getUniqueId()) || !validTarget(p.owner, e)) continue;
+            double d = e.getLocation().distanceSquared(from.getLocation());
+            if (d < best) {
+                best = d;
+                next = e;
+            }
+        }
+        if (next == null) return;
+        LivingEntity to = next;
+        done.add(to.getUniqueId());
+        Location a1 = from.getLocation().add(0, from.getHeight() * 0.6, 0);
+        Vector d = to.getLocation().add(0, to.getHeight() * 0.6, 0).toVector().subtract(a1.toVector());
+        String part = a.particles.stream().filter(x -> x.at().equalsIgnoreCase("path")).map(Ability.ParticleFx::particle)
+                .findFirst().orElse("CRIT");
+        double len = d.length();
+        Vector step = d.clone().normalize().multiply(0.5);
+        Location cur = a1.clone();
+        for (double t = 0; t < len; t += 0.5) {
+            Effects.particle(cur, part, 1, 0.02, 0);
+            cur.add(step);
+        }
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (plugin.pets().active(p.ownerId) != p || !to.isValid() || to.isDead()) return;
+            if (damage(p, a, to, dmg, false)) {
+                applyDebuff(p, a, to, dmg);
+                particles(p, a, to, true);
+            }
+            chain(p, a, to, dmg * a.chainRatio, left - 1, done);
+        }, 4L);
+    }
+
+    /** Meteors fall around the target after a warning ring: dodgeable area damage. */
+    private void meteor(ActivePet p, Ability a, LivingEntity target) {
+        Location center = target.getLocation();
+        double radius = a.areaRadius > 0 ? a.areaRadius : 2.5;
+        var rnd = java.util.concurrent.ThreadLocalRandom.current();
+        for (int i = 0; i < a.meteors; i++) {
+            Location at = center.clone();
+            if (i > 0) at.add(rnd.nextDouble(-a.meteorSpread, a.meteorSpread), 0, rnd.nextDouble(-a.meteorSpread, a.meteorSpread));
+            long start = i * 6L;
+            for (long w = 0; w < a.meteorWarn; w += 5) {
+                Bukkit.getScheduler().runTaskLater(plugin, () -> ring(at, radius, "FLAME"), start + w);
+            }
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
+                Effects.particle(at.clone().add(0, 0.5, 0), "EXPLOSION", 2, 0.5, 0);
+                Effects.particle(at.clone().add(0, 0.5, 0), "LAVA", 12, radius * 0.4, 0.05);
+                Effects.sound(at, "entity.generic.explode", 0.7f, 1.2f);
+                double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
+                for (LivingEntity e : around(p.owner, at, radius)) {
+                    if (damage(p, a, e, base, false)) applyDebuff(p, a, e, base);
+                }
+            }, start + a.meteorWarn);
+        }
+    }
+
+    private static void ring(Location at, double radius, String particle) {
+        for (int k = 0; k < 16; k++) {
+            double ang = Math.PI * 2 * k / 16;
+            Effects.particle(at.clone().add(Math.cos(ang) * radius, 0.15, Math.sin(ang) * radius), particle, 1, 0, 0);
+        }
+    }
+
+    // ------------------------------------------------------------------ owner buffs (0.8.0)
+
+    public static final String BUFF_KEY = "boxpet_buff";
+    public static final String DEBUFF_KEY = "boxpet_debuff";
+
+    /**
+     * Owner-only stat buff for a while, plus at most one thing against the enemy: a stat taken from the enemy player(s)
+     * or the ability's debuff on {@code enemy} (the target, or whoever hit the owner).
+     */
+    private void buff(ActivePet p, Ability a, @Nullable LivingEntity enemy) {
+        int lvl = p.data.level;
+        double mul = p.rarity.statMultiplier();
+        if (!a.buffStat.isEmpty()) {
+            plugin.stats().tempStat(plugin, p.owner, BUFF_KEY, a.buffStat, a.buffAmount.at(lvl, mul), a.buffRelative, a.buffTicks);
+        }
+        if (!a.enemyStat.isEmpty()) {
+            double v = -a.enemyAmount.at(lvl, mul);
+            if (a.enemyRadius > 0) {
+                for (LivingEntity e : around(p.owner, p.owner.getLocation(), a.enemyRadius)) {
+                    if (e instanceof Player ep) plugin.stats().tempStat(plugin, ep, DEBUFF_KEY, a.enemyStat, v, a.buffRelative, a.buffTicks);
+                }
+                ring(p.owner.getLocation(), a.enemyRadius, "END_ROD");
+            } else if (enemy instanceof Player ep && validTarget(p.owner, ep)) {
+                plugin.stats().tempStat(plugin, ep, DEBUFF_KEY, a.enemyStat, v, a.buffRelative, a.buffTicks);
+            }
+        }
+        if (enemy != null && a.debuff != Ability.Debuff.NONE && validTarget(p.owner, enemy)) {
+            applyDebuff(p, a, enemy, a.damage.at(lvl, mul));
+        }
+        fx(p, a, p.owner);
+        announce(p, a);
+    }
+
+    /** The pet was put away / the plugin stops: no buff or stolen stat stays behind. */
+    public void clearBuffs(Player player) {
+        plugin.stats().clearTemp(player);
     }
 
     private void launch(ActivePet p, Ability a, LivingEntity target) {
@@ -240,8 +433,24 @@ public final class AbilityService {
     private void hit(ActivePet p, Ability a, LivingEntity target) {
         double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
         if (base <= 0) return;
-        if (!damage(p, a, target, base, false)) return;
-        applyDebuff(p, a, target, base);
+        if (a.areaRadius > 0) {
+            // 0.8.0: area, every enemy around the impact
+            Location c = target.getLocation();
+            Effects.particle(c.clone().add(0, 0.6, 0), "EXPLOSION", 1, 0, 0);
+            ring(c, a.areaRadius, a.particles.stream().filter(x -> x.at().equalsIgnoreCase("target"))
+                    .map(Ability.ParticleFx::particle).findFirst().orElse("CRIT"));
+            List<LivingEntity> victims = around(p.owner, c, a.areaRadius);
+            if (!victims.contains(target) && validTarget(p.owner, target)) victims.add(0, target);
+            for (LivingEntity e : victims) if (damage(p, a, e, base, false)) applyDebuff(p, a, e, base);
+        } else {
+            if (!damage(p, a, target, base, false)) return;
+            applyDebuff(p, a, target, base);
+        }
+        if (a.chainTargets > 0) {
+            java.util.Set<UUID> done = new java.util.HashSet<>();
+            done.add(target.getUniqueId());
+            chain(p, a, target, base * a.chainRatio, a.chainTargets, done);
+        }
     }
 
     private boolean damage(ActivePet p, Ability a, LivingEntity target, double amount, boolean dot) {
@@ -329,9 +538,25 @@ public final class AbilityService {
 
     /** The owner took damage (MONITOR): the shield ability (spec 6.2). */
     public void onOwnerDamaged(ActivePet p, double healthAfter) {
+        onOwnerDamaged(p, healthAfter, null);
+    }
+
+    /** {@code attacker}: whoever hit the owner, when known (buffs may burn / weaken them). */
+    public void onOwnerDamaged(ActivePet p, double healthAfter, @Nullable LivingEntity attacker) {
         Ability a = p.ability;
-        if (a == null || a.type != Ability.Type.SHIELD || p.abilityPaused()) return;
+        if (a == null || p.abilityPaused()) return;
         long now = System.currentTimeMillis();
+        if (a.type == Ability.Type.BUFF && !a.trigger.equals("combat")) {
+            if (now < p.shieldReadyAt || healthAfter <= 0) return;
+            if (a.trigger.equals("low-hp")) {
+                AttributeInstance mx = p.owner.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                if (mx == null || healthAfter / mx.getValue() * 100 > a.buffBelowPercent) return;
+            }
+            p.shieldReadyAt = now + a.cooldownTicks * 50L;
+            buff(p, a, attacker);
+            return;
+        }
+        if (a.type != Ability.Type.SHIELD) return;
         if (now < p.shieldReadyAt) return;
         AttributeInstance max = p.owner.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (max == null || healthAfter <= 0 || healthAfter / max.getValue() * 100 > a.shieldBelowPercent) return;
@@ -341,6 +566,17 @@ public final class AbilityService {
         p.shieldReadyAt = now + a.cooldownTicks * 50L;
         fx(p, a, p.owner);
         announce(p, a);
+        if (a.blastRadius > 0) {
+            // 0.8.0: the shield comes up with a shockwave that pushes enemies away (Sculk)
+            Location o = p.owner.getLocation();
+            Effects.particle(o.clone().add(0, 1, 0), "SONIC_BOOM", 1, 0, 0);
+            Effects.sound(o, "entity.warden.sonic_boom", 0.6f, 1.4f);
+            for (LivingEntity e : around(p.owner, o, a.blastRadius)) {
+                Vector push = e.getLocation().toVector().subtract(o.toVector()).setY(0);
+                if (push.lengthSquared() < 0.01) push = new Vector(0, 0, 0.1);
+                e.setVelocity(push.normalize().multiply(a.blastPower).setY(0.35));
+            }
+        }
         if (a.vfx != null) {
             Location at = p.owner.getLocation().add(0, a.vfx.yOffset(), 0);
             PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null,

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public final class Ability {
 
     public enum Type {
-        PROJECTILE, STRIKE, MARK, HEAL, SHIELD, POTION, BOOST, NONE;
+        PROJECTILE, STRIKE, MARK, METEOR, HEAL, SHIELD, BUFF, POTION, BOOST, NONE;
 
         public static Type of(String s) {
             if (s == null) return NONE;
@@ -25,7 +25,7 @@ public final class Ability {
         }
 
         public boolean combat() {
-            return this == PROJECTILE || this == STRIKE || this == MARK;
+            return this == PROJECTILE || this == STRIKE || this == MARK || this == METEOR;
         }
     }
 
@@ -104,6 +104,36 @@ public final class Ability {
     public final List<Integer> potionAmplifier;
     public final Scaled markBonus;
     public final int markTicks;
+    // 0.8.0 ----------------------------------------------------------------
+    /** Area: every valid target within this radius of the impact is hit (0 = only the target). */
+    public final double areaRadius;
+    /** Chain: the hit bounces to this many more targets (each {@code chainRatio} of the previous damage). */
+    public final int chainTargets;
+    public final double chainRange;
+    public final double chainRatio;
+    /** Strike / mark: every valid target on the line from the pet to the target is hit. */
+    public final boolean pierce;
+    /** Repeats of the attack and ticks between them. */
+    public final int hits;
+    public final int hitInterval;
+    /** Meteor: how many fall around the target, how far from it, warning ticks before they land. */
+    public final int meteors;
+    public final double meteorSpread;
+    public final int meteorWarn;
+    /** Buff: when it goes off (combat, hurt, low-hp) and the owner-only stat buff it gives. */
+    public final String trigger;
+    public final int buffBelowPercent;
+    public final String buffStat;
+    public final Scaled buffAmount;
+    public final int buffTicks;
+    public final boolean buffRelative;
+    /** Buff: a stat taken from enemy players (the target / attacker, or every enemy within {@code enemyRadius}). */
+    public final String enemyStat;
+    public final Scaled enemyAmount;
+    public final double enemyRadius;
+    /** Shield: enemies around the owner are pushed away when the shield comes up. */
+    public final double blastRadius;
+    public final double blastPower;
     public final String boostType;
     public final Scaled boostTenths;
     public final boolean boostWhole;
@@ -149,10 +179,38 @@ public final class Ability {
         ConfigurationSection m = s.getConfigurationSection("mark");
         markBonus = m == null ? Scaled.ZERO : Scaled.read(m, "bonus-percent", 10);
         markTicks = m == null ? 100 : (int) Math.round(m.getDouble("seconds", 5) * 20);
+        ConfigurationSection ar = s.getConfigurationSection("area");
+        areaRadius = ar == null ? 0 : Math.max(0, Math.min(8, ar.getDouble("radius", 3)));
+        ConfigurationSection ch = s.getConfigurationSection("chain");
+        chainTargets = ch == null ? 0 : Math.max(0, Math.min(5, ch.getInt("targets", 1)));
+        chainRange = ch == null ? 5 : Math.max(1, Math.min(10, ch.getDouble("range", 5)));
+        chainRatio = ch == null ? 0.7 : Math.max(0, Math.min(1, ch.getDouble("ratio", 0.7)));
+        pierce = s.getBoolean("pierce", false);
+        ConfigurationSection hs = s.getConfigurationSection("hits");
+        hits = hs == null ? 1 : Math.max(1, Math.min(6, hs.getInt("count", 1)));
+        hitInterval = hs == null ? 6 : Math.max(1, hs.getInt("interval-ticks", 6));
+        ConfigurationSection me = s.getConfigurationSection("meteor");
+        meteors = me == null ? 1 : Math.max(1, Math.min(6, me.getInt("count", 3)));
+        meteorSpread = me == null ? 2 : Math.max(0, Math.min(6, me.getDouble("spread", 2.5)));
+        meteorWarn = me == null ? 20 : Math.max(5, me.getInt("warn-ticks", 20));
+        trigger = s.getString("trigger", "combat").toLowerCase(Locale.ROOT);
+        ConfigurationSection bu = s.getConfigurationSection("buff");
+        buffStat = bu == null ? "" : bu.getString("stat", "").toUpperCase(Locale.ROOT);
+        buffAmount = bu == null ? Scaled.ZERO : Scaled.read(bu, "amount", 0);
+        buffTicks = bu == null ? 100 : (int) Math.round(bu.getDouble("seconds", 5) * 20);
+        buffRelative = bu != null && "relative".equalsIgnoreCase(bu.getString("type", "flat"));
+        buffBelowPercent = bu == null ? 40 : Math.max(1, Math.min(100, bu.getInt("below-percent", 40)));
+        ConfigurationSection en = s.getConfigurationSection("enemy-stat");
+        enemyStat = en == null ? "" : en.getString("stat", "").toUpperCase(Locale.ROOT);
+        enemyAmount = en == null ? Scaled.ZERO : Scaled.read(en, "amount", 0);
+        enemyRadius = en == null ? 0 : Math.max(0, Math.min(10, en.getDouble("radius", 0)));
+        ConfigurationSection bl = s.getConfigurationSection("blast");
+        blastRadius = bl == null ? 0 : Math.max(0, Math.min(8, bl.getDouble("radius", 4)));
+        blastPower = bl == null ? 0 : Math.max(0, Math.min(3, bl.getDouble("power", 1)));
         ConfigurationSection b = s.getConfigurationSection("boost");
         boostType = b == null ? "" : b.getString("type", "").toLowerCase(Locale.ROOT);
         boostTenths = b == null ? Scaled.ZERO : Scaled.read(b, "tenths", 0);
-        boostWhole = b != null && b.getBoolean("whole", false);
+        boostWhole = b != null && (b.getBoolean("whole", false) || boostType.equals("mining") || boostType.equals("mob"));
         ConfigurationSection fx = s.getConfigurationSection("fx");
         animation = fx == null ? "skill" : fx.getString("animation", "skill");
         sounds = new ArrayList<>();
