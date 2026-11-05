@@ -29,7 +29,12 @@ public final class Storage {
     /** What one save writes. All objects are copies owned by the storage thread. */
     public record Batch(UUID player, @Nullable UUID activePet, boolean hideOthers, boolean petChat,
                         List<PetData> pets, @Nullable List<IncubatorSlot> incubator,
-                        @Nullable Map<String, Integer> collection, long xpDay, @Nullable Map<String, Double> dailyXp) {
+                        @Nullable Map<String, Integer> collection, long xpDay, @Nullable Map<String, Double> dailyXp,
+                        @Nullable AutoFeed autoFeed) {
+    }
+
+    /** Auto feed settings and box of one player (0.6.0). */
+    public record AutoFeed(boolean enabled, int startAt, boolean candyFirst, String items) {
     }
 
     private final Logger log;
@@ -88,6 +93,8 @@ public final class Storage {
                             + " type_id VARCHAR(64) NOT NULL, best_rarity INT NOT NULL, PRIMARY KEY (uuid, type_id))");
                     st.executeUpdate("CREATE TABLE IF NOT EXISTS boxpet_daily_xp (uuid VARCHAR(36) NOT NULL,"
                             + " source VARCHAR(32) NOT NULL, amount DOUBLE NOT NULL, PRIMARY KEY (uuid, source))");
+                    st.executeUpdate("CREATE TABLE IF NOT EXISTS boxpet_autofeed (uuid VARCHAR(36) PRIMARY KEY,"
+                            + " enabled INT NOT NULL, start_at INT NOT NULL, candy_first INT NOT NULL, items TEXT NOT NULL)");
                 }
                 return null;
             }).get(30, TimeUnit.SECONDS);
@@ -175,6 +182,17 @@ public final class Storage {
                 while (rs.next()) data.dailyXp.put(rs.getString(1), rs.getDouble(2));
             }
         }
+        try (PreparedStatement ps = c.prepareStatement("SELECT enabled, start_at, candy_first, items FROM boxpet_autofeed WHERE uuid = ?")) {
+            ps.setString(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    data.autoFeed = rs.getInt(1) != 0;
+                    data.autoFeedAt = rs.getInt(2);
+                    data.autoFeedCandyFirst = rs.getInt(3) != 0;
+                    data.pantryFrom(rs.getString(4));
+                }
+            }
+        }
         return data;
     }
 
@@ -256,7 +274,7 @@ public final class Storage {
 
     /** Saves pets only (offline edits by staff). */
     public CompletableFuture<Void> savePets(List<PetData> pets) {
-        return save(new Batch(null, null, false, true, pets, null, null, 0, null));
+        return save(new Batch(null, null, false, true, pets, null, null, 0, null, null));
     }
 
     /** Sets a player's active pet row without loading the player (staff on an offline owner). */
@@ -347,6 +365,16 @@ public final class Storage {
                             ps.addBatch();
                         }
                         ps.executeBatch();
+                    }
+                }
+                if (b.autoFeed() != null) {
+                    try (PreparedStatement ps = c.prepareStatement("REPLACE INTO boxpet_autofeed (uuid, enabled, start_at, candy_first, items) VALUES (?, ?, ?, ?, ?)")) {
+                        ps.setString(1, id);
+                        ps.setInt(2, b.autoFeed().enabled() ? 1 : 0);
+                        ps.setInt(3, b.autoFeed().startAt());
+                        ps.setInt(4, b.autoFeed().candyFirst() ? 1 : 0);
+                        ps.setString(5, b.autoFeed().items());
+                        ps.executeUpdate();
                     }
                 }
                 if (b.dailyXp() != null) {

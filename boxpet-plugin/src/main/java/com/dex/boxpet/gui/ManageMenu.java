@@ -68,11 +68,16 @@ public final class ManageMenu extends Menu {
         }
         set(29, button("manage.feed", Material.COOKIE, "pet", name, "fullness", String.valueOf(pet.fullness)),
                 click -> new FoodMenu(plugin, player, owner, pet).open());
+        set(38, button(owner.autoFeed ? "manage.autofeed-on" : "manage.autofeed-off", Material.HOPPER,
+                "at", String.valueOf(owner.autoFeedAt)), click -> new AutoFeedMenu(plugin, player, owner, pet).open());
         long now = System.currentTimeMillis();
         String next = now >= pet.bondGainAt ? plugin.menus().text("manage.bond-ready")
                 : plugin.menus().text("manage.bond-wait", "time", Format.duration((pet.bondGainAt - now + 999) / 1000));
         set(30, button("manage.pet", Material.PINK_DYE, "pet", name, "bond", String.valueOf(pet.bond), "next", next,
-                "gain", String.valueOf(plugin.settings().bondPetGain)), click -> {
+                "gain", String.valueOf(plugin.settings().bondPetGain),
+                "hours", plugin.settings().bondPetCooldownMillis % 3_600_000L == 0
+                        ? plugin.settings().bondPetCooldownMillis / 3_600_000L + " giờ"
+                        : Format.duration(plugin.settings().bondPetCooldownMillis / 1000)), click -> {
             ActivePet p = out();
             if (p == null) {
                 plugin.messages().send(player, "manage.need-out-pet", "pet", name);

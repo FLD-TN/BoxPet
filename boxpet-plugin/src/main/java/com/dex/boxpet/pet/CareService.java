@@ -53,6 +53,7 @@ public final class CareService {
             }
         }
         if (p.data.fullness == 0) p.data.drainMs = Math.min(p.data.drainMs, per);
+        autoFeed(p);
         if (changed) plugin.pets().refreshNametag(p);
         if (p.hungry() && now - p.lastHungryChat > s().hungryRepeatSeconds * 1000L) {
             p.lastHungryChat = now;
@@ -73,10 +74,56 @@ public final class CareService {
         }
     }
 
+    // ------------------------------------------------------------------ auto feed (0.6.0)
+
+    /**
+     * At or under the chosen fullness, the pet out eats from the auto feed box: the chosen kind first (candies or
+     * foods), each kind slot by slot from left to right, as much of a slot as still fits, then the next slot.
+     */
+    private void autoFeed(ActivePet p) {
+        com.dex.boxpet.data.PlayerData pd = p.player;
+        if (!pd.autoFeed || p.deadHidden) return;
+        if (p.data.fullness > pd.autoFeedAt) {
+            pd.autoFeedWarned = false;
+            return;
+        }
+        int eaten = 0;
+        FeedResult[] result = new FeedResult[1];
+        for (int pass = 0; pass < 2; pass++) {
+            boolean candies = (pass == 0) == pd.autoFeedCandyFirst;
+            for (int i = 0; i < com.dex.boxpet.data.PlayerData.PANTRY_SIZE; i++) {
+                String id = pd.pantryIds[i];
+                if (id == null || pd.pantryAmounts[i] <= 0) continue;
+                ItemsConfig.Consumable c = plugin.items().get(id);
+                if (c == null || c.candy() != candies) continue;
+                int n = feed(p.owner, p.data, c, pd.pantryAmounts[i], result);
+                if (n <= 0) continue;
+                pd.pantryAmounts[i] -= n;
+                if (pd.pantryAmounts[i] <= 0) pd.pantryIds[i] = null;
+                pd.dirty = true;
+                eaten += n;
+            }
+        }
+        if (eaten > 0) {
+            pd.autoFeedWarned = false;
+            plugin.messages().actionBar(p.owner, "care.auto-fed", "pet", plugin.pets().displayName(p.data),
+                    "amount", String.valueOf(eaten), "fullness", String.valueOf(p.data.fullness));
+        } else if (!pd.autoFeedWarned) {
+            pd.autoFeedWarned = true;
+            plugin.messages().send(p.owner, "care.auto-empty", "pet", plugin.pets().displayName(p.data));
+        }
+    }
+
     // ------------------------------------------------------------------ petting (spec 11.2)
 
     public void pet(Player player, ActivePet p) {
         long now = System.currentTimeMillis();
+        // once per cooldown; nothing happens in between (no spam)
+        if (now < p.data.bondGainAt) {
+            plugin.messages().actionBar(player, "care.petted-wait", "time",
+                    Format.duration((p.data.bondGainAt - now + 999) / 1000));
+            return;
+        }
         String anim = p.type.animations.containsKey("pet") ? "pet" : "interact";
         plugin.pets().playAnimation(p, anim);
         Effects.hearts(p.pos.clone().add(0, p.visual == null ? 1 : p.visual.height(), 0));
@@ -86,17 +133,14 @@ public final class CareService {
         p.data.neglectSteps = 0;
         p.data.activeSince = now;
         p.data.dirty = true;
-        if (now >= p.data.bondGainAt && s().bondPetGain > 0) {
+        p.data.bondGainAt = now + s().bondPetCooldownMillis;
+        if (s().bondPetGain > 0) {
             int tierBefore = s().bondTier(p.data.bond).min();
             int before = p.data.bond;
             p.data.bond = Math.min(100, p.data.bond + s().bondPetGain);
-            p.data.bondGainAt = now + s().bondPetCooldownMillis;
             plugin.messages().send(player, "care.petted-gain", "pet", plugin.pets().displayName(p.data),
                     "amount", String.valueOf(p.data.bond - before), "bond", String.valueOf(p.data.bond));
             if (s().bondTier(p.data.bond).min() != tierBefore) plugin.pets().refreshStats(p);
-        } else {
-            plugin.messages().actionBar(player, "care.petted-wait", "time",
-                    Format.duration((p.data.bondGainAt - now + 999) / 1000));
         }
         plugin.chat().say(p, "petted");
     }

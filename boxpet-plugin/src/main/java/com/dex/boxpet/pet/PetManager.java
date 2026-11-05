@@ -222,7 +222,8 @@ public final class PetManager {
         pd.removed.clear();
         List<IncubatorSlot> inc = new ArrayList<>(pd.incubator.values());
         plugin.storage().save(new Storage.Batch(pd.uuid, pd.activePet, pd.hideOthers, pd.petChat, pets, inc,
-                new HashMap<>(pd.collection), pd.xpDay, new HashMap<>(pd.dailyXp)));
+                new HashMap<>(pd.collection), pd.xpDay, new HashMap<>(pd.dailyXp),
+                new Storage.AutoFeed(pd.autoFeed, pd.autoFeedAt, pd.autoFeedCandyFirst, pd.pantryText())));
         pd.dirty = false;
         for (PetData p : pd.pets.values()) p.dirty = false;
     }

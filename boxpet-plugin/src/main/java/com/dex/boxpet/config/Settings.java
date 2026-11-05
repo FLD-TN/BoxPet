@@ -73,6 +73,8 @@ public final class Settings {
     // bond
     public final int bondStart;
     public final int bondPetGain;
+    /** 0.6.0: false = pets get XP only from candies (xp-sources.yml is ignored). */
+    public final boolean activityXp;
     public final long bondPetCooldownMillis;
     public final int bondFoodMaxPerDay;
     public final long neglectMillis;
@@ -167,7 +169,8 @@ public final class Settings {
 
 
         bondStart = clamp(c.getInt("bond.start", 50));
-        bondPetGain = Math.max(0, c.getInt("bond.pet-gain", 5));
+        bondPetGain = Math.max(0, c.getInt("bond.pet-gain", 1));
+        activityXp = c.getBoolean("xp.from-activities", false);
         bondPetCooldownMillis = Math.max(0, c.getLong("bond.pet-cooldown-minutes", 240)) * 60_000L;
         bondFoodMaxPerDay = Math.max(0, c.getInt("bond.food-max-per-day", 5));
         neglectMillis = Math.max(1, c.getLong("bond.neglect-hours", 24)) * 3_600_000L;

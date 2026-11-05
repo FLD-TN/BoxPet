@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0 (2026-11-05)
+
+- Tự động cho ăn: nút mới trong Quản lý pet (ô 39), mở hộp thức ăn 21 ô dùng chung cho mọi pet. Bấm kẹo/thức ăn trong túi đồ để bỏ vào, bấm ô trong hộp để lấy ra. Chọn mức bắt đầu ăn (độ no 60 / 50 / 40 / 30 / 20 / 10) và ưu tiên Kẹo trước / Thức ăn trước. Pet đang thả tới mức đó thì ăn tới khi no, mỗi loại theo thứ tự ô từ trái qua phải. Hộp và túi đồ được lưu cùng lúc (không nhân đồ khi crash). Bảng mới boxpet_autofeed.
+- EXP pet chỉ từ kẹo: config.yml xp.from-activities (mặc định false) tắt mọi nguồn trong xp-sources.yml.
+- Vuốt ve: +1 thân thiết (bond.pet-gain mặc định 1), 4 giờ một lần; bấm lúc đang chờ chỉ hiện thời gian chờ, không còn hiệu ứng / câu nói.
+- Kho pet mặc định 1 ô (storage-slots.default); boxpet.storage.<số> = tổng số ô.
+
 ## 0.5.4 (2026-11-05)
 
 - Lore kỹ năng: "Kỹ năng:", dòng trống, tên dạng "- Tên kỹ năng", dòng mô tả đầu có •, các dòng sau thụt vào; Hồi chiêu giữ nguyên.

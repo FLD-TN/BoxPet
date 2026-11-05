@@ -34,9 +34,13 @@ swap-cooldown-seconds: 10
 hide-when-invisible: true
 
 storage-slots:
-  # kho pet mặc định; thêm bằng quyền boxpet.storage.<số>
-  default: 20
+  # số pet tối đa trong kho; quyền boxpet.storage.<số> = tổng số ô (lấy số lớn nhất người chơi có)
+  default: 1
   max: 200
+
+xp:
+  # false = pet chỉ nhận EXP từ kẹo (cho ăn), bỏ qua mọi nguồn trong xp-sources.yml
+  from-activities: false
 
 incubator:
   # ô ấp mặc định; thêm bằng quyền boxpet.incubator.<số> (tối đa max-slots, không quá 7)
@@ -106,8 +110,8 @@ appear:
 # Thân thiết 0-100 (BOXPET_SPEC 11.2)
 bond:
   start: 50
-  # vuốt ve: +pet-gain, chỉ 1 lần mỗi pet-cooldown-minutes phút
-  pet-gain: 5
+  # vuốt ve: +pet-gain, chỉ 1 lần mỗi pet-cooldown-minutes phút (bấm lúc đang chờ thì không có gì xảy ra)
+  pet-gain: 1
   pet-cooldown-minutes: 240
   # thân thiết tối đa nhận từ thức ăn mỗi ngày
   food-max-per-day: 5

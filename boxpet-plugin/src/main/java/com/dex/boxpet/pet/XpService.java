@@ -20,7 +20,7 @@ public final class XpService {
     /** Activity XP from a source, limited by its daily cap. */
     public void give(Player player, String sourceId, double amount) {
         XpSources.Source src = plugin.xpSources().get(sourceId);
-        if (!src.enabled() || amount <= 0) return;
+        if (!plugin.settings().activityXp || !src.enabled() || amount <= 0) return;
         ActivePet p = plugin.pets().active(player.getUniqueId());
         if (p == null || p.deadHidden) return;
         PlayerData pd = p.player;

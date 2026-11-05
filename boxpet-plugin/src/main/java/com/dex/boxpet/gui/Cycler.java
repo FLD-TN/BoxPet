@@ -31,6 +31,10 @@ final class Cycler {
         return index;
     }
 
+    void index(int i) {
+        if (i >= 0 && i < labels.size()) index = i;
+    }
+
     /** @return true when the choice changed */
     boolean click(ClickType click) {
         if (labels.size() < 2) return false;

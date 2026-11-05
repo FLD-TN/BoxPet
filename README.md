@@ -47,7 +47,7 @@ Bản cũ hơn của BoxCore / BoxQuest vẫn chạy, chỉ thiếu tính năng 
 | `/boxpet incubator <người> clear <ô>` | `boxpet.admin` | |
 | `/boxpet models` / `/boxpet reload` | `boxpet.admin` | |
 
-Quyền thêm ô: `boxpet.storage.<số>` (kho, mặc định 20), `boxpet.incubator.<số>` (lò ấp, mặc định 1, tối đa 5).
+Quyền ô: `boxpet.storage.<số>` (tổng số pet trong kho, mặc định 1), `boxpet.incubator.<số>` (lò ấp, mặc định 1, tối đa 5).
 `<mã>` là 8 ký tự đầu của mã pet (hiện trong menu admin, có gợi ý tab). Mọi thao tác admin ghi vào `admin.log`.
 
 ## File cấu hình
@@ -59,7 +59,7 @@ Quyền thêm ô: `boxpet.storage.<số>` (kho, mặc định 20), `boxpet.incub
 | `pets/*.yml` | mỗi file một pet: tên, họ, vai trò, icon, model / bậc tiến hóa, hoạt ảnh, chỉ số, kỹ năng |
 | `abilities.yml` | 21 kỹ năng mẫu cho 12 họ pet |
 | `levels.yml` | XP lên cấp: công thức hoặc bảng |
-| `xp-sources.yml` | XP từ hoạt động và giới hạn mỗi ngày |
+| `xp-sources.yml` | XP từ hoạt động và giới hạn mỗi ngày (chỉ khi `xp.from-activities: true`) |
 | `items.yml` | kẹo, thức ăn, hình trứng |
 | `collection.yml` | mốc điểm sưu tập và chỉ số thưởng |
 | `dialogues.yml` | câu pet nói, theo sự kiện và theo họ pet |

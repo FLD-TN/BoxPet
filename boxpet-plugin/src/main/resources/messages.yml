@@ -41,10 +41,18 @@ toggle:
   chat-on: '<success>✔ Đã bật trò chuyện của pet'
   chat-off: '<success>✔ Đã tắt trò chuyện của pet'
 
+autofeed:
+  not-food: '<error>✘ Chỉ bỏ được kẹo hoặc thức ăn pet vào hộp'
+  box-full: '<error>✘ Hộp thức ăn đã đầy'
+  inventory-full: '<error>✘ Túi đồ đã đầy'
+
 care:
   petted-gain: '<success>✔ Vuốt ve %pet%<success>, thân thiết <text>+%amount% <muted>(%bond%/100)'
   # action bar khi chưa tới lúc tăng thân thiết
   petted-wait: '<muted>Thân thiết tăng lại sau <text>%time%'
+  # tự động cho ăn (action bar)
+  auto-fed: '<success>✔ %pet% <success>đã tự ăn <text>x%amount% <muted>(no %fullness%/100)'
+  auto-empty: '<error>✘ Hộp thức ăn không còn đồ %pet% <error>ăn được'
   candy-eaten: '<success>✔ %pet% <success>đã ăn <text>x%amount% %item% <muted>(+%xp% XP, no %fullness%/100)'
   food-eaten: '<success>✔ %pet% <success>đã ăn <text>x%amount% %item% <muted>(no %fullness%/100)'
   full: '<error>✘ %pet% <error>đã no, không ăn thêm được <muted>(no %fullness%/100)'

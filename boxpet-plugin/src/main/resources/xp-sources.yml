@@ -1,4 +1,5 @@
 # BoxPet — XP từ hoạt động (BOXPET_SPEC 9.1). Chỉ pet đang thả nhận XP.
+# Chỉ có tác dụng khi config.yml xp.from-activities: true (mặc định tắt: pet chỉ lên cấp bằng kẹo).
 # daily-cap: tối đa mỗi ngày (reset 00:00 giờ server), 0 = không giới hạn. Kẹo không tính vào giới hạn này.
 player-kill:
   enabled: true
