@@ -38,7 +38,8 @@ Bản cũ hơn của BoxCore / BoxQuest vẫn chạy, chỉ thiếu tính năng 
 | `/pet rename <tên>` | `boxpet.rename` | ai cũng dùng được màu & gradient (cấm `%`, `#` chỉ trong mã màu) |
 | `/boxpet give egg <người> <pet> [số]` | `boxpet.admin` | trứng của một pet (độ hiếm theo pet) |
 | `/boxpet give randomegg <người> <độ hiếm> [số]` | `boxpet.admin` | Trứng Ngẫu Nhiên (trứng tân thủ: `common`) |
-| `/boxpet give breakthrough <người> <1-100> [số]` (Đá Đột Phá); `/boxpet give candy\|food <người> <mã> [số]` | `boxpet.admin` | kẹo / thức ăn (`items.yml`) |
+| `/boxpet give candy\|food <người> <mã> [số]` | `boxpet.admin` | kẹo / thức ăn (`items.yml`) |
+| `/boxpet give breakthrough <người> <1-100> [số]` | `boxpet.admin` | Đá Đột Phá, tỉ lệ thành công 1-100% |
 | `/boxpet give pet <người> <pet> [cấp]` | `boxpet.admin` | thẳng vào kho |
 | `/boxpet pets <người>` | `boxpet.admin` | xem kho (cả offline): chuyển, sửa, xoá, khôi phục |
 | `/boxpet transfer <mã> <người>` | `boxpet.admin` | |
