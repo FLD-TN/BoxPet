@@ -1,18 +1,17 @@
 # Rồng Lửa Bóng Tối (fire_dragon) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Rồng Lửa Bóng Tối'
-# họ pet: nhóm trong bộ sưu tập và bộ câu thoại riêng (dialogues.yml families)
+# màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
+color: '#9B6BFF'
+# họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: fire_dragon
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
 role: combat
-description:
-  - 'Rồng lửa nhỏ, phun cầu lửa'
-  - 'vào kẻ địch của chủ'
+# độ hiếm của pet này (một model = một pet = một độ hiếm). Độ hiếm cao hơn thì chỉ số gốc cao hơn
+rarity: epic
 # icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
 icon: 'companions_1:icon_fire_dragon_shadowflame'
 icon-fallback: DRAGON_HEAD
-# độ hiếm trứng của pet này có thể có
-rarities: [common, rare, epic, legendary]
-# tỉ lệ ra từ Trứng Ngẫu Nhiên (0 = không bao giờ ra)
+# tỉ lệ ra từ Trứng Ngẫu Nhiên cùng độ hiếm (0 = không bao giờ ra)
 egg-weight: 2
 # bậc tiến hóa: thêm dòng mới (model, min-level, cost-money, cost-gem, stat-multiplier) khi có model bậc sau
 stages:
@@ -25,9 +24,7 @@ animations:
   interact: interact
 follow:
   fly: true
-carry:
-  enabled: true
-# chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, trước khi nhân độ hiếm / bậc / thân thiết
+# chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
   ATTACK_DAMAGE:
     base: 1

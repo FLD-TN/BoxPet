@@ -15,16 +15,15 @@
 # debuff.type: burn, slow, bleed (damage-ratio × sát thương mỗi giây), weakness
 # fx: animation (tên hoạt ảnh của pet, mặc định skill), sounds (delay tính bằng tick), particles (at: pet, target, owner, path),
 #     vfx: model ModelEngine (model, animation, speed ô/tick, life-ticks, scale, y-offset)
-# Mô tả: %damage% %heal% %hearts% %percent% %bonus% %boost% %boost_type% %cooldown% %seconds% %level% %range% %pvp%
+# name / color: tên kỹ năng và màu (hex hoặc gradient '#A:#B'). description: một câu ngắn; các con số (sát thương,
+# hồi chiêu, tầm đánh...) tự hiện ở các dòng thông tin bên dưới trong lore và tăng theo cấp độ của pet.
 abilities:
   fire_ball_fire:
     type: projectile
     name: 'Cầu Lửa'
+    color: '#FF7A45:#FFC15E'
     description:
-      - 'Phun cầu lửa vào mục tiêu,'
-      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương và đốt'
-      - 'cháy %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Phun cầu lửa đốt cháy kẻ địch'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -53,11 +52,9 @@ abilities:
   fire_ball_soulfire:
     type: projectile
     name: 'Cầu Lửa Linh Hồn'
+    color: '#5FE1E8:#B8FFF9'
     description:
-      - 'Phun cầu lửa vào mục tiêu,'
-      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương và đốt'
-      - 'cháy %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Phun lửa linh hồn lạnh buốt'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -86,11 +83,9 @@ abilities:
   fire_ball_shadowflame:
     type: projectile
     name: 'Cầu Lửa Bóng Tối'
+    color: '#9B6BFF:#E3B6FF'
     description:
-      - 'Phun cầu lửa vào mục tiêu,'
-      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương và đốt'
-      - 'cháy %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Phun lửa bóng tối thiêu đốt'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -119,11 +114,9 @@ abilities:
   fire_ball_holyfire:
     type: projectile
     name: 'Cầu Lửa Thánh'
+    color: '#FFF1A8:#FFB347'
     description:
-      - 'Phun cầu lửa vào mục tiêu,'
-      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương và đốt'
-      - 'cháy %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Phun lửa thánh rực sáng'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -152,11 +145,9 @@ abilities:
   frog_tongue:
     type: projectile
     name: 'Lưỡi Dính'
+    color: '#7BD88F:#C6F6A8'
     description:
-      - 'Phóng lưỡi vào mục tiêu,'
-      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương và làm'
-      - 'chậm %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Phóng lưỡi dính làm chậm kẻ địch'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -179,11 +170,9 @@ abilities:
   necro_fireball:
     type: projectile
     name: 'Cầu Lửa Phép'
+    color: '#FF9A3C:#FFD27A'
     description:
-      - 'Ném phép vào mục tiêu,'
-      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương'
-      - 'kèm hiệu ứng xấu %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Ném cầu lửa phép thiêu đốt'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -212,11 +201,9 @@ abilities:
   necro_iceball:
     type: projectile
     name: 'Cầu Băng'
+    color: '#7FD4FF:#D6F4FF'
     description:
-      - 'Ném phép vào mục tiêu,'
-      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương'
-      - 'kèm hiệu ứng xấu %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Ném cầu băng làm chậm kẻ địch'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -245,11 +232,9 @@ abilities:
   necro_skull:
     type: projectile
     name: 'Đầu Lâu Ma'
+    color: '#8E7CFF:#C9B8FF'
     description:
-      - 'Ném phép vào mục tiêu,'
-      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương'
-      - 'kèm hiệu ứng xấu %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Ném đầu lâu ma làm suy yếu'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -278,11 +263,9 @@ abilities:
   necro_gift:
     type: projectile
     name: 'Hộp Quà Bất Ngờ'
+    color: '#FF6B6B:#FFD3D3'
     description:
-      - 'Ném phép vào mục tiêu,'
-      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương'
-      - 'kèm hiệu ứng xấu %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Ném hộp quà bất ngờ làm chậm'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -311,10 +294,9 @@ abilities:
   knight_pierce:
     type: strike
     name: 'Mũi Giáo Xuyên'
+    color: '#B8C4CF:#FFFFFF'
     description:
-      - 'Lao tới đâm thẳng mục tiêu,'
-      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Lao tới đâm xuyên mục tiêu'
     cooldown: 7
     range: 10
     cast-delay-ticks: 22
@@ -337,11 +319,9 @@ abilities:
   shiba_slash:
     type: strike
     name: 'Nhát Chém Ánh Sáng'
+    color: '#F2545B:#FFB4A2'
     description:
-      - 'Chém mục tiêu, gây'
-      - '<#FF8A8A>%damage%<#BFC7D5> sát thương và chảy máu'
-      - '%seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Chém một nhát gây chảy máu'
     cooldown: 9
     range: 10
     cast-delay-ticks: 20
@@ -367,11 +347,9 @@ abilities:
   outlaw_mark:
     type: mark
     name: 'Đánh Dấu Mục Tiêu'
+    color: '#FF5E5E:#FFC2A8'
     description:
-      - 'Bắn đánh dấu mục tiêu %seconds% giây:'
-      - 'đòn của chủ lên nó mạnh hơn'
-      - '<#7CFC9A>%bonus%%<#BFC7D5>, kèm <#FF8A8A>%damage%<#BFC7D5> sát thương'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Đánh dấu để chủ nhân hạ gục'
     cooldown: 12
     range: 16
     cast-delay-ticks: 30
@@ -399,10 +377,9 @@ abilities:
   griffon_heal:
     type: heal
     name: 'Lông Vũ Chữa Lành'
+    color: '#FFD24D:#FFF5C2'
     description:
-      - 'Khi máu chủ dưới %percent%%, hồi'
-      - '<#7CFC9A>%heal%<#BFC7D5> máu cho chủ'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Lông vũ chữa lành vết thương'
     cooldown: 10
     heal:
       amount:
@@ -420,10 +397,9 @@ abilities:
   cacti_shield_desert:
     type: shield
     name: 'Khiên Gai Sa Mạc'
+    color: '#E6C27A:#FFF0C2'
     description:
-      - 'Khi máu chủ dưới %percent%%, tạo khiên'
-      - '<#7CFC9A>%hearts%<#BFC7D5> tim trong %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Dựng khiên gai bảo vệ chủ nhân'
     cooldown: 45
     shield:
       below-percent: 40
@@ -446,10 +422,9 @@ abilities:
   cacti_shield_frozen:
     type: shield
     name: 'Khiên Gai Băng'
+    color: '#9EE7FF:#E3FAFF'
     description:
-      - 'Khi máu chủ dưới %percent%%, tạo khiên'
-      - '<#7CFC9A>%hearts%<#BFC7D5> tim trong %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Dựng khiên gai băng bảo vệ chủ nhân'
     cooldown: 45
     shield:
       below-percent: 40
@@ -472,10 +447,9 @@ abilities:
   cacti_shield_sculk:
     type: shield
     name: 'Khiên Gai Sculk'
+    color: '#3FC1C9:#A7F3F7'
     description:
-      - 'Khi máu chủ dưới %percent%%, tạo khiên'
-      - '<#7CFC9A>%hearts%<#BFC7D5> tim trong %seconds% giây'
-      - 'Hồi chiêu %cooldown% giây'
+      - 'Dựng khiên sculk bảo vệ chủ nhân'
     cooldown: 45
     shield:
       below-percent: 40
@@ -498,9 +472,9 @@ abilities:
   unicorn_heavenly:
     type: potion
     name: 'Phước Lành Thiên Đường'
+    color: '#FFFFFF:#B8E6FF'
     description:
-      - 'Chủ luôn có hiệu ứng'
-      - '<#7CFC9A>Kháng sát thương %level%<#BFC7D5> khi pet được thả'
+      - 'Ban phước kháng sát thương'
     cooldown: 30
     potion:
       effect: resistance
@@ -514,9 +488,9 @@ abilities:
   unicorn_nature:
     type: potion
     name: 'Sức Sống Rừng Xanh'
+    color: '#8EE07A:#D8F8C6'
     description:
-      - 'Chủ luôn có hiệu ứng'
-      - '<#7CFC9A>Hồi phục %level%<#BFC7D5> khi pet được thả'
+      - 'Ban phước hồi phục'
     cooldown: 30
     potion:
       effect: regeneration
@@ -530,9 +504,9 @@ abilities:
   unicorn_rainbow:
     type: potion
     name: 'Bước Chân Cầu Vồng'
+    color: '#FF8FB1:#8FD3FF'
     description:
-      - 'Chủ luôn có hiệu ứng'
-      - '<#7CFC9A>Tốc độ %level%<#BFC7D5> khi pet được thả'
+      - 'Ban phước tốc độ'
     cooldown: 30
     potion:
       effect: speed
@@ -546,9 +520,9 @@ abilities:
   unicorn_undead:
     type: potion
     name: 'Sức Mạnh Bất Tử'
+    color: '#A3B18A:#E2E8CE'
     description:
-      - 'Chủ luôn có hiệu ứng'
-      - '<#7CFC9A>Sức mạnh %level%<#BFC7D5> khi pet được thả'
+      - 'Ban phước sức mạnh'
     cooldown: 30
     potion:
       effect: strength
@@ -562,10 +536,9 @@ abilities:
   shark_treasure:
     type: boost
     name: 'Mũi Săn Mồi'
+    color: '#3FA7D6:#9BE3FF'
     description:
-      - 'Tăng phần thưởng khi hạ mob,'
-      - 'boss thêm <#FFD166>+%boost%'
-      - '<dark_gray>(ngừng khi pet đói)'
+      - 'Đánh hơi chiến lợi phẩm'
     boost:
       type: mob
       tenths:
@@ -575,10 +548,9 @@ abilities:
   cubee_luck:
     type: boost
     name: 'Rồng Con May Mắn'
+    color: '#7B6CFF:#FF7BD5'
     description:
-      - 'Tăng phần thưởng nhiệm vụ'
-      - 'thêm <#FFD166>+%boost%'
-      - '<dark_gray>(ngừng khi pet đói)'
+      - 'Mang may mắn cho mỗi nhiệm vụ'
     boost:
       type: quest
       tenths:
@@ -588,10 +560,9 @@ abilities:
   palcat_dig:
     type: boost
     name: 'Xẻng Thần'
+    color: '#E0B36A:#FFE3A8'
     description:
-      - 'Tăng vật phẩm khi đào mỏ'
-      - 'thêm <#FFD166>+%boost%<#BFC7D5> (chỉ số nguyên)'
-      - '<dark_gray>(ngừng khi pet đói)'
+      - 'Đào mỏ cùng chủ nhân'
     boost:
       type: mining
       tenths:
@@ -601,10 +572,9 @@ abilities:
   palcat_art:
     type: boost
     name: 'Cảm Hứng Họa Sĩ'
+    color: '#FFA7C4:#FFD9E6'
     description:
-      - 'Tăng phần thưởng nhiệm vụ'
-      - 'thêm <#FFD166>+%boost%'
-      - '<dark_gray>(ngừng khi pet đói)'
+      - 'Cảm hứng cho mỗi nhiệm vụ'
     boost:
       type: quest
       tenths:
@@ -614,10 +584,9 @@ abilities:
   palcat_music:
     type: boost
     name: 'Giai Điệu Vui Vẻ'
+    color: '#A5B4FF:#DCE2FF'
     description:
-      - 'Tăng phần thưởng nhiệm vụ'
-      - 'thêm <#FFD166>+%boost%'
-      - '<dark_gray>(ngừng khi pet đói)'
+      - 'Giai điệu vui cho mỗi nhiệm vụ'
     boost:
       type: quest
       tenths:

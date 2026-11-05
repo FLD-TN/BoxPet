@@ -46,13 +46,14 @@ public final class PetTypes {
     }
 
     private static PetType read(String id, YamlConfiguration y, Rarities rarities, Logger log) {
-        List<String> allowed = new ArrayList<>();
-        for (String r : y.getStringList("rarities")) {
-            Rarity rarity = rarities.get(r);
-            if (rarity != null) allowed.add(rarity.id());
-            else log.warning("pets/" + id + ".yml: unknown rarity " + r);
+        // 0.5.0: one rarity per pet ("rarity"); old files with a "rarities" list use its first entry
+        String rarityId = y.getString("rarity");
+        if (rarityId == null && !y.getStringList("rarities").isEmpty()) rarityId = y.getStringList("rarities").get(0);
+        Rarity rarity = rarities.get(rarityId);
+        if (rarity == null) {
+            if (rarityId != null) log.warning("pets/" + id + ".yml: unknown rarity " + rarityId + ", using " + rarities.lowest().id());
+            rarity = rarities.lowest();
         }
-        if (allowed.isEmpty()) allowed.addAll(rarities.ids());
         List<PetType.Stage> stages = new ArrayList<>();
         for (Map<?, ?> m : y.getMapList("stages")) {
             Object model = m.get("model");
@@ -85,11 +86,11 @@ public final class PetTypes {
         Material fallback = Material.matchMaterial(y.getString("icon-fallback", "EGG"));
         if (fallback == null || !fallback.isItem()) fallback = Material.EGG;
         String family = y.getString("family", id).toLowerCase(Locale.ROOT);
-        return new PetType(id, y.getString("name", id), family, PetType.Role.of(y.getString("role", "support")),
-                y.getString("icon", ""), fallback, allowed, Math.max(0, y.getInt("egg-weight", 1)), stages, anims,
-                dbl(y, "follow.side"), dbl(y, "follow.back"), dbl(y, "follow.height"), y.getBoolean("follow.fly", false),
-                y.getBoolean("carry.enabled", true), dbl(y, "carry.scale"), stats, y.getString("ability", ""),
-                y.getString("dialogue", family).toLowerCase(Locale.ROOT), y.getStringList("description"));
+        return new PetType(id, y.getString("name", id), y.getString("color", "#FFFFFF"), family,
+                PetType.Role.of(y.getString("role", "support")), y.getString("icon", ""), fallback, rarity.id(),
+                Math.max(0, y.getInt("egg-weight", 1)), stages, anims, dbl(y, "follow.side"), dbl(y, "follow.back"),
+                dbl(y, "follow.height"), y.getBoolean("follow.fly", false), stats, y.getString("ability", ""),
+                y.getString("dialogue", family).toLowerCase(Locale.ROOT));
     }
 
     private static @Nullable Double dbl(YamlConfiguration y, String path) {

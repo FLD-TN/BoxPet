@@ -59,7 +59,6 @@ public final class PlayerListener implements Listener {
         if (p == null || e.getTo() == null) return;
         if (e.getFrom().getWorld() != e.getTo().getWorld()) return; // handled by the world change event
         if (e.getFrom().distanceSquared(e.getTo()) > plugin.settings().teleportDistance * plugin.settings().teleportDistance) {
-            if (p.carried) plugin.pets().toggleCarry(p);
             if (p.sitting) p.sitting = false;
             plugin.pets().onOwnerTeleport(p);
         }
@@ -69,7 +68,6 @@ public final class PlayerListener implements Listener {
     public void onWorld(PlayerChangedWorldEvent e) {
         ActivePet p = plugin.pets().active(e.getPlayer().getUniqueId());
         if (p == null) return;
-        if (p.carried) plugin.pets().toggleCarry(p);
         p.sitting = false;
         plugin.pets().onWorldChange(p);
     }

@@ -58,10 +58,12 @@ class LogicTest {
 
     @Test
     void petStatsScaleWithLevelRarityStageAndBond() {
-        PetType t = new PetType("t", "T", "f", PetType.Role.COMBAT, "", Material.EGG, List.of("common"), 1,
+        PetType t = new PetType("t", "T", "#FF7A45", "f", PetType.Role.COMBAT, "", Material.EGG, "common", 1,
                 List.of(new PetType.Stage("m", 1, 1, 0, 0, 1.0), new PetType.Stage("m2", 1, 20, 0, 0, 1.5)), Map.of(),
-                null, null, null, false, true, null, List.of(new PetType.StatDef("ATTACK_DAMAGE", 1.0, 0.05, false)),
-                "", "f", List.of());
+                null, null, null, false, List.of(new PetType.StatDef("ATTACK_DAMAGE", 1.0, 0.05, false)),
+                "", "f");
+        assertEquals("<#FF7A45>T", t.colouredName());
+        assertEquals("<gradient:#A:#B>T</gradient>", PetType.paint("#A:#B", "T"));
         Map<String, Double> lv1 = StatService.petStats(t, 1, 1.0, 0, 1.0);
         assertEquals(1.0, lv1.get("ATTACK_DAMAGE"), 1e-9);
         // level 30, legendary x2.5, stage 2 x1.5, bond 75%

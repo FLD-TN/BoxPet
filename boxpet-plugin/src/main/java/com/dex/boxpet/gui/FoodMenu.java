@@ -2,8 +2,9 @@ package com.dex.boxpet.gui;
 
 import com.dex.boxpet.BoxPetPlugin;
 import com.dex.boxpet.config.ItemsConfig;
+import com.dex.boxpet.data.PetData;
+import com.dex.boxpet.data.PlayerData;
 import com.dex.boxpet.item.ItemFactory;
-import com.dex.boxpet.pet.ActivePet;
 import com.dex.boxpet.text.Format;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -13,26 +14,29 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-/** Food picker (spec 11.1): candies and foods from the player's inventory. */
+/** Food picker (spec 11.1): candies and foods from the inventory, for any pet of the player (out or in storage). */
 public final class FoodMenu extends Menu {
 
     private static final int[] SLOTS = {10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25};
 
-    public FoodMenu(BoxPetPlugin plugin, Player player) {
+    private final PlayerData owner;
+    private final PetData pet;
+
+    public FoodMenu(BoxPetPlugin plugin, Player player, PlayerData owner, PetData pet) {
         super(plugin, player, 4, plugin.menus().title("food"));
+        this.owner = owner;
+        this.pet = pet;
     }
 
     @Override
     protected void draw() {
-        ActivePet p = plugin.pets().active(player.getUniqueId());
-        if (p == null) {
-            set(13, button("care.no-active", Material.BARRIER), click -> player.closeInventory());
-            fill();
+        if (!owner.pets.containsKey(pet.id)) {
+            player.closeInventory();
             return;
         }
-        set(4, button("food.info", Material.BOWL, "pet", plugin.pets().displayName(p.data),
-                "fullness", String.valueOf(p.data.fullness),
-                "bar", Format.bar(p.data.fullness, 100, 10, "<#FFD166>", "<dark_gray>")), null);
+        set(4, button("food.info", Material.BOWL, "pet", plugin.pets().displayName(pet),
+                "fullness", String.valueOf(pet.fullness),
+                "bar", Format.bar(pet.fullness, 100, 10, "<#FFD166>", "<dark_gray>")), null);
         Map<String, Integer> counts = new LinkedHashMap<>();
         for (ItemStack it : player.getInventory().getStorageContents()) {
             ItemsConfig.Consumable c = plugin.itemFactory().consumable(plugin.itemFactory().read(it));
@@ -51,21 +55,16 @@ public final class FoodMenu extends Menu {
             if (c.candy()) extra.add(plugin.menus().text("actions.feed-all"));
             icon = withLore(icon, extra);
             set(SLOTS[i], icon, click -> {
-                ActivePet now = plugin.pets().active(player.getUniqueId());
-                if (now == null) {
-                    player.closeInventory();
-                    return;
-                }
                 int slot = find(c);
                 if (slot < 0) {
                     refresh();
                     return;
                 }
-                plugin.interact().useConsumable(player, now, slot, c, click.isShiftClick() && c.candy());
+                plugin.interact().useConsumable(player, pet, slot, c, click.isShiftClick() && c.candy());
                 refresh();
             });
         }
-        set(31, button("common.back", Material.ARROW), click -> new CareMenu(plugin, player).open());
+        set(31, button("common.back", Material.ARROW), click -> new ManageMenu(plugin, player, owner, pet, false).open());
         fill();
     }
 

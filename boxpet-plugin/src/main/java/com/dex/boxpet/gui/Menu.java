@@ -119,9 +119,20 @@ public abstract class Menu implements InventoryHolder {
         if (meta == null) return item;
         meta.displayName(Text.item(name));
         meta.lore(lore.stream().map(Text::item).toList());
-        meta.addItemFlags(ItemFlag.values());
+        hideVanillaTooltip(meta);
         item.setItemMeta(meta);
         return item;
+    }
+
+    /**
+     * Hides every vanilla line (attributes such as "When on horse: +7 Armor" of horse armour icons, enchants...).
+     * Since 1.20.5 HIDE_ATTRIBUTES only works when the item has its own modifier list, so an empty one is set first.
+     */
+    public static void hideVanillaTooltip(ItemMeta meta) {
+        if (!meta.hasAttributeModifiers()) {
+            meta.setAttributeModifiers(com.google.common.collect.LinkedHashMultimap.create());
+        }
+        meta.addItemFlags(ItemFlag.values());
     }
 
     protected Material material(String path, Material def) {

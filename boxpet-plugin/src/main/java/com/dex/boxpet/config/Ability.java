@@ -77,6 +77,8 @@ public final class Ability {
     public final String id;
     public final Type type;
     public final String name;
+    /** Colour of the skill name: a hex or a gradient "#A:#B". */
+    public final String color;
     public final List<String> description;
     public final int cooldownTicks;
     public final double range;
@@ -110,6 +112,7 @@ public final class Ability {
         this.id = id;
         type = Type.of(s.getString("type"));
         name = s.getString("name", id);
+        color = s.getString("color", "#FFD166");
         description = s.getStringList("description");
         cooldownTicks = (int) Math.max(1, Math.round(s.getDouble("cooldown", 8) * 20));
         range = Math.max(1, s.getDouble("range", 12));

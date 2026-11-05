@@ -43,16 +43,6 @@ public final class Follower {
         else if (p.combatTicksLeft > 0) p.combatTicksLeft--;
         boolean inCombat = combat || p.combatTicksLeft > 0;
 
-        // 4.2 carried
-        if (p.carried) {
-            if (inCombat || o.isGliding() || o.isInsideVehicle() || o.isSwimming() || o.isInWater() || o.isRiptiding()) {
-                manager.putDown(p, inCombat ? "combat" : "move");
-            } else {
-                carry(p, o, ol);
-                return;
-            }
-        }
-
         if (p.sitting && (inCombat || ol.distanceSquared(p.anchor == null ? p.pos : p.anchor) > sq(s().sitMaxDistance))) {
             manager.stand(p, true);
         }
@@ -164,24 +154,6 @@ public final class Follower {
         boolean landed = !special && p.slowTicks >= s().fastTravelLandTicks;
         if (landed) manager.showAfterTravel(p);
         return !landed;
-    }
-
-    // ------------------------------------------------------------------ carry
-
-    private void carry(ActivePet p, Player o, Location ol) {
-        p.mode = ActivePet.Mode.CARRIED;
-        float body = o.getBodyYaw();
-        Vector fwd = forward(body);
-        Location at = ol.clone().add(fwd.multiply(s().carryForward)).add(0, s().carryUp, 0);
-        at.setYaw(body);
-        p.pos = at;
-        p.yaw = body;
-        if (p.visual != null) {
-            p.visual.hitbox(false);
-            p.visual.move(at, body, body);
-            p.visual.walking(false);
-        }
-        manager.afterMove(p);
     }
 
     // ------------------------------------------------------------------ rest

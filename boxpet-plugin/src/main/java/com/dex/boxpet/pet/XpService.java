@@ -3,6 +3,7 @@ package com.dex.boxpet.pet;
 import com.dex.boxpet.BoxPetPlugin;
 import com.dex.boxpet.api.event.PetLevelUpEvent;
 import com.dex.boxpet.config.XpSources;
+import com.dex.boxpet.data.PetData;
 import com.dex.boxpet.data.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -49,32 +50,42 @@ public final class XpService {
      * @return false when the pet was already at max level
      */
     public boolean addXp(ActivePet p, double amount) {
-        int max = p.rarity.maxLevel();
-        if (p.data.level >= max) {
-            p.data.xp = 0;
+        return addXp(p.owner, p.data, amount);
+    }
+
+    /**
+     * Adds XP to any pet of an online owner (active or resting in storage: candies work on both) and levels up as
+     * long as it reaches the next level. XP past the rarity's max level is lost. Effects only for the active pet.
+     *
+     * @return false when the pet was already at max level
+     */
+    public boolean addXp(Player owner, PetData d, double amount) {
+        int max = plugin.pets().rarity(d).maxLevel();
+        if (d.level >= max) {
+            d.xp = 0;
             return false;
         }
-        int before = p.data.level;
-        p.data.xp += amount;
-        while (p.data.level < max) {
-            double need = plugin.levels().need(p.data.level);
-            if (p.data.xp < need) break;
-            p.data.xp -= need;
-            p.data.level++;
+        int before = d.level;
+        d.xp += amount;
+        while (d.level < max) {
+            double need = plugin.levels().need(d.level);
+            if (d.xp < need) break;
+            d.xp -= need;
+            d.level++;
         }
-        if (p.data.level >= max) p.data.xp = 0;
-        p.data.dirty = true;
-        if (p.data.level > before) levelUp(p, before);
+        if (d.level >= max) d.xp = 0;
+        d.dirty = true;
+        if (d.level > before) levelUp(owner, d, before);
         return true;
     }
 
-    private void levelUp(ActivePet p, int before) {
-        Bukkit.getPluginManager().callEvent(new PetLevelUpEvent(p.owner, plugin.pets().view(p.data), before));
-        plugin.messages().title(p.owner, "level-up", "pet", plugin.pets().displayName(p.data),
-                "level", String.valueOf(p.data.level));
-        plugin.messages().send(p.owner, "level-up.chat", "pet", plugin.pets().displayName(p.data),
-                "level", String.valueOf(p.data.level));
-        Effects.sound(p.owner.getLocation(), "entity.player.levelup", 0.8f, 1.3f);
+    private void levelUp(Player owner, PetData d, int before) {
+        Bukkit.getPluginManager().callEvent(new PetLevelUpEvent(owner, plugin.pets().view(d), before));
+        plugin.messages().title(owner, "level-up", "pet", plugin.pets().displayName(d), "level", String.valueOf(d.level));
+        plugin.messages().send(owner, "level-up.chat", "pet", plugin.pets().displayName(d), "level", String.valueOf(d.level));
+        Effects.sound(owner.getLocation(), "entity.player.levelup", 0.8f, 1.3f);
+        ActivePet p = plugin.pets().active(owner.getUniqueId());
+        if (p == null || p.data != d) return;
         plugin.pets().playAnimation(p, "skill");
         plugin.chat().say(p, "level-up");
         plugin.pets().refreshNametag(p);

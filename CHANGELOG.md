@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.5.0 (2026-11-05) — làm mới giao diện và dữ liệu pet
+
+### Thay đổi lớn
+- **Một model = một pet = một độ hiếm.** Mỗi file pet có `rarity`; trứng của một pet luôn ra đúng độ hiếm đó,
+  Trứng Ngẫu Nhiên chọn trong các pet cùng độ hiếm. Lệnh: `give egg <người> <pet> [số]`, `give pet <người> <pet> [cấp]`,
+  bỏ `set rarity`. Độ hiếm càng cao, chỉ số gốc càng cao (`stat-multiplier`).
+- Mỗi pet có màu tên riêng (`color` trong file pet, hex hoặc gradient). Độ hiếm có màu và gradient mới.
+- **Bỏ tính năng ẵm pet.**
+- Menu chi tiết và chăm sóc gộp thành **Quản lý pet**. Cho ăn được cả pet đang nằm trong kho; vuốt ve, trò chuyện,
+  ngồi yên cần thả pet ra (có thông báo). Nút "Thả pet đi" đứng riêng, có viền đỏ.
+- Thêm **Thư viện thú cưng** trong /pet: mọi loại pet, chỉ số từ cấp 1 tới cấp tối đa, kỹ năng.
+- Bộ lọc mới kiểu AxAuctions cho Kho pet, Bộ sưu tập, Thư viện: lọc loại, lọc độ hiếm, 4 kiểu sắp xếp
+  (chuột trái kiểu sau, chuột phải kiểu trước).
+
+### Lore
+- Thẻ pet chia mục: dòng độ hiếm và loại, Phát triển (Cấp độ có màu theo mốc 10, kinh nghiệm), Tình trạng
+  (thân thiết, độ no, tuổi tính chính xác từ lúc nở), Chỉ số cộng thêm (icon và màu theo MMOItems), Kỹ năng.
+- Kỹ năng có tên màu riêng, mô tả một câu, các dòng: kiểu, kích hoạt, sát thương, hiệu ứng, tầm, hồi chiêu...
+- Bỏ mô tả pet; bộ sưu tập chỉ hiện độ hiếm và điểm; bỏ dòng thuộc tính gốc của item ("+7 Armor").
+- Lời thoại nhiều hơn, câu riêng theo từng họ pet trộn chung với câu chung, xưng "chủ nhân".
+
+### Nâng cấp từ 0.4.x
+- Nếu server đã chạy bản cũ: xoá thư mục `plugins/BoxPet/pets/` và các file `menus.yml`, `rarities.yml`,
+  `abilities.yml`, `dialogues.yml` để BoxPet tạo bản mới (file cũ không bị ghi đè).
+
 ## 0.4.2 (2026-11-05)
 
 - Mặc định nhẹ hơn: `visibility.view-distance` 24 (trước 32), `visibility.max-visible-per-player` 10 (trước 15).

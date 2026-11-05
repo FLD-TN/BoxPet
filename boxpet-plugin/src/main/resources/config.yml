@@ -103,12 +103,6 @@ appear:
   after-respawn-ticks: 20
   after-join-ticks: 20
 
-# Ẵm pet (Shift + chuột phải vào pet)
-carry:
-  scale: 0.6
-  forward: 0.45
-  up: 1.1
-
 # Thân thiết 0-100 (BOXPET_SPEC 11.2)
 bond:
   start: 50

@@ -132,14 +132,13 @@ public final class AdminCommand implements TabExecutor {
         switch (what) {
             case "egg" -> {
                 PetType t = plugin.types().get(args[3]);
-                Rarity r = args.length > 4 ? plugin.rarities().get(args[4]) : null;
-                if (t == null || r == null || !t.allows(r.id())) {
-                    plugin.messages().send(sender, "admin.bad-egg", "pet", args[3], "rarity", args.length > 4 ? args[4] : "?");
+                if (t == null) {
+                    plugin.messages().send(sender, "admin.bad-pet", "pet", args[3]);
                     return;
                 }
-                int n = amount(args, 5);
-                deliver(target, plugin.itemFactory().egg(t, r, 1), n);
-                plugin.messages().send(sender, "admin.given", "amount", String.valueOf(n), "item", t.name + " " + r.coloured(), "player", target.getName());
+                int n = amount(args, 4);
+                deliver(target, plugin.itemFactory().egg(t, 1), n);
+                plugin.messages().send(sender, "admin.given", "amount", String.valueOf(n), "item", t.colouredName(), "player", target.getName());
             }
             case "randomegg" -> {
                 Rarity r = plugin.rarities().get(args[3]);
@@ -164,27 +163,28 @@ public final class AdminCommand implements TabExecutor {
             }
             case "pet" -> {
                 PetType t = plugin.types().get(args[3]);
-                Rarity r = args.length > 4 ? plugin.rarities().get(args[4]) : plugin.rarities().lowest();
                 PlayerData pd = plugin.pets().data(target.getUniqueId());
-                if (t == null || r == null || !t.allows(r.id())) {
-                    plugin.messages().send(sender, "admin.bad-egg", "pet", args[3], "rarity", args.length > 4 ? args[4] : "?");
+                if (t == null) {
+                    plugin.messages().send(sender, "admin.bad-pet", "pet", args[3]);
                     return;
                 }
+                Rarity r = plugin.rarities().get(t.rarity);
+                if (r == null) r = plugin.rarities().lowest();
                 if (pd == null) {
                     plugin.messages().send(sender, "loading");
                     return;
                 }
-                PetData pet = plugin.pets().createPet(target.getUniqueId(), t, r, "admin");
-                if (args.length > 5) {
+                PetData pet = plugin.pets().createPet(target.getUniqueId(), t, "admin");
+                if (args.length > 4) {
                     try {
-                        pet.level = Math.max(1, Math.min(r.maxLevel(), Integer.parseInt(args[5])));
+                        pet.level = Math.max(1, Math.min(r.maxLevel(), Integer.parseInt(args[4])));
                     } catch (NumberFormatException ignored) {
                         // level 1
                     }
                 }
                 plugin.pets().addPet(pd, pet);
                 plugin.pets().save(pd);
-                plugin.actions().log(sender, "give pet " + pet.shortId() + " " + t.id + " " + r.id() + " to " + target.getName());
+                plugin.actions().log(sender, "give pet " + pet.shortId() + " " + t.id + " to " + target.getName());
                 plugin.messages().send(sender, "admin.given", "amount", "1", "item", plugin.pets().displayName(pet), "player", target.getName());
                 plugin.messages().send(target, "admin.received-pet", "pet", plugin.pets().displayName(pet));
             }
@@ -326,7 +326,7 @@ public final class AdminCommand implements TabExecutor {
             };
             case 3 -> switch (args[0].toLowerCase(Locale.ROOT)) {
                 case "give", "transfer" -> players();
-                case "set" -> List.of("level", "xp", "rarity", "bond", "fullness");
+                case "set" -> List.of("level", "xp", "bond", "fullness");
                 case "incubator" -> List.of("clear");
                 default -> List.of();
             };
@@ -338,11 +338,8 @@ public final class AdminCommand implements TabExecutor {
                     case "food" -> plugin.items().ids(false);
                     default -> List.of();
                 };
-                case "set" -> args[2].equalsIgnoreCase("rarity") ? plugin.rarities().ids() : List.of();
                 default -> List.of();
             };
-            case 5 -> args[0].equalsIgnoreCase("give") && (args[1].equalsIgnoreCase("egg") || args[1].equalsIgnoreCase("pet"))
-                    ? plugin.rarities().ids() : List.of();
             default -> List.of();
         };
         for (String o : options) if (o.toLowerCase(Locale.ROOT).startsWith(last)) out.add(o);

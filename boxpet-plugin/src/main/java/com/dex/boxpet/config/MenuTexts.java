@@ -62,6 +62,10 @@ public final class MenuTexts {
         return lore(path, Map.of(), placeholders);
     }
 
+    public List<String> list(String path) {
+        return yml.getStringList(path);
+    }
+
     public int slot(String path, int def) {
         return yml.getInt(path + ".slot", def);
     }

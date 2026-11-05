@@ -25,17 +25,17 @@ public final class Rarities {
                 if (s == null) continue;
                 String id = key.toLowerCase(Locale.ROOT);
                 add(new Rarity(id, ordered.size(), s.getString("name", key), s.getString("color", "#FFFFFF"),
-                        Math.max(0, s.getDouble("stat-multiplier", 1)), Math.max(1, s.getInt("max-level", 30)),
+                        s.getString("gradient-to", ""), Math.max(0, s.getDouble("stat-multiplier", 1)), Math.max(1, s.getInt("max-level", 30)),
                         Durations.seconds(s.getString("hatch-time", "10m"), 600),
                         Math.max(0, s.getInt("collection-points", 1))));
             }
         }
         if (ordered.isEmpty()) {
             log.warning("rarities.yml has no rarity: using the defaults");
-            add(new Rarity("common", 0, "Thường", "#BFC7D5", 1.0, 30, 600, 1));
-            add(new Rarity("rare", 1, "Hiếm", "#7FDBFF", 1.4, 40, 1800, 2));
-            add(new Rarity("epic", 2, "Sử thi", "#C3B1E1", 1.9, 50, 3600, 3));
-            add(new Rarity("legendary", 3, "Huyền thoại", "#FFD166", 2.5, 60, 7200, 5));
+            add(new Rarity("common", 0, "Thường", "#9DB5A8", "", 1.0, 30, 600, 1));
+            add(new Rarity("rare", 1, "Hiếm", "#4FD1C5", "#9BF0E1", 1.4, 40, 1800, 2));
+            add(new Rarity("epic", 2, "Sử thi", "#A97CF8", "#F3A6FF", 1.9, 50, 3600, 3));
+            add(new Rarity("legendary", 3, "Huyền thoại", "#FF8A3D", "#FFE27A", 2.5, 60, 7200, 5));
         }
     }
 

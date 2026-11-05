@@ -69,10 +69,6 @@ public final class Settings {
     public final int respawnAppearTicks;
     public final int joinAppearTicks;
 
-    // carry
-    public final double carryScale;
-    public final double carryForward;
-    public final double carryUp;
 
     // bond
     public final int bondStart;
@@ -169,9 +165,6 @@ public final class Settings {
         respawnAppearTicks = Math.max(1, c.getInt("appear.after-respawn-ticks", 20));
         joinAppearTicks = Math.max(1, c.getInt("appear.after-join-ticks", 20));
 
-        carryScale = Math.max(0.1, c.getDouble("carry.scale", 0.6));
-        carryForward = c.getDouble("carry.forward", 0.45);
-        carryUp = c.getDouble("carry.up", 1.1);
 
         bondStart = clamp(c.getInt("bond.start", 50));
         bondPetGain = Math.max(0, c.getInt("bond.pet-gain", 5));

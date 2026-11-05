@@ -2,6 +2,7 @@ package com.dex.boxpet.pet;
 
 import com.dex.boxpet.BoxPetPlugin;
 import com.dex.boxpet.config.ItemsConfig;
+import com.dex.boxpet.data.PetData;
 import com.dex.boxpet.config.Settings;
 import com.dex.boxpet.text.Format;
 import java.time.LocalDate;
@@ -107,36 +108,41 @@ public final class CareService {
      *
      * @return how many were eaten (0 with the reason in {@code result[0]})
      */
-    public int feed(Player player, ActivePet p, ItemsConfig.Consumable c, int max, FeedResult[] result) {
+    public int feed(Player player, PetData d, ItemsConfig.Consumable c, int max, FeedResult[] result) {
         int eaten = 0;
         FeedResult why = FeedResult.NOTHING;
-        boolean wasHungry = p.hungry();
-        int maxLevel = p.rarity.maxLevel();
+        boolean wasHungry = d.fullness <= 0;
+        int maxLevel = plugin.pets().rarity(d).maxLevel();
         for (int i = 0; i < max; i++) {
-            if (c.candy() && p.data.level >= maxLevel) {
+            if (c.candy() && d.level >= maxLevel) {
                 why = FeedResult.MAX_LEVEL;
                 break;
             }
-            if (p.data.fullness + c.fullness() > 100) {
+            if (d.fullness + c.fullness() > 100) {
                 why = FeedResult.FULL;
                 break;
             }
-            p.data.fullness += c.fullness();
-            if (c.candy()) plugin.xp().addXp(p, c.xp());
-            else addFoodBond(p, c.bond());
+            d.fullness += c.fullness();
+            if (c.candy()) plugin.xp().addXp(player, d, c.xp());
+            else addFoodBond(d, c.bond());
             eaten++;
         }
+        // effects only when this pet is out
+        ActivePet p = plugin.pets().active(player.getUniqueId());
+        boolean out = p != null && p.data == d;
         if (eaten > 0) {
-            p.data.dirty = true;
+            d.dirty = true;
             why = FeedResult.OK;
-            plugin.pets().playAnimation(p, "interact");
-            Effects.sound(p.pos, "entity.generic.eat", 0.8f, 1.1f);
-            if (wasHungry && !p.hungry()) {
-                plugin.pets().refreshBonus(p);
+            if (out) {
+                plugin.pets().playAnimation(p, "interact");
+                Effects.sound(p.pos, "entity.generic.eat", 0.8f, 1.1f);
+                if (wasHungry && !p.hungry()) plugin.pets().refreshBonus(p);
+                plugin.pets().refreshNametag(p);
+                plugin.chat().say(p, "fed");
+            } else {
+                player.playSound(player.getLocation(), "entity.generic.eat", 0.7f, 1.1f);
             }
-            plugin.pets().refreshNametag(p);
-            plugin.chat().say(p, "fed");
-        } else if (why == FeedResult.FULL) {
+        } else if (why == FeedResult.FULL && out) {
             plugin.chat().say(p, "full");
         }
         result[0] = why;
@@ -160,19 +166,20 @@ public final class CareService {
         return true;
     }
 
-    private void addFoodBond(ActivePet p, int bond) {
+    private void addFoodBond(PetData d, int bond) {
         if (bond <= 0) return;
         long today = LocalDate.now().toEpochDay();
-        if (p.data.foodBondDay != today) {
-            p.data.foodBondDay = today;
-            p.data.foodBond = 0;
+        if (d.foodBondDay != today) {
+            d.foodBondDay = today;
+            d.foodBond = 0;
         }
-        int room = Math.max(0, s().bondFoodMaxPerDay - p.data.foodBond);
+        int room = Math.max(0, s().bondFoodMaxPerDay - d.foodBond);
         int gain = Math.min(room, bond);
         if (gain <= 0) return;
-        int tierBefore = s().bondTier(p.data.bond).min();
-        p.data.foodBond += gain;
-        p.data.bond = Math.min(100, p.data.bond + gain);
-        if (s().bondTier(p.data.bond).min() != tierBefore) plugin.pets().refreshStats(p);
+        int tierBefore = s().bondTier(d.bond).min();
+        d.foodBond += gain;
+        d.bond = Math.min(100, d.bond + gain);
+        ActivePet p = plugin.pets().active(d.owner);
+        if (p != null && p.data == d && s().bondTier(d.bond).min() != tierBefore) plugin.pets().refreshStats(p);
     }
 }

@@ -18,9 +18,11 @@ public final class CollectionService {
         this.plugin = plugin;
     }
 
-    /** A pet was hatched / given: remembers its type and rarity (kept even after releasing it). */
+    /** A pet was hatched / given: remembers its type (kept even after releasing it). */
     public void record(PlayerData pd, PetData pet) {
-        Rarity r = plugin.rarities().get(pet.rarity);
+        PetType t = plugin.types().get(pet.type);
+        if (t == null) return;
+        Rarity r = plugin.rarities().get(t.rarity);
         if (r == null) return;
         Integer prev = pd.collection.get(pet.type);
         if (prev != null && prev >= r.index()) return;
@@ -37,7 +39,9 @@ public final class CollectionService {
         for (Map.Entry<String, Integer> e : pd.collection.entrySet()) {
             PetType t = plugin.types().get(e.getKey());
             if (t == null) continue;
-            sum += plugin.rarities().byIndex(e.getValue()).collectionPoints();
+            // 0.5.0: points of the pet's one rarity
+            Rarity r = plugin.rarities().get(t.rarity);
+            sum += r == null ? 0 : r.collectionPoints();
         }
         return sum;
     }
@@ -52,9 +56,7 @@ public final class CollectionService {
         }
     }
 
-    /** Best rarity index of a type for the player, -1 when never owned. */
-    public int best(PlayerData pd, String type) {
-        Integer v = pd.collection.get(type);
-        return v == null ? -1 : v;
+    public boolean owned(PlayerData pd, String type) {
+        return pd.collection.containsKey(type);
     }
 }

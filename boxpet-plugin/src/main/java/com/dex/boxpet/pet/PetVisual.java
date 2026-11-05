@@ -173,7 +173,7 @@ public final class PetVisual {
         dummy.setForceHidden(viewer, hidden);
     }
 
-    /** Owner clicks only work with the hitbox on; off in combat and while carried (spec 4.4). */
+    /** Owner clicks only work with the hitbox on; off in combat (spec 4.4). */
     public void hitbox(boolean on) {
         if (removed || hitboxOn == on) return;
         hitboxOn = on;

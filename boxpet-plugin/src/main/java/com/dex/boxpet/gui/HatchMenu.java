@@ -43,7 +43,7 @@ public final class HatchMenu extends Menu {
         int total = random ? DELAYS.length + STRIP.length : 0;
         for (int i = 0; i < total; i++) {
             PetType t = pool.isEmpty() ? plugin.pets().type(pet) : pool.get(rnd.nextInt(pool.size()));
-            reel.add(t == null ? new ItemStack(Material.EGG) : decorate(PetIcons.icon(plugin, t), "<" + r.color() + ">" + t.name, List.of()));
+            reel.add(t == null ? new ItemStack(Material.EGG) : decorate(PetIcons.icon(plugin, t), t.colouredName(), List.of()));
         }
         // the result lands in the centre (strip index 3) on the last step
         if (random) reel.set(DELAYS.length + 3, resultIcon());
@@ -76,8 +76,8 @@ public final class HatchMenu extends Menu {
     }
 
     private void showResult() {
-        set(13, PetIcons.card(plugin, pet, List.of(), List.of(plugin.menus().text("actions.detail"))),
-                click -> new PetDetailMenu(plugin, player, pd, pet, false).open());
+        set(13, PetIcons.card(plugin, pet, List.of(), List.of(plugin.menus().text("actions.manage"))),
+                click -> new ManageMenu(plugin, player, pd, pet, false).open());
         set(22, button("hatch.storage", Material.CHEST), click -> new StorageMenu(plugin, player, pd, false, 0).open());
     }
 

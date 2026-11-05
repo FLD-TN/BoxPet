@@ -7,65 +7,97 @@ import com.dex.boxpet.config.Rarity;
 import com.dex.boxpet.data.PlayerData;
 import com.dex.boxpet.text.Format;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-/** Collection book (spec 9.4): every pet type ✔ / ✘ (no acquisition hints), score and milestones. */
+/**
+ * Collection book (spec 9.4): every pet type with ✔ / ✘, its rarity and points only (no acquisition hints);
+ * filters by role and rarity, 4 sorts; score and milestones on top.
+ */
 public final class CollectionMenu extends Menu {
-
-    private static final int[] SLOTS = {10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34,
-            37, 38, 39, 40, 41, 42, 43};
 
     private final PlayerData pd;
     private int page;
+    private final Cycler role;
+    private final Cycler rarity;
+    private final Cycler sort;
 
     public CollectionMenu(BoxPetPlugin plugin, Player player, PlayerData pd, int page) {
         super(plugin, player, 6, plugin.menus().title("collection"));
         this.pd = pd;
         this.page = page;
+        this.role = Cycler.roles(plugin);
+        this.rarity = Cycler.rarities(plugin);
+        this.sort = Cycler.sorts(plugin, "collection");
+    }
+
+    private List<PetType> list() {
+        List<PetType> out = new ArrayList<>();
+        for (PetType t : plugin.types().all()) {
+            if (role.index() > 0 && t.role != PetType.Role.values()[role.index() - 1]) continue;
+            if (rarity.index() > 0 && PetIcons.rarity(plugin, t).index() != rarity.index() - 1) continue;
+            out.add(t);
+        }
+        Comparator<PetType> byRarity = Comparator.comparingInt(t -> PetIcons.rarity(plugin, t).index());
+        Comparator<PetType> owned = Comparator.comparing(t -> !plugin.collectionService().owned(pd, t.id));
+        // 0 rarity up, 1 rarity down, 2 owned first, 3 missing first
+        out.sort(switch (sort.index()) {
+            case 1 -> byRarity.reversed().thenComparing(t -> t.id);
+            case 2 -> owned.thenComparing(byRarity).thenComparing(t -> t.id);
+            case 3 -> owned.reversed().thenComparing(byRarity).thenComparing(t -> t.id);
+            default -> byRarity.thenComparing(t -> t.id);
+        });
+        return out;
     }
 
     @Override
     protected void draw() {
-        List<PetType> types = new ArrayList<>(plugin.types().all());
-        int pages = Math.max(1, (types.size() + SLOTS.length - 1) / SLOTS.length);
+        List<PetType> types = list();
+        int pages = Math.max(1, (types.size() + StorageMenu.SLOTS.length - 1) / StorageMenu.SLOTS.length);
         page = Math.max(0, Math.min(page, pages - 1));
-        for (int i = 0; i < SLOTS.length; i++) {
-            int idx = page * SLOTS.length + i;
+        for (int i = 0; i < StorageMenu.SLOTS.length; i++) {
+            int idx = page * StorageMenu.SLOTS.length + i;
             if (idx >= types.size()) break;
             PetType t = types.get(idx);
-            int best = plugin.collectionService().best(pd, t.id);
-            if (best >= 0) {
-                Rarity r = plugin.rarities().byIndex(best);
-                ItemStack icon = decorate(PetIcons.icon(plugin, t), plugin.menus().name("collection.owned", "pet", t.name, "rarity", r.coloured()),
-                        plugin.menus().lore("collection.owned", "pet", t.name, "rarity", r.coloured(), "role", PetIcons.roleName(plugin, t),
-                                "points", String.valueOf(r.collectionPoints())));
-                set(SLOTS[i], icon, null);
-            } else {
-                set(SLOTS[i], icon(Material.GRAY_DYE, plugin.menus().name("collection.missing", "pet", t.name),
-                        plugin.menus().lore("collection.missing", "pet", t.name, "role", PetIcons.roleName(plugin, t))), null);
-            }
+            Rarity r = PetIcons.rarity(plugin, t);
+            boolean owned = plugin.collectionService().owned(pd, t.id);
+            String[] ph = {"pet", t.colouredName(), "plain", t.name, "rarity", r.coloured(), "points", String.valueOf(r.collectionPoints())};
+            ItemStack icon = owned
+                    ? decorate(PetIcons.icon(plugin, t), plugin.menus().name("collection.owned", ph), plugin.menus().lore("collection.owned", ph))
+                    : icon(Material.GRAY_DYE, plugin.menus().name("collection.missing", ph), plugin.menus().lore("collection.missing", ph));
+            set(StorageMenu.SLOTS[i], icon, null);
         }
         int score = plugin.collectionService().score(pd);
         List<String> rows = new ArrayList<>();
         for (CollectionConfig.Milestone m : plugin.collectionConfig().milestones) {
             StringBuilder stats = new StringBuilder();
             for (Map.Entry<String, Double> e : m.stats().entrySet()) {
-                String label = plugin.menus().text("stat-names." + e.getKey());
-                if (label.equals("stat-names." + e.getKey())) label = e.getKey();
-                if (stats.length() > 0) stats.append(", ");
-                stats.append("+").append(Format.decimal(e.getValue())).append(" ").append(label);
+                if (stats.length() > 0) stats.append("<gray>, ");
+                stats.append(statShort(e.getKey(), e.getValue()));
             }
             rows.add(plugin.menus().text(score >= m.score() ? "collection.milestone-done" : "collection.milestone-todo",
                     "score", String.valueOf(m.score()), "label", m.label(), "stats", stats.toString()));
         }
         set(4, icon(Material.NETHER_STAR, plugin.menus().name("collection.info", "score", String.valueOf(score)),
                 plugin.menus().lore("collection.info", Map.of("milestones", rows), "score", String.valueOf(score),
-                        "owned", String.valueOf(pd.collection.size()), "total", String.valueOf(types.size()))), null);
+                        "owned", String.valueOf(pd.collection.size()), "total", String.valueOf(plugin.types().size()))), null);
         set(45, button("common.back", Material.ARROW), click -> new MainMenu(plugin, player).open());
+        set(46, role.icon(), click -> {
+            if (role.click(click)) {
+                page = 0;
+                refresh();
+            }
+        });
+        set(47, rarity.icon(), click -> {
+            if (rarity.click(click)) {
+                page = 0;
+                refresh();
+            }
+        });
         if (page > 0) set(48, button("common.previous", Material.ARROW, "page", String.valueOf(page)), click -> {
             page--;
             refresh();
@@ -74,6 +106,16 @@ public final class CollectionMenu extends Menu {
             page++;
             refresh();
         });
+        set(52, sort.icon(), click -> {
+            if (sort.click(click)) refresh();
+        });
         fill();
+    }
+
+    /** "+1 Phòng thủ" with the stat's display name (without its icon). */
+    private String statShort(String stat, double value) {
+        String label = plugin.menus().text("stat-names." + stat);
+        if (label.equals("stat-names." + stat)) label = stat;
+        return "<#7CFC9A>+" + Format.decimal(value) + " <white>" + label;
     }
 }

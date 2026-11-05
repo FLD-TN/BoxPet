@@ -2,7 +2,6 @@ package com.dex.boxpet.listener;
 
 import com.dex.boxpet.BoxPetPlugin;
 import com.dex.boxpet.config.ItemsConfig;
-import com.dex.boxpet.gui.CareMenu;
 import com.dex.boxpet.item.ItemFactory;
 import com.dex.boxpet.pet.ActivePet;
 import com.dex.boxpet.pet.CareService;
@@ -97,11 +96,7 @@ public final class InteractListener implements Listener {
             if (plugin.care().feedVanilla(pet, vanilla)) take(p, slot, held, 1);
             return;
         }
-        if (held.getType().isAir() && p.isSneaking()) {
-            plugin.messages().send(p, plugin.pets().toggleCarry(pet), "pet", plugin.pets().displayName(pet.data));
-            return;
-        }
-        new CareMenu(plugin, p).open();
+        new com.dex.boxpet.gui.ManageMenu(plugin, p, pet.player, pet.data, false).open();
     }
 
     /**
@@ -110,21 +105,27 @@ public final class InteractListener implements Listener {
      * inventory.
      */
     public void useConsumable(Player p, ActivePet pet, int slot, ItemsConfig.Consumable c, boolean all) {
+        useConsumable(p, pet.data, slot, c, all);
+    }
+
+    /** Feeds any pet of the player (active or in storage). */
+    public void useConsumable(Player p, com.dex.boxpet.data.PetData pet, int slot, ItemsConfig.Consumable c, boolean all) {
         ItemStack held = p.getInventory().getItem(slot);
         ItemsConfig.Consumable check = plugin.itemFactory().consumable(plugin.itemFactory().read(held));
         if (held == null || check == null || !check.id().equals(c.id())) return;
         int max = all && c.candy() ? held.getAmount() : 1;
         CareService.FeedResult[] why = new CareService.FeedResult[1];
         int eaten = plugin.care().feed(p, pet, c, max, why);
+        String petName = plugin.pets().displayName(pet);
         if (eaten > 0) {
             take(p, slot, held, eaten);
-            plugin.messages().send(p, c.candy() ? "care.candy-eaten" : "care.food-eaten", "pet", plugin.pets().displayName(pet.data),
+            plugin.messages().send(p, c.candy() ? "care.candy-eaten" : "care.food-eaten", "pet", petName,
                     "amount", String.valueOf(eaten), "item", "<" + c.color() + ">" + c.name(),
-                    "fullness", String.valueOf(pet.data.fullness), "xp", com.dex.boxpet.text.Format.number(Math.round(c.xp() * eaten)));
+                    "fullness", String.valueOf(pet.fullness), "xp", com.dex.boxpet.text.Format.number(Math.round(c.xp() * eaten)));
         } else if (why[0] == CareService.FeedResult.FULL) {
-            plugin.messages().send(p, "care.full", "pet", plugin.pets().displayName(pet.data), "fullness", String.valueOf(pet.data.fullness));
+            plugin.messages().send(p, "care.full", "pet", petName, "fullness", String.valueOf(pet.fullness));
         } else if (why[0] == CareService.FeedResult.MAX_LEVEL) {
-            plugin.messages().send(p, "care.max-level", "pet", plugin.pets().displayName(pet.data));
+            plugin.messages().send(p, "care.max-level", "pet", petName);
         }
     }
 

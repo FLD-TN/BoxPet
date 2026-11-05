@@ -240,7 +240,7 @@ public final class PetActions {
         log(staff, (deleted ? "delete " : "restore ") + pet.shortId());
     }
 
-    /** {@code field}: level, xp, rarity, bond, fullness. @return message key */
+    /** {@code field}: level, xp, bond, fullness (0.5.0: the rarity belongs to the pet type). @return message key */
     public String set(CommandSender staff, PetData pet, String field, String value) {
         PetData live = live(pet);
         String before;
@@ -258,13 +258,6 @@ public final class PetActions {
                 if (Double.isNaN(v) || v < 0) return "admin.set-invalid";
                 before = String.valueOf(live.xp);
                 live.xp = v;
-            }
-            case "rarity" -> {
-                Rarity r = plugin.rarities().get(value);
-                if (r == null) return "admin.set-invalid";
-                before = live.rarity;
-                live.rarity = r.id();
-                live.level = Math.min(live.level, r.maxLevel());
             }
             case "bond" -> {
                 int v = parseInt(value);
@@ -285,8 +278,6 @@ public final class PetActions {
         live.dirty = true;
         ActivePet ap = plugin.pets().active(live.owner);
         if (ap != null && ap.data == live) {
-            Rarity r = plugin.rarities().get(live.rarity);
-            if (r != null) ap.rarity = r;
             plugin.pets().refreshStats(ap);
             plugin.pets().refreshBonus(ap);
             plugin.pets().refreshNametag(ap);

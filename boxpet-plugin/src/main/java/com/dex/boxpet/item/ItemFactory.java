@@ -46,14 +46,16 @@ public final class ItemFactory {
 
     // ------------------------------------------------------------------ build
 
-    public ItemStack egg(PetType type, Rarity rarity, int amount) {
+    public ItemStack egg(PetType type, int amount) {
+        Rarity rarity = plugin.rarities().get(type.rarity);
+        if (rarity == null) rarity = plugin.rarities().lowest();
         ItemsConfig.EggLook look = plugin.items().fixedEgg;
         ItemStack item = base(type.icon, type.iconFallback, 0);
         String name = look.name().replace("%pet%", type.name);
-        List<String> lore = plugin.menus().lore("items.egg", Map.of("description", type.description),
-                "pet", type.name, "rarity", rarity.coloured(), "role", plugin.menus().text("roles." + type.role.id),
+        List<String> lore = plugin.menus().lore("items.egg",
+                "pet", type.colouredName(), "rarity", rarity.coloured(), "role", plugin.menus().text("roles." + type.role.id),
                 "time", Format.duration(rarity.hatchSeconds()));
-        return finish(item, "<" + rarity.color() + ">" + name + " <dark_gray>[" + rarity.coloured() + "<dark_gray>]", lore,
+        return finish(item, PetType.paint(type.color, name) + " <dark_gray>[" + rarity.coloured() + "<dark_gray>]", lore,
                 Kind.EGG, type.id, rarity.id(), amount);
     }
 
@@ -96,7 +98,7 @@ public final class ItemFactory {
         if (meta != null) {
             meta.displayName(Text.item(name));
             meta.lore(lore.stream().map(Text::item).toList());
-            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP, ItemFlag.HIDE_ENCHANTS);
+            com.dex.boxpet.gui.Menu.hideVanillaTooltip(meta);
             PersistentDataContainer pdc = meta.getPersistentDataContainer();
             pdc.set(kindKey, PersistentDataType.STRING, kind.name());
             pdc.set(idKey, PersistentDataType.STRING, id);
@@ -141,7 +143,6 @@ public final class ItemFactory {
         if (r == null) return false;
         if (info.kind() == Kind.RANDOM_EGG) return plugin.incubator().poolSize(r) > 0;
         if (info.kind() != Kind.EGG) return false;
-        PetType t = plugin.types().get(info.id());
-        return t != null && t.allows(r.id());
+        return plugin.types().get(info.id()) != null;
     }
 }

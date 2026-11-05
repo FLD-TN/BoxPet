@@ -110,7 +110,7 @@ public final class PetManager {
         combat.setTagSeconds(s().combatTagSeconds);
         for (ActivePet p : new ArrayList<>(active.values())) {
             PetType type = plugin.types().get(p.data.type);
-            Rarity rarity = plugin.rarities().get(p.data.rarity);
+            Rarity rarity = type == null ? null : plugin.rarities().get(type.rarity);
             if (type == null || rarity == null) {
                 dismiss(p.owner, false, "reload");
                 continue;
@@ -240,12 +240,12 @@ public final class PetManager {
 
     // ------------------------------------------------------------------ pets
 
-    public PetData createPet(UUID owner, PetType type, Rarity rarity, String origin) {
+    public PetData createPet(UUID owner, PetType type, String origin) {
         long now = System.currentTimeMillis();
         PetData d = new PetData(UUID.randomUUID());
         d.owner = owner;
         d.type = type.id;
-        d.rarity = rarity.id();
+        d.rarity = type.rarity;
         d.level = 1;
         d.bond = s().bondStart;
         d.fullness = s().fullnessStart;
@@ -277,16 +277,24 @@ public final class PetManager {
         return plugin.types().get(d.type);
     }
 
+    /** 0.5.0: the rarity of the pet's type (one pet = one rarity); the stored value only when the type is gone. */
     public Rarity rarity(PetData d) {
-        Rarity r = plugin.rarities().get(d.rarity);
+        PetType t = type(d);
+        Rarity r = plugin.rarities().get(t != null ? t.rarity : d.rarity);
         return r == null ? plugin.rarities().lowest() : r;
     }
 
     /** {@code <rarity colour>Custom name} or the type's name. */
+    /**
+     * The shown name: the custom name (the player's own colours win, the pet's colour fills the rest) or the default
+     * name in the pet's own colour.
+     */
     public String displayName(PetData d) {
         PetType t = type(d);
-        String base = d.customName != null && !d.customName.isEmpty() ? d.customName : t == null ? d.type : t.name;
-        return "<" + rarity(d).color() + ">" + base;
+        if (d.customName != null && !d.customName.isEmpty()) {
+            return (t == null ? "<white>" : PetType.paint(t.color.contains(":") ? t.color.split(":")[0] : t.color, "")) + d.customName;
+        }
+        return t == null ? "<white>" + d.type : t.colouredName();
     }
 
     public @Nullable ActivePet active(UUID owner) {
@@ -402,7 +410,7 @@ public final class PetManager {
     void spawnVisual(ActivePet p, Location at, boolean effects) {
         despawnVisual(p, false);
         PetType.Stage stage = p.type.stage(p.data.stage);
-        PetVisual v = PetVisual.create(at, stage.model(), stage.scale() * (p.carried ? carryScale(p) : 1.0),
+        PetVisual v = PetVisual.create(at, stage.model(), stage.scale(),
                 s().viewDistance, p.type.animations.get("idle"), p.type.animations.get("walk"), true, plugin.getLogger());
         if (v == null) {
             plugin.getLogger().warning("Model " + stage.model() + " of pet type " + p.type.id + " is not loaded in ModelEngine");
@@ -557,7 +565,6 @@ public final class PetManager {
     }
 
     public void onOwnerDeath(ActivePet p) {
-        if (p.carried) p.carried = false;
         if (p.shown()) plugin.chat().say(p, "owner-died");
         despawnVisual(p, true);
         p.deadHidden = true;
@@ -575,10 +582,6 @@ public final class PetManager {
     }
 
     void hideForTravel(ActivePet p) {
-        if (p.carried) {
-            p.carried = false;
-            if (p.visual != null) p.visual.scale(p.type.stage(p.data.stage).scale());
-        }
         if (p.visual != null) {
             Effects.puff(p.pos);
             p.visual.visible(false);
@@ -605,48 +608,13 @@ public final class PetManager {
         if (p.nametag != null) p.nametag.setVisibleByDefault(!hide);
     }
 
-    // ------------------------------------------------------------------ carry / sit
-
-    private double carryScale(ActivePet p) {
-        return p.type.carryScale != null ? p.type.carryScale : s().carryScale;
-    }
-
-    /** @return message key of the result */
-    public String toggleCarry(ActivePet p) {
-        if (p.carried) {
-            putDown(p, "manual");
-            return "carry.put-down";
-        }
-        if (!p.type.carryEnabled) return "carry.disabled";
-        if (combat.tagged(p.ownerId)) return "combat-locked";
-        if (p.owner.isGliding() || p.owner.isInsideVehicle() || p.owner.isSwimming()) return "carry.cannot-now";
-        p.carried = true;
-        p.sitting = false;
-        if (p.visual != null) p.visual.scale(p.type.stage(p.data.stage).scale() * carryScale(p));
-        Effects.hearts(p.owner.getLocation().add(0, 1.4, 0));
-        plugin.chat().say(p, "carried");
-        refreshBonus(p);
-        return "carry.picked-up";
-    }
-
-    void putDown(ActivePet p, String reason) {
-        if (!p.carried) return;
-        p.carried = false;
-        if (p.visual != null) p.visual.scale(p.type.stage(p.data.stage).scale());
-        Location slot = follower.spawnSlot(p);
-        p.pos = slot;
-        p.anchor = slot.clone();
-        if (p.visual != null) p.visual.move(slot, p.yaw, p.yaw);
-        refreshBonus(p);
-        if (!reason.equals("manual") && !reason.equals("death")) plugin.messages().send(p.owner, "carry.dropped");
-    }
+    // ------------------------------------------------------------------ sit
 
     public String toggleSit(ActivePet p) {
         if (p.sitting) {
             stand(p, false);
             return "sit.off";
         }
-        if (p.carried) putDown(p, "manual");
         p.sitting = true;
         p.anchor = p.pos.clone();
         return "sit.on";

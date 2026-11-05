@@ -13,19 +13,18 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-/** Pet storage (spec 10.3), 28 per page, filter by role, sort. Staff mode for {@code /boxpet pets}. */
+/** Pet storage (spec 10.3): 28 per page; filters by role and rarity, 4 sorts. Staff mode for {@code /boxpet pets}. */
 public final class StorageMenu extends Menu {
 
-    private static final int[] SLOTS = {10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34,
+    static final int[] SLOTS = {10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34,
             37, 38, 39, 40, 41, 42, 43};
-    private static final String[] SORTS = {"rarity", "level", "newest"};
-    private static final String[] FILTERS = {"all", "combat", "support", "boost"};
 
     private final PlayerData target;
     private final boolean admin;
     private int page;
-    private int sort;
-    private int filter;
+    private final Cycler role;
+    private final Cycler rarity;
+    private final Cycler sort;
 
     public StorageMenu(BoxPetPlugin plugin, Player player, PlayerData target, boolean admin, int page) {
         super(plugin, player, 6, admin ? plugin.menus().title("storage-admin", "player", name(target))
@@ -33,6 +32,9 @@ public final class StorageMenu extends Menu {
         this.target = target;
         this.admin = admin;
         this.page = page;
+        this.role = Cycler.roles(plugin);
+        this.rarity = Cycler.rarities(plugin);
+        this.sort = Cycler.sorts(plugin, "storage");
     }
 
     private static String name(PlayerData pd) {
@@ -45,18 +47,24 @@ public final class StorageMenu extends Menu {
         return !admin;
     }
 
+    private int rarityIndex(PetData d) {
+        return plugin.pets().rarity(d).index();
+    }
+
     private List<PetData> list() {
         List<PetData> out = new ArrayList<>();
         for (PetData d : target.pets.values()) {
             PetType t = plugin.pets().type(d);
-            if (filter > 0 && (t == null || !t.role.id.equals(FILTERS[filter]))) continue;
+            if (role.index() > 0 && (t == null || t.role != PetType.Role.values()[role.index() - 1])) continue;
+            if (rarity.index() > 0 && rarityIndex(d) != rarity.index() - 1) continue;
             out.add(d);
         }
-        Comparator<PetData> c = switch (SORTS[sort]) {
-            case "level" -> Comparator.<PetData>comparingInt(d -> -d.level)
-                    .thenComparingInt(d -> -plugin.pets().rarity(d).index());
-            case "newest" -> Comparator.<PetData>comparingLong(d -> -d.createdAt);
-            default -> Comparator.<PetData>comparingInt(d -> -plugin.pets().rarity(d).index()).thenComparingInt(d -> -d.level);
+        // 0 rarity up, 1 rarity down, 2 highest level, 3 newest
+        Comparator<PetData> c = switch (sort.index()) {
+            case 1 -> Comparator.<PetData>comparingInt(d -> -rarityIndex(d)).thenComparingInt(d -> -d.level);
+            case 2 -> Comparator.<PetData>comparingInt(d -> -d.level).thenComparingInt(d -> -rarityIndex(d));
+            case 3 -> Comparator.<PetData>comparingLong(d -> -d.createdAt);
+            default -> Comparator.<PetData>comparingInt(this::rarityIndex).thenComparingInt(d -> -d.level);
         };
         out.sort(c);
         PetData active = target.active();
@@ -76,11 +84,11 @@ public final class StorageMenu extends Menu {
             boolean active = d.id.equals(target.activePet);
             List<String> actions = admin
                     ? List.of(plugin.menus().text("actions.admin-manage"))
-                    : List.of(plugin.menus().text("actions.detail"),
+                    : List.of(plugin.menus().text("actions.manage"),
                     plugin.menus().text(active ? "actions.quick-dismiss" : "actions.quick-summon"));
             set(SLOTS[i], PetIcons.card(plugin, d, PetIcons.status(plugin, d, active), actions), click -> {
                 if (admin || click.isLeftClick()) {
-                    new PetDetailMenu(plugin, player, target, d, admin).open();
+                    new ManageMenu(plugin, player, target, d, admin).open();
                     return;
                 }
                 if (active) {
@@ -94,7 +102,18 @@ public final class StorageMenu extends Menu {
         }
         if (list.isEmpty()) set(22, button("storage.empty", Material.BARRIER), null);
         if (!admin) set(45, button("common.back", Material.ARROW), click -> new MainMenu(plugin, player).open());
-        else set(46, button("storage.deleted", Material.LAVA_BUCKET), click -> DeletedMenu.open(plugin, player, target));
+        set(46, role.icon(), click -> {
+            if (role.click(click)) {
+                page = 0;
+                refresh();
+            }
+        });
+        set(47, rarity.icon(), click -> {
+            if (rarity.click(click)) {
+                page = 0;
+                refresh();
+            }
+        });
         if (page > 0) set(48, button("common.previous", Material.ARROW, "page", String.valueOf(page)), click -> {
             page--;
             refresh();
@@ -106,15 +125,10 @@ public final class StorageMenu extends Menu {
             page++;
             refresh();
         });
-        set(52, button("storage.filter", Material.HOPPER, "filter", plugin.menus().text("filters." + FILTERS[filter])), click -> {
-            filter = (filter + 1) % FILTERS.length;
-            page = 0;
-            refresh();
+        set(52, sort.icon(), click -> {
+            if (sort.click(click)) refresh();
         });
-        set(53, button("storage.sort", Material.COMPARATOR, "sort", plugin.menus().text("sorts." + SORTS[sort])), click -> {
-            sort = (sort + 1) % SORTS.length;
-            refresh();
-        });
+        if (admin) set(53, button("storage.deleted", Material.LAVA_BUCKET), click -> DeletedMenu.open(plugin, player, target));
         fill();
     }
 

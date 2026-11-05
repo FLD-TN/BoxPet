@@ -16,7 +16,7 @@ public final class ActivePet {
 
     /** What the pet is doing (spec 4.1, 4.2, 4.5). */
     public enum Mode {
-        REST, FOLLOW, COMBAT, SIT, CARRIED, TRAVEL, GONE
+        REST, FOLLOW, COMBAT, SIT, TRAVEL, GONE
     }
 
     public final UUID ownerId;
@@ -36,7 +36,6 @@ public final class ActivePet {
     public float yaw;
     public Mode mode = Mode.GONE;
     public boolean sitting;
-    public boolean carried;
     public boolean travelHidden;
     public boolean deadHidden;
     public boolean teleporting;
@@ -103,8 +102,8 @@ public final class ActivePet {
         return data.fullness <= 0;
     }
 
-    /** The ability is paused: hungry, carried, travelling hidden, owner dead. */
+    /** The ability is paused: hungry, travelling hidden, owner dead. */
     public boolean abilityPaused() {
-        return hungry() || carried || travelHidden || deadHidden || visual == null;
+        return hungry() || travelHidden || deadHidden || visual == null;
     }
 }

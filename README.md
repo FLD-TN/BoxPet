@@ -18,7 +18,7 @@ Bản cũ hơn của BoxCore / BoxQuest vẫn chạy, chỉ thiếu tính năng 
 
 ## Cài đặt
 
-1. Bỏ `BoxPet-0.4.2.jar` (trong `boxpet-plugin/build/libs/`) vào `plugins/`. Nâng cấp BoxCore lên
+1. Bỏ `BoxPet-0.5.0.jar` (trong `boxpet-plugin/build/libs/`) vào `plugins/`. Nâng cấp BoxCore lên
    `BoxCore-1.6.0.jar` và BoxQuest lên `BoxQuest-0.3.2.jar` (chỉ thay jar).
 2. **Model** (thư mục `PetModel/`, không có trong git):
    - Chép mọi file `.bbmodel` (cả pet lẫn `vfx_*`) của 4 pack vào `plugins/ModelEngine/blueprints/`.
@@ -36,13 +36,13 @@ Bản cũ hơn của BoxCore / BoxQuest vẫn chạy, chỉ thiếu tính năng 
 | `/pet summon <tên>` / `/pet dismiss` | `boxpet.use` | thả / cất pet |
 | `/pet hideothers` / `/pet chat` | `boxpet.use` | ẩn pet người khác / bật tắt pet nói chuyện |
 | `/pet rename <tên>` | `boxpet.rename` | ai cũng dùng được màu & gradient (cấm `%`, `#` chỉ trong mã màu) |
-| `/boxpet give egg <người> <pet> <độ hiếm> [số]` | `boxpet.admin` | trứng của một pet |
+| `/boxpet give egg <người> <pet> [số]` | `boxpet.admin` | trứng của một pet (độ hiếm theo pet) |
 | `/boxpet give randomegg <người> <độ hiếm> [số]` | `boxpet.admin` | Trứng Ngẫu Nhiên (trứng tân thủ: `common`) |
 | `/boxpet give candy\|food <người> <mã> [số]` | `boxpet.admin` | kẹo / thức ăn (`items.yml`) |
-| `/boxpet give pet <người> <pet> [độ hiếm] [cấp]` | `boxpet.admin` | thẳng vào kho |
+| `/boxpet give pet <người> <pet> [cấp]` | `boxpet.admin` | thẳng vào kho |
 | `/boxpet pets <người>` | `boxpet.admin` | xem kho (cả offline): chuyển, sửa, xoá, khôi phục |
 | `/boxpet transfer <mã> <người>` | `boxpet.admin` | |
-| `/boxpet set <mã> level\|xp\|rarity\|bond\|fullness <giá trị>` | `boxpet.admin` | |
+| `/boxpet set <mã> level\|xp\|bond\|fullness <giá trị>` | `boxpet.admin` | |
 | `/boxpet delete\|restore <mã>` | `boxpet.admin` | xoá mềm / khôi phục |
 | `/boxpet incubator <người> clear <ô>` | `boxpet.admin` | |
 | `/boxpet models` / `/boxpet reload` | `boxpet.admin` | |
@@ -84,9 +84,8 @@ Sự kiện: `PetSummonEvent` (huỷ được), `PetDismissEvent`, `PetHatchEven
 
 Không có server thử trên máy build, nên các điểm sau phải xem tận mắt:
 
-1. Bấm chuột phải vào pet mở menu chăm sóc; Shift + chuột phải ẵm pet (hitbox của dummy ModelEngine).
+1. Bấm chuột phải vào pet mở menu Quản lý pet (hitbox của dummy ModelEngine).
 2. Đứng sau pet của người khác vẫn đánh trúng họ; khi giao tranh hitbox pet tắt.
-3. Ẵm pet nhìn ổn ở góc nhìn thứ nhất (chỉnh `carry.up` / `carry.forward` nếu che tâm).
 4. Họ nào bay (`follow.fly` trong file pet): mặc định Rồng Lửa và Sư Điểu bay, còn lại đi bộ.
 5. Hướng và tốc độ của VFX (cầu lửa, vết chém, đánh dấu) nhìn đúng.
 6. Sát thương pet tính là của chủ: điểm hạ gục, BoxClans, top sát thương MyBoxMobs.

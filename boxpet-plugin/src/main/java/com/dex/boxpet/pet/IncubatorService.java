@@ -73,11 +73,13 @@ public final class IncubatorService {
 
     /** Puts one egg (already validated and taken from the player) into a slot. */
     public IncubatorSlot put(PlayerData pd, int slot, ItemFactory.Info egg) {
-        Rarity r = plugin.rarities().get(egg.rarity());
+        // fixed egg: the pet's own rarity (one pet = one rarity); random egg: the egg's rarity
+        PetType fixed = egg.kind() == ItemFactory.Kind.RANDOM_EGG ? null : plugin.types().get(egg.id());
+        Rarity r = plugin.rarities().get(fixed != null ? fixed.rarity : egg.rarity());
         long now = System.currentTimeMillis();
         long time = (r == null ? 600 : r.hatchSeconds()) * 1000L;
         IncubatorSlot s = new IncubatorSlot(slot, egg.kind() == ItemFactory.Kind.RANDOM_EGG,
-                egg.kind() == ItemFactory.Kind.RANDOM_EGG ? "" : egg.id(), egg.rarity(), now, now + time);
+                egg.kind() == ItemFactory.Kind.RANDOM_EGG ? "" : egg.id(), r == null ? egg.rarity() : r.id(), now, now + time);
         pd.incubator.put(slot, s);
         pd.incubatorDirty = true;
         pd.dirty = true;
@@ -112,8 +114,7 @@ public final class IncubatorService {
         if (rarity == null) rarity = plugin.rarities().lowest();
         PetType type = s.random() ? roll(rarity) : plugin.types().get(s.petType());
         if (type == null) return new Opened(OpenResult.NO_PET, null, s.random());
-        if (!type.allows(rarity.id())) rarity = plugin.rarities().get(type.rarities.get(0));
-        PetData pet = plugin.pets().createPet(player.getUniqueId(), type, rarity, s.random() ? "random-egg" : "egg");
+        PetData pet = plugin.pets().createPet(player.getUniqueId(), type, s.random() ? "random-egg" : "egg");
         pd.incubator.remove(slot);
         pd.incubatorDirty = true;
         plugin.pets().addPet(pd, pet);

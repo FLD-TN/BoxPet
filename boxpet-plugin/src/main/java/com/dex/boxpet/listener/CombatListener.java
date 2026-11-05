@@ -17,7 +17,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 
-/** Combat tags, the mark bonus, the shield and "put down the carried pet when hurt" (spec 4.2, 6, 11.1). */
+/** Combat tags, the mark bonus and the shield (spec 6, 11.1). */
 public final class CombatListener implements Listener {
 
     private final BoxPetPlugin plugin;
@@ -71,7 +71,6 @@ public final class CombatListener implements Listener {
         if (!(e.getEntity() instanceof Player p)) return;
         ActivePet pet = plugin.pets().active(p.getUniqueId());
         if (pet == null) return;
-        if (pet.carried) plugin.pets().toggleCarry(pet);
         double after = p.getHealth() - e.getFinalDamage();
         plugin.abilityService().onOwnerDamaged(pet, after);
     }

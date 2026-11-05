@@ -16,7 +16,7 @@ import org.bukkit.entity.TextDisplay;
 public final class ChatService {
 
     private static final Set<String> NO_COOLDOWN = Set.of("level-up", "hungry", "evolve", "birthday", "owner-died",
-            "full", "summon", "fed", "petted", "carried", "arrived", "talk", "looked");
+            "full", "summon", "fed", "petted", "arrived", "talk", "looked");
 
     private final BoxPetPlugin plugin;
 

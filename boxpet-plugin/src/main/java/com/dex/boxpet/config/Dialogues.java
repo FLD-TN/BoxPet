@@ -43,12 +43,18 @@ public final class Dialogues {
         }
     }
 
-    /** A random line for the event, the family's own set first; {@code null} when there is none. */
+    /**
+     * A random line for the event, picked from the family's own lines together with the shared lines (0.5.0: the
+     * family set adds to the shared one instead of replacing it); {@code null} when there is none.
+     */
     public @Nullable String pick(String family, String event) {
         Map<String, List<String>> f = families.get(family);
-        List<String> lines = f == null ? null : f.get(event);
-        if (lines == null) lines = defaults.get(event);
-        if (lines == null || lines.isEmpty()) return null;
-        return lines.get(ThreadLocalRandom.current().nextInt(lines.size()));
+        List<String> own = f == null ? null : f.get(event);
+        List<String> shared = defaults.get(event);
+        int a = own == null ? 0 : own.size();
+        int b = shared == null ? 0 : shared.size();
+        if (a + b == 0) return null;
+        int i = ThreadLocalRandom.current().nextInt(a + b);
+        return i < a ? own.get(i) : shared.get(i - a);
     }
 }

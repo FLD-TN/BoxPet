@@ -1,98 +1,217 @@
-# BoxPet — pet nói chuyện với chủ (BOXPET_SPEC 11.4). Chỉ chủ thấy.
-# %pet% tên pet, %owner% tên chủ, %level% cấp, %age% số ngày tuổi (sinh nhật)
-# default: câu chung. families.<họ pet>: câu riêng của một họ (họ = "family" trong file pet), thay câu chung của sự kiện đó.
+# BoxPet — pet nói chuyện với chủ nhân (BOXPET_SPEC 11.4). Chỉ chủ nhân thấy.
+# %pet% tên pet, %owner% tên chủ nhân, %level% cấp độ, %age% số ngày tuổi (sinh nhật)
+# default: câu chung của mọi pet.
+# families.<họ pet>: câu riêng của một họ (họ = "family" trong file pet). Câu riêng được trộn chung với câu chung,
+# nên pet vừa có câu riêng vừa có câu chung.
 format: '<#FFB3C7>%pet%<dark_gray>: <white>%line%'
 bubble-format: '<white>%line%'
 
 default:
   summon:
-    - 'Đi thôi chủ ơi!'
-    - 'Mình tới đây rồi nè!'
-    - 'Hôm nay mình đi đâu thế chủ?'
+    - 'Đi thôi chủ nhân ơi!'
+    - 'Em tới rồi đây, chủ nhân!'
+    - 'Hôm nay mình đi đâu vậy chủ nhân?'
+    - 'Được ra ngoài rồi, vui quá!'
+    - 'Chủ nhân gọi em hả? Em có mặt!'
+    - 'Em sẵn sàng đi cùng chủ nhân rồi!'
   dismiss:
-    - 'Mình về kho nghỉ chút nha'
-    - 'Lát nhớ gọi mình ra nha chủ'
+    - 'Em về kho nghỉ một lát nha'
+    - 'Lát nữa nhớ gọi em ra nha chủ nhân'
+    - 'Em đi ngủ một giấc đây'
+    - 'Hẹn gặp lại chủ nhân sau nhé!'
   level-up:
-    - 'Mình lên cấp %level% rồi nè!'
-    - 'Cấp %level%! Mình mạnh hơn rồi đó!'
+    - 'Em lên cấp %level% rồi nè!'
+    - 'Cấp %level%! Em mạnh hơn rồi đó!'
+    - 'Chủ nhân ơi, nhìn em nè, cấp %level% rồi!'
+    - 'Cảm ơn chủ nhân đã chăm em tới cấp %level%!'
   evolve:
-    - 'Nhìn mình nè, khác hẳn luôn!'
+    - 'Nhìn em nè, khác hẳn luôn!'
+    - 'Em đã tiến hóa rồi, chủ nhân thấy sao?'
   little-hungry:
-    - 'Bụng mình bắt đầu sôi rồi...'
-    - 'Chủ ơi, sắp tới giờ ăn chưa?'
+    - 'Bụng em bắt đầu sôi rồi...'
+    - 'Chủ nhân ơi, sắp tới giờ ăn chưa?'
+    - 'Em hơi đói rồi đó chủ nhân'
+    - 'Hình như em ngửi thấy mùi đồ ăn...'
   hungry:
-    - 'Chủ ơi, mình đói quá...'
-    - 'Đói quá không có sức đánh nhau nữa...'
-    - 'Cho mình ăn gì đi mà...'
+    - 'Chủ nhân ơi, em đói quá...'
+    - 'Đói quá, em không còn sức chiến đấu nữa...'
+    - 'Cho em ăn chút gì đi mà...'
+    - 'Bụng em kêu ọt ọt rồi chủ nhân ơi'
+    - 'Em đói tới mức không nhấc nổi chân nữa...'
   fed:
-    - 'Ngon quá! Cảm ơn chủ!'
+    - 'Ngon quá! Cảm ơn chủ nhân!'
     - 'Măm măm, no rồi nè!'
-    - 'Ngon ghê, mai cho mình ăn nữa nha!'
+    - 'Ngon ghê, mai cho em ăn nữa nha!'
+    - 'Chủ nhân nấu ăn ngon nhất trên đời!'
+    - 'Ăn no rồi, em lại có sức rồi!'
   full:
-    - 'Mình no lắm rồi, để lát nữa nha'
-    - 'Bụng mình hết chỗ rồi chủ ơi'
+    - 'Em no lắm rồi, để lát nữa nha'
+    - 'Bụng em hết chỗ rồi chủ nhân ơi'
+    - 'Thêm miếng nữa là em lăn tròn mất'
   petted:
     - 'Hihi, thích quá!'
-    - 'Gãi thêm chút nữa đi chủ!'
-    - 'Chủ là nhất!'
+    - 'Gãi thêm chút nữa đi chủ nhân!'
+    - 'Chủ nhân là nhất!'
+    - 'Em thương chủ nhân nhất trên đời'
+    - 'Được vuốt ve sướng ghê!'
+    - 'Thêm chút nữa thôi mà...'
   low-bond:
-    - 'Lâu rồi chủ không vuốt ve mình...'
-    - 'Chủ còn thương mình không?'
+    - 'Lâu rồi chủ nhân không vuốt ve em...'
+    - 'Chủ nhân còn thương em không?'
+    - 'Em thấy hơi cô đơn...'
+    - 'Chủ nhân dạo này bận quá, quên em rồi'
   birthday:
-    - 'Hôm nay mình tròn %age% ngày tuổi đó chủ!'
+    - 'Hôm nay em tròn %age% ngày tuổi đó chủ nhân!'
+    - 'Sinh nhật %age% ngày của em nè, chủ nhân nhớ không?'
   owner-low-hp:
-    - 'Cẩn thận! Máu chủ thấp lắm rồi!'
-    - 'Chủ ơi rút lui đi, nguy hiểm quá!'
+    - 'Cẩn thận! Máu chủ nhân thấp lắm rồi!'
+    - 'Chủ nhân ơi, rút lui đi, nguy hiểm quá!'
+    - 'Đừng liều nữa chủ nhân, hồi máu đi!'
+    - 'Em lo cho chủ nhân quá!'
   owner-kill:
-    - 'Hạ gục rồi! Chủ đỉnh quá!'
-    - 'Một đối thủ nữa ra đi!'
+    - 'Hạ gục rồi! Chủ nhân đỉnh quá!'
+    - 'Thêm một đối thủ ra đi!'
+    - 'Chủ nhân và em đúng là cặp đôi vô địch!'
+    - 'Ai dám đụng vào chủ nhân của em nữa không?'
   owner-died:
-    - 'Chủ ơi!!!'
-    - 'Không... chủ ơi dậy đi!'
+    - 'Chủ nhân ơi!!!'
+    - 'Không... chủ nhân dậy đi!'
+    - 'Lần sau em sẽ bảo vệ chủ nhân tốt hơn...'
   owner-joined:
-    - 'Chủ về rồi! Nhớ chủ quá!'
-    - 'Chào mừng chủ quay lại!'
+    - 'Chủ nhân về rồi! Nhớ chủ nhân quá!'
+    - 'Chào mừng chủ nhân quay lại!'
+    - 'Em chờ chủ nhân mãi đó!'
   idle:
     - 'Trời hôm nay đẹp ghê'
-    - 'Chủ ơi, mình đi đào mỏ không?'
-    - 'Mình đứng đây canh cho chủ nè'
-    - 'Hôm nay chủ định làm gì thế?'
+    - 'Chủ nhân ơi, mình đi đào mỏ không?'
+    - 'Em đứng đây canh cho chủ nhân nè'
+    - 'Hôm nay chủ nhân định làm gì vậy?'
+    - 'Em muốn đi khám phá thế giới cùng chủ nhân'
+    - 'Đi đâu em cũng theo chủ nhân hết'
+    - 'Có chủ nhân bên cạnh là em yên tâm rồi'
+    - 'Hôm nay mình làm nhiệm vụ chưa chủ nhân?'
   looked:
-    - 'Chủ nhìn gì mình thế?'
-    - 'Mình dễ thương lắm đúng không?'
+    - 'Chủ nhân nhìn gì em vậy?'
+    - 'Em dễ thương lắm đúng không?'
+    - 'Hihi, nhìn em hoài à'
+    - 'Mặt em dính gì hả chủ nhân?'
   talk:
-    - 'Chủ muốn nói chuyện với mình hả?'
-    - 'Mình thích đi chơi cùng chủ lắm!'
-    - 'Có chủ là mình vui rồi'
-  carried:
-    - 'Được chủ ẵm thích quá!'
-    - 'Cao quá, nhìn thấy hết luôn!'
+    - 'Chủ nhân muốn nói chuyện với em hả?'
+    - 'Em thích đi chơi cùng chủ nhân lắm!'
+    - 'Có chủ nhân là em vui rồi'
+    - 'Hôm nay chủ nhân có vui không?'
+    - 'Kể em nghe chuyện hôm nay đi chủ nhân'
+    - 'Em sẽ luôn ở bên chủ nhân'
   arrived:
-    - 'Đợi mình với chủ ơi!'
-    - 'Chủ đi nhanh quá, mình theo không kịp!'
+    - 'Đợi em với chủ nhân ơi!'
+    - 'Chủ nhân đi nhanh quá, em theo không kịp!'
+    - 'Phù, cuối cùng cũng đuổi kịp chủ nhân'
 
 families:
   fire_dragon:
     summon:
-      - 'Lửa của mình sẵn sàng rồi!'
+      - 'Lửa của em sẵn sàng rồi!'
+      - 'Rồng con xuất trận!'
     hungry:
       - 'Bụng đói thì lửa cũng tắt mất...'
     owner-kill:
       - 'Cháy thành tro rồi!'
+      - 'Lửa của em có nóng không nào?'
+    idle:
+      - 'Em đang tập phun lửa to hơn'
+      - 'Khi nào lớn em sẽ chở chủ nhân bay'
+  frog:
+    summon:
+      - 'Ộp ộp! Em tới rồi!'
+    idle:
+      - 'Ộp... có con ruồi nào ngon không ta'
+      - 'Em nhảy xa được tới ba ô đó!'
+    fed:
+      - 'Ộp ộp, ngon tuyệt!'
+    owner-kill:
+      - 'Lưỡi của em dính chặt luôn!'
+  knight:
+    summon:
+      - 'Hiệp sĩ đã sẵn sàng bảo vệ chủ nhân!'
+      - 'Vì danh dự, em xuất trận!'
+    owner-low-hp:
+      - 'Để em chắn cho chủ nhân!'
+    owner-kill:
+      - 'Một đòn xuyên giáp!'
+    idle:
+      - 'Em đang canh gác cho chủ nhân'
+  cacti:
+    summon:
+      - 'Gai của em sắc lắm đó!'
+    petted:
+      - 'Cẩn thận gai nha chủ nhân, hihi'
+    idle:
+      - 'Em không cần uống nhiều nước đâu'
+    owner-low-hp:
+      - 'Để em dựng khiên gai cho chủ nhân!'
+  unicorn:
+    summon:
+      - 'Kỳ lân nhỏ tới ban phước cho chủ nhân!'
+    idle:
+      - 'Sừng của em lấp lánh không chủ nhân?'
+      - 'Em mang may mắn tới cho chủ nhân đó'
+    petted:
+      - 'Bờm của em mềm lắm đúng không?'
+  griffon:
+    summon:
+      - 'Sư điểu đã sẵn sàng!'
+    owner-low-hp:
+      - 'Để em hồi máu cho chủ nhân!'
+      - 'Lông vũ của em sẽ chữa lành cho chủ nhân!'
+    idle:
+      - 'Em muốn bay lên thật cao'
+  necromancer_cat:
+    summon:
+      - 'Meo! Phép thuật đã sẵn sàng!'
+    idle:
+      - 'Meo... em đang học thần chú mới'
+      - 'Đừng để em buồn ngủ giữa trận nha'
+    fed:
+      - 'Meo meo, ngon quá!'
+    owner-kill:
+      - 'Phép của em lợi hại chưa?'
+  outlaw:
+    summon:
+      - 'Xạ thủ đã lên nòng!'
+    owner-kill:
+      - 'Trúng hồng tâm!'
+      - 'Mục tiêu đã bị hạ!'
+    idle:
+      - 'Em đang tìm mục tiêu tiếp theo'
+  samurai_shiba:
+    summon:
+      - 'Kiếm đã sẵn sàng, thưa chủ nhân!'
+    owner-kill:
+      - 'Một nhát là xong!'
+      - 'Kiếm pháp của em thế nào?'
+    idle:
+      - 'Gâu! Em đang luyện kiếm'
+    petted:
+      - 'Gâu gâu! Thích quá!'
   shark:
     summon:
       - 'Cá mập con có mặt!'
     idle:
       - 'Ở đây không có nước để bơi...'
-      - 'Mình ngửi thấy mùi kho báu đâu đây'
-  samurai_shiba:
-    summon:
-      - 'Kiếm đã sẵn sàng, thưa chủ!'
+      - 'Em ngửi thấy mùi chiến lợi phẩm đâu đây'
     owner-kill:
-      - 'Một nhát là xong!'
-  griffon:
-    owner-low-hp:
-      - 'Để mình hồi máu cho chủ!'
+      - 'Chiến lợi phẩm là của chủ nhân hết!'
   cubee_dragon:
+    summon:
+      - 'Rồng vuông nhỏ đã tới!'
     idle:
       - 'Rồng con này nhỏ nhưng có võ đó!'
+      - 'Đi làm nhiệm vụ đi chủ nhân, em mang may mắn tới'
+  palcat:
+    summon:
+      - 'Meo! Mèo nhỏ đi làm đây!'
+    idle:
+      - 'Meo, mình đi đào mỏ không chủ nhân?'
+      - 'Em sẽ giúp chủ nhân làm nhiệm vụ thật nhanh'
+    fed:
+      - 'Meo meo, cảm ơn chủ nhân!'
