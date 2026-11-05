@@ -75,6 +75,9 @@ public final class Settings {
     public final int bondPetGain;
     /** 0.6.0: false = pets get XP only from candies (xp-sources.yml is ignored). */
     public final boolean activityXp;
+    /** 0.8.0: every skill's damage / heal + shield, on top of abilities.yml. */
+    public final double abilityDamageMultiplier;
+    public final double abilityHealMultiplier;
     /** 0.7.0: levels where the pet stops at full EXP until a breakthrough (only below the rarity's max level). */
     public final java.util.Set<Integer> breakthroughLevels;
     public final long bondPetCooldownMillis;
@@ -173,6 +176,8 @@ public final class Settings {
         bondStart = clamp(c.getInt("bond.start", 50));
         bondPetGain = Math.max(0, c.getInt("bond.pet-gain", 1));
         activityXp = c.getBoolean("xp.from-activities", false);
+        abilityDamageMultiplier = Math.max(0, c.getDouble("abilities.damage-multiplier", 1.4));
+        abilityHealMultiplier = Math.max(0, c.getDouble("abilities.heal-multiplier", 1.3));
         breakthroughLevels = java.util.Set.copyOf(c.contains("breakthrough.levels")
                 ? c.getIntegerList("breakthrough.levels") : List.of(9, 19, 29, 39, 49, 59));
         bondPetCooldownMillis = Math.max(0, c.getLong("bond.pet-cooldown-minutes", 240)) * 60_000L;

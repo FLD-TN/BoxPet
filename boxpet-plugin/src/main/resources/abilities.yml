@@ -573,8 +573,8 @@ abilities:
     name: 'Mũi Săn Mồi'
     color: '#3FA7D6:#9BE3FF'
     description:
-      - 'Tăng phần thưởng khi hạ mob,'
-      - 'boss thêm %boost%'
+      - 'Nhân phần thưởng khi hạ mob,'
+      - 'boss lên %boost%'
     boost:
       type: mob
       tenths:
@@ -586,8 +586,8 @@ abilities:
     name: 'Tinh Linh May Mắn'
     color: '#7B6CFF:#FF7BD5'
     description:
-      - 'Tăng phần thưởng nhiệm vụ'
-      - 'thêm %boost%'
+      - 'Tăng %boost% phần thưởng khi'
+      - 'hoàn thành nhiệm vụ'
     boost:
       type: quest
       tenths:
@@ -599,8 +599,8 @@ abilities:
     name: 'Xẻng Thần'
     color: '#E0B36A:#FFE3A8'
     description:
-      - 'Tăng vật phẩm khi đào mỏ'
-      - 'thêm %boost% (chỉ số nguyên)'
+      - 'Nhân vật phẩm khi đào mỏ'
+      - 'lên %boost%'
     boost:
       type: mining
       tenths:
@@ -612,8 +612,8 @@ abilities:
     name: 'Cảm Hứng Họa Sĩ'
     color: '#FFA7C4:#FFD9E6'
     description:
-      - 'Tăng phần thưởng nhiệm vụ'
-      - 'thêm %boost%'
+      - 'Tăng %boost% phần thưởng khi'
+      - 'hoàn thành nhiệm vụ'
     boost:
       type: quest
       tenths:
@@ -625,8 +625,8 @@ abilities:
     name: 'Giai Điệu Vui Vẻ'
     color: '#A5B4FF:#DCE2FF'
     description:
-      - 'Tăng phần thưởng nhiệm vụ'
-      - 'thêm %boost%'
+      - 'Tăng %boost% phần thưởng khi'
+      - 'hoàn thành nhiệm vụ'
     boost:
       type: quest
       tenths:

@@ -197,7 +197,8 @@ public final class BoxPetPlugin extends JavaPlugin {
         menus.load();
         rarities = new Rarities(ConfigFiles.load(this, "rarities.yml"), getLogger());
         types = new PetTypes(new File(getDataFolder(), "pets"), rarities, getLogger());
-        abilities = new Abilities(ConfigFiles.load(this, "abilities.yml"), getLogger());
+        abilities = new Abilities(ConfigFiles.load(this, "abilities.yml"), getLogger(),
+                settings.abilityDamageMultiplier, settings.abilityHealMultiplier);
         levels = new Levels(ConfigFiles.load(this, "levels.yml"), getLogger());
         xpSources = new XpSources(ConfigFiles.load(this, "xp-sources.yml"));
         items = new ItemsConfig(ConfigFiles.load(this, "items.yml"));

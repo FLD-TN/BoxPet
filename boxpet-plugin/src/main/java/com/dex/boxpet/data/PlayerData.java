@@ -25,6 +25,8 @@ public final class PlayerData {
     public @Nullable UUID activePet;
     public boolean hideOthers;
     public boolean petChat = true;
+    /** 0.8.0: "pet: skill!" line in chat when a skill goes off. */
+    public boolean castChat = true;
     /** Auto feed (0.6.0): on/off, fullness to start eating at, candies before foods. */
     public boolean autoFeed;
     public int autoFeedAt = 30;

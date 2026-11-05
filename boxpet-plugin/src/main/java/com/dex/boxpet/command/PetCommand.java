@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 /** {@code /pet [summon <name> | dismiss | hideothers | chat | rename <name>]} (spec 12, 13). */
 public final class PetCommand implements TabExecutor {
 
-    private static final List<String> SUBS = List.of("summon", "dismiss", "hideothers", "chat", "rename");
+    private static final List<String> SUBS = List.of("summon", "dismiss", "hideothers", "chat", "thongbao", "rename");
 
     private final BoxPetPlugin plugin;
 
@@ -70,6 +70,11 @@ public final class PetCommand implements TabExecutor {
                 pd.dirty = true;
                 plugin.pets().applyHiddenFor(p);
                 plugin.messages().send(p, pd.hideOthers ? "toggle.hide-others-on" : "toggle.hide-others-off");
+            }
+            case "thongbao" -> {
+                pd.castChat = !pd.castChat;
+                pd.dirty = true;
+                plugin.messages().send(p, pd.castChat ? "toggle.cast-on" : "toggle.cast-off");
             }
             case "chat" -> {
                 pd.petChat = !pd.petChat;

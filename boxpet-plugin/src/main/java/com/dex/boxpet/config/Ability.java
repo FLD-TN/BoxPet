@@ -53,6 +53,10 @@ public final class Ability {
             return new Scaled(c.getDouble("base", def), c.getDouble("per-level", 0));
         }
 
+        public Scaled times(double k) {
+            return new Scaled(base * k, perLevel * k);
+        }
+
         public double at(int level, double rarityMultiplier) {
             return (base + perLevel * Math.max(0, level - 1)) * rarityMultiplier;
         }
@@ -109,6 +113,11 @@ public final class Ability {
     public final @Nullable VfxFx vfx;
 
     public Ability(String id, ConfigurationSection s) {
+        this(id, s, 1.0, 1.0);
+    }
+
+    /** {@code damageMul} / {@code healMul}: config.yml abilities.damage-multiplier / heal-multiplier (heal + shield). */
+    public Ability(String id, ConfigurationSection s, double damageMul, double healMul) {
         this.id = id;
         type = Type.of(s.getString("type"));
         name = s.getString("name", id);
@@ -117,7 +126,7 @@ public final class Ability {
         cooldownTicks = (int) Math.max(1, Math.round(s.getDouble("cooldown", 8) * 20));
         range = Math.max(1, s.getDouble("range", 12));
         castDelay = Math.max(0, s.getInt("cast-delay-ticks", 10));
-        damage = Scaled.read(s, "damage", 0);
+        damage = Scaled.read(s, "damage", 0).times(damageMul);
         pvpMultiplier = s.contains("pvp-multiplier") ? Math.max(0, s.getDouble("pvp-multiplier")) : null;
         pveMultiplier = Math.max(0, s.getDouble("pve-multiplier", 1.0));
         ConfigurationSection d = s.getConfigurationSection("debuff");
@@ -126,12 +135,12 @@ public final class Ability {
         debuffAmplifier = d == null ? 0 : Math.max(0, d.getInt("amplifier", 0));
         debuffDamageRatio = d == null ? 0 : Math.max(0, d.getDouble("damage-ratio", 0.3));
         ConfigurationSection h = s.getConfigurationSection("heal");
-        heal = h == null ? Scaled.ZERO : Scaled.read(h, "amount", 0);
+        heal = h == null ? Scaled.ZERO : Scaled.read(h, "amount", 0).times(healMul);
         healPercent = h != null && h.getBoolean("percent", false);
         healBelowPercent = h == null ? 100 : Math.max(1, Math.min(100, h.getInt("below-percent", 100)));
         ConfigurationSection sh = s.getConfigurationSection("shield");
         shieldBelowPercent = sh == null ? 40 : Math.max(1, Math.min(99, sh.getInt("below-percent", 40)));
-        shieldHearts = sh == null ? Scaled.ZERO : Scaled.read(sh, "hearts", 2);
+        shieldHearts = sh == null ? Scaled.ZERO : Scaled.read(sh, "hearts", 2).times(healMul);
         shieldTicks = sh == null ? 100 : (int) Math.round(sh.getDouble("seconds", 5) * 20);
         ConfigurationSection p = s.getConfigurationSection("potion");
         potion = p == null ? "" : p.getString("effect", "");

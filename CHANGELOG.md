@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.3 (2026-11-05)
+
+- Pet dùng kỹ năng thì chat của chủ hiện "Tên pet: Tên kỹ năng!". Bật/tắt: /pet thongbao (bảng mới boxpet_options).
+- Kỹ năng mạnh hơn: config.yml abilities.damage-multiplier 1.4 (sát thương), abilities.heal-multiplier 1.3 (hồi máu, khiên). Lore tự cập nhật.
+- Kỹ năng kinh tế: nhiệm vụ ghi theo % ("Tăng 30% phần thưởng khi hoàn thành nhiệm vụ"), đào mỏ / hạ mob ghi hệ số (x2, x1,3).
+
 ## 0.7.2 (2026-11-05)
 
 - Lore kỹ năng: tên kỹ năng nằm trên dòng "Kỹ năng: <tên>" (menus.yml pet-card.ability-header), dòng trống, rồi mô tả và hồi chiêu.

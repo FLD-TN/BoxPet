@@ -114,6 +114,7 @@ public final class AbilityService {
                 if (a.healPercent) amount = max.getValue() * amount / 100.0;
                 o.setHealth(Math.min(max.getValue(), o.getHealth() + amount));
                 fx(p, a, o);
+                announce(p, a);
                 p.cooldown = a.cooldownTicks;
             }
             case POTION -> {
@@ -145,11 +146,19 @@ public final class AbilityService {
                     return;
                 }
                 p.cooldown = a.cooldownTicks;
+                announce(p, a);
                 cast(p, a, target);
             }
             default -> {
             }
         }
+    }
+
+    /** Tells the owner which skill just went off (toggle: /pet thongbao). */
+    private void announce(ActivePet p, Ability a) {
+        if (!p.player.castChat) return;
+        plugin.messages().send(p.owner, "ability.cast", "pet", plugin.pets().displayName(p.data),
+                "ability", com.dex.boxpet.config.PetType.paint(a.color, a.name + "!"));
     }
 
     private static @Nullable PotionEffectType potion(String name) {
@@ -331,6 +340,7 @@ public final class AbilityService {
         p.owner.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, a.shieldTicks, amp, true, false, true));
         p.shieldReadyAt = now + a.cooldownTicks * 50L;
         fx(p, a, p.owner);
+        announce(p, a);
         if (a.vfx != null) {
             Location at = p.owner.getLocation().add(0, a.vfx.yOffset(), 0);
             PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null,

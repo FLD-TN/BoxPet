@@ -14,12 +14,16 @@ public final class Abilities {
     private final Map<String, Ability> byId = new LinkedHashMap<>();
 
     public Abilities(YamlConfiguration yml, Logger log) {
+        this(yml, log, 1.0, 1.0);
+    }
+
+    public Abilities(YamlConfiguration yml, Logger log, double damageMul, double healMul) {
         ConfigurationSection root = yml.getConfigurationSection("abilities");
         if (root == null) return;
         for (String key : root.getKeys(false)) {
             ConfigurationSection s = root.getConfigurationSection(key);
             if (s == null) continue;
-            Ability a = new Ability(key.toLowerCase(Locale.ROOT), s);
+            Ability a = new Ability(key.toLowerCase(Locale.ROOT), s, damageMul, healMul);
             if (a.type == Ability.Type.NONE) {
                 log.warning("abilities.yml: " + key + " has an unknown type (projectile, strike, mark, heal, shield, potion, boost)");
             }

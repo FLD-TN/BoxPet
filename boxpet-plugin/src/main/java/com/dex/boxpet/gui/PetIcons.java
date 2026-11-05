@@ -63,6 +63,13 @@ public final class PetIcons {
         return "<" + c + ">" + level;
     }
 
+    /** Quest: "30%" more reward (like the rank perks). Mining / mob: the multiplier it brings, "x2", "x1,3". */
+    public static String boostText(String type, int tenths) {
+        if (tenths <= 0) return type.equals("quest") ? "0%" : "x1";
+        if (type.equals("quest")) return (tenths * 10) + "%";
+        return boost(10 + tenths);
+    }
+
     public static String boost(int tenths) {
         return "x" + (tenths % 10 == 0 ? String.valueOf(tenths / 10) : (tenths / 10) + "," + (tenths % 10));
     }
@@ -124,7 +131,7 @@ public final class PetIcons {
                 "hearts", num(m, "shield", round1(a.shieldHearts.at(level, mul))),
                 "percent", num(m, "percent", a.type == Ability.Type.SHIELD ? a.shieldBelowPercent : a.healBelowPercent),
                 "bonus", num(m, "bonus", round1(a.markBonus.at(level, mul))),
-                "boost", paint(m, "boost", tenths > 0 ? boost(tenths) : "x0"),
+                "boost", paint(m, "boost", boostText(a.boostType, tenths)),
                 "boost_type", m.text("boost-types." + a.boostType),
                 "seconds", num(m, "time", (a.type == Ability.Type.MARK ? a.markTicks : a.type == Ability.Type.SHIELD ? a.shieldTicks : a.debuffTicks) / 20.0),
                 "level", paint(m, "effect", roman(a.potionAmplifier(r.index()) + 1)),

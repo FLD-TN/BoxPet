@@ -151,6 +151,9 @@ fullness:
   little-hungry-below: 30
 
 abilities:
+  # nhân toàn bộ sát thương kỹ năng / hồi máu + khiên của abilities.yml (lore tự cập nhật)
+  damage-multiplier: 1.4
+  heal-multiplier: 1.3
   # sát thương kỹ năng pet lên người chơi so với lên mob (mỗi kỹ năng có thể ghi đè)
   pvp-multiplier: 0.6
   # đòn pet có đẩy lùi mục tiêu không (false = không, để pet không đẩy kẻ địch ra khỏi combo của chủ)
