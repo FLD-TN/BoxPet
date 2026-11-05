@@ -56,12 +56,12 @@ public final class FoodMenu extends Menu {
                     player.closeInventory();
                     return;
                 }
-                ItemStack stack = find(c);
-                if (stack == null) {
+                int slot = find(c);
+                if (slot < 0) {
                     refresh();
                     return;
                 }
-                plugin.interact().useConsumable(player, now, stack, c, click.isShiftClick() && c.candy());
+                plugin.interact().useConsumable(player, now, slot, c, click.isShiftClick() && c.candy());
                 refresh();
             });
         }
@@ -69,13 +69,15 @@ public final class FoodMenu extends Menu {
         fill();
     }
 
-    private ItemStack find(ItemsConfig.Consumable c) {
-        for (ItemStack it : player.getInventory().getStorageContents()) {
-            ItemFactory.Info info = plugin.itemFactory().read(it);
+    /** Inventory slot of the first stack of this consumable, -1 when none. */
+    private int find(ItemsConfig.Consumable c) {
+        ItemStack[] contents = player.getInventory().getStorageContents();
+        for (int i = 0; i < contents.length; i++) {
+            ItemFactory.Info info = plugin.itemFactory().read(contents[i]);
             ItemsConfig.Consumable x = plugin.itemFactory().consumable(info);
-            if (x != null && x.id().equals(c.id())) return it;
+            if (x != null && x.id().equals(c.id())) return i;
         }
-        return null;
+        return -1;
     }
 
     private static ItemStack withLore(ItemStack item, List<String> extra) {

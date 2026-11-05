@@ -43,6 +43,10 @@ public final class ActivePet {
     /** Viewers this pet is force-hidden for (hide others, visible cap). */
     public final java.util.Set<UUID> hiddenViewers = new java.util.HashSet<>();
     public int statRetries;
+    /** Block reads of the follower, reused while the owner stays in the same block. */
+    final GroundCache ground = new GroundCache();
+    /** Spreads name tag updates of different pets over different ticks. */
+    public final int phase;
 
     // follow state
     public @Nullable Location lastOwner;
@@ -88,6 +92,7 @@ public final class ActivePet {
         this.rarity = rarity;
         this.ability = ability;
         this.pos = owner.getLocation();
+        this.phase = Math.floorMod(data.id.hashCode(), 20);
     }
 
     public boolean shown() {

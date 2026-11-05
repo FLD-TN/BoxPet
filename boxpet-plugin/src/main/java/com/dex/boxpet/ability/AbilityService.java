@@ -38,6 +38,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class AbilityService {
 
+    /** Wait before trying again when the target was out of range, hidden or protected. */
+    private static final int RETRY_TICKS = 10;
+
     /** True while BoxPet deals damage: its own listeners ignore those events. */
     private static boolean dealing;
 
@@ -47,6 +50,9 @@ public final class AbilityService {
     private final BoxPetPlugin plugin;
     private final List<Vfx> vfx = new ArrayList<>();
     private final Map<UUID, Mark> marks = new HashMap<>();
+    /** Pet id -> {ability ready at, shield ready at} (epoch ms): kept when the pet is put away (no reset by re-summon). */
+    private final Map<UUID, long[]> cooldowns = new HashMap<>();
+    private int ticks;
     private BukkitTask task;
 
     public AbilityService(BoxPetPlugin plugin) {
@@ -66,6 +72,27 @@ public final class AbilityService {
         for (Vfx v : vfx) v.remove();
         vfx.clear();
         marks.clear();
+        cooldowns.clear();
+    }
+
+    // ------------------------------------------------------------------ cooldowns kept per pet
+
+    /** The pet leaves (dismiss, logout): remember when its ability and shield are ready again. */
+    public void remember(ActivePet p) {
+        long now = System.currentTimeMillis();
+        long ability = now + Math.max(0, p.cooldown) * 50L;
+        long shield = Math.max(p.shieldReadyAt, 0);
+        if (ability <= now && shield <= now) cooldowns.remove(p.data.id);
+        else cooldowns.put(p.data.id, new long[]{ability, shield});
+    }
+
+    /** The pet comes back: same cooldowns as when it left. */
+    public void restore(ActivePet p) {
+        long[] c = cooldowns.remove(p.data.id);
+        if (c == null) return;
+        long now = System.currentTimeMillis();
+        p.cooldown = (int) Math.max(0, (c[0] - now) / 50L);
+        p.shieldReadyAt = c[1];
     }
 
     // ------------------------------------------------------------------ per pet tick
@@ -106,10 +133,17 @@ public final class AbilityService {
             case PROJECTILE, STRIKE, MARK -> {
                 if (p.cooldown > 0 || !plugin.pets().combat().tagged(o.getUniqueId())) return;
                 LivingEntity target = plugin.pets().combat().target(o.getUniqueId(), 5000);
-                if (target == null || !validTarget(o, target)) return;
+                // cheap checks first, WorldGuard last; a failed try waits RETRY_TICKS instead of retrying every tick
+                if (target == null) {
+                    p.cooldown = RETRY_TICKS;
+                    return;
+                }
                 Location from = origin(p);
-                if (from.getWorld() != target.getWorld() || from.distanceSquared(target.getLocation()) > a.range * a.range) return;
-                if (!o.hasLineOfSight(target)) return;
+                if (from.getWorld() != target.getWorld() || from.distanceSquared(target.getLocation()) > a.range * a.range
+                        || !o.hasLineOfSight(target) || !validTarget(o, target)) {
+                    p.cooldown = RETRY_TICKS;
+                    return;
+                }
                 p.cooldown = a.cooldownTicks;
                 cast(p, a, target);
             }
@@ -209,6 +243,11 @@ public final class AbilityService {
         PetAbilityDamageEvent ev = new PetAbilityDamageEvent(o, plugin.pets().view(p.data), target, a.id, dmg);
         Bukkit.getPluginManager().callEvent(ev);
         if (ev.isCancelled() || ev.getDamage() <= 0) return false;
+        // Pet damage ignores the target's hurt cooldown (noDamageTicks), then puts it back as it was: otherwise a pet
+        // hit right after the owner's hit is swallowed, and its own hurt cooldown would weaken the owner's next hit
+        int savedTicks = target.getNoDamageTicks();
+        double savedLast = target.getLastDamage();
+        target.setNoDamageTicks(0);
         dealing = true;
         try {
             // the owner's stats as a skill attack: MMOItems skill damage, magic defence, PvP damage apply
@@ -220,6 +259,10 @@ public final class AbilityService {
             target.damage(ev.getDamage(), o);
         } finally {
             dealing = false;
+            if (target.isValid() && !target.isDead()) {
+                target.setNoDamageTicks(savedTicks);
+                target.setLastDamage(savedLast);
+            }
         }
         return true;
     }
@@ -367,6 +410,10 @@ public final class AbilityService {
             }
         }
         if (marks.size() > 64) marks.values().removeIf(m -> m.until() < System.currentTimeMillis());
+        if (++ticks % 1200 == 0 && !cooldowns.isEmpty()) {
+            long now = System.currentTimeMillis();
+            cooldowns.values().removeIf(c -> c[0] <= now && c[1] <= now);
+        }
     }
 
     /** A moving or attached VFX model, or a particle-only projectile. */

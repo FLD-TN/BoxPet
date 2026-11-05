@@ -33,6 +33,7 @@ public final class Follower {
             return;
         }
         trackOwner(p, ol);
+        p.ground.validate(ol);
 
         // 4.5 fast travel
         if (fastTravel(p, o)) return;
@@ -114,6 +115,7 @@ public final class Follower {
     /** Where a pet appears next to its owner (summon, teleport, respawn): the back-right slot of the camera. */
     public Location spawnSlot(ActivePet p) {
         Location ol = p.owner.getLocation();
+        p.ground.validate(ol);
         Location at = slot(p, ol, ol.getYaw());
         at.setYaw(ol.getYaw());
         return at;
@@ -219,7 +221,7 @@ public final class Follower {
             double d = 0.5 + r.nextDouble() * s().wanderRadius;
             Location w = p.anchor.clone().add(Math.cos(a) * d, 0, Math.sin(a) * d);
             w.setY(height(p, w, ol));
-            if (passable(w)) {
+            if (p.ground.free(w)) {
                 p.wanderTarget = w;
                 return w;
             }
@@ -237,13 +239,13 @@ public final class Follower {
         Vector fwd = forward(yaw);
         Location slot = ol.clone().add(right.multiply(side)).subtract(fwd.multiply(back));
         slot.setY(height(p, slot, ol));
-        if (!passable(slot)) {
+        if (!p.ground.free(slot)) {
             for (int i = 1; i <= 4; i++) {
                 double f = 1 - i * 0.25;
                 Location closer = ol.clone().add(new Vector(-Math.cos(Math.toRadians(yaw)), 0, -Math.sin(Math.toRadians(yaw)))
                         .multiply(side * f)).subtract(forward(yaw).multiply(back * f));
                 closer.setY(height(p, closer, ol));
-                if (passable(closer)) return closer;
+                if (p.ground.free(closer)) return closer;
             }
             Location own = ol.clone();
             own.setY(ol.getY() + (p.type.fly ? 1.4 : 0));
@@ -270,36 +272,8 @@ public final class Follower {
     private double height(ActivePet p, Location at, Location ol) {
         double extra = p.type.height != null ? p.type.height : s().followHeight;
         if (p.type.fly) return ol.getY() + s().flyHeight + extra;
-        return groundY(at.getWorld(), at.getX(), ol.getY(), at.getZ()) + extra;
-    }
-
-    /** Top of the first solid block under (x, y + 1, z), up to 6 blocks down; in water: the owner's height. */
-    static double groundY(World w, double x, double y, double z) {
-        int bx = (int) Math.floor(x);
-        int bz = (int) Math.floor(z);
-        if (!w.isChunkLoaded(bx >> 4, bz >> 4)) return y;
-        int start = (int) Math.floor(y + 1.0);
-        Block feet = w.getBlockAt(bx, (int) Math.floor(y), bz);
-        if (feet.isLiquid()) return y;
-        for (int by = start; by >= start - 6 && by > w.getMinHeight(); by--) {
-            Block b = w.getBlockAt(bx, by, bz);
-            if (b.isLiquid()) return Math.max(y, by + 0.9);
-            if (!b.isPassable()) {
-                double top = b.getBoundingBox().getMaxY();
-                return top > by ? top : by + 1;
-            }
-        }
-        return y;
-    }
-
-    private static boolean passable(Location at) {
-        World w = at.getWorld();
-        int bx = at.getBlockX();
-        int bz = at.getBlockZ();
-        if (!w.isChunkLoaded(bx >> 4, bz >> 4)) return true;
-        Block feet = w.getBlockAt(bx, (int) Math.floor(at.getY() + 0.05), bz);
-        Block head = feet.getRelative(0, 1, 0);
-        return feet.isPassable() && head.isPassable();
+        double top = p.ground.groundTop(at.getWorld(), at.getX(), ol.getY(), at.getZ());
+        return (Double.isNaN(top) ? ol.getY() : top) + extra;
     }
 
     // ------------------------------------------------------------------ movement

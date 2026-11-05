@@ -174,12 +174,14 @@ public final class PetManager {
         UUID id = player.getUniqueId();
         ActivePet p = active.remove(id);
         if (p != null) {
+            plugin.abilityService().remember(p);
             despawnVisual(p, false);
             if (p.visual != null) byBase.remove(p.visual.baseId());
         }
         plugin.stats().clearAll(player);
         bonus.remove(id);
         combat.forget(id);
+        if (swapCooldownLeft(id) <= 0) lastSwap.remove(id);
         PlayerData pd = players.remove(id);
         if (pd != null) {
             long now = System.currentTimeMillis();
@@ -201,6 +203,19 @@ public final class PetManager {
     // ------------------------------------------------------------------ saving
 
     public void save(PlayerData pd) {
+        // items given to the pet (candy, food, eggs) left the inventory: write the inventory in the same moment as the
+        // pet data, so a crash can never keep both the item and its effect
+        if (pd.inventoryChanged) {
+            pd.inventoryChanged = false;
+            Player online = Bukkit.getPlayer(pd.uuid);
+            if (online != null) {
+                try {
+                    online.saveData();
+                } catch (RuntimeException ex) {
+                    plugin.getLogger().log(Level.WARNING, "Could not save the inventory of " + online.getName(), ex);
+                }
+            }
+        }
         List<PetData> pets = new ArrayList<>();
         for (PetData p : pd.pets.values()) pets.add(p.copy());
         for (PetData p : pd.removed) pets.add(p.copy());
@@ -214,7 +229,7 @@ public final class PetManager {
 
     private void saveAll() {
         for (PlayerData pd : players.values()) {
-            boolean dirty = pd.dirty || !pd.removed.isEmpty();
+            boolean dirty = pd.dirty || pd.inventoryChanged || !pd.removed.isEmpty();
             if (!dirty) for (PetData p : pd.pets.values()) if (p.dirty) {
                 dirty = true;
                 break;
@@ -340,6 +355,7 @@ public final class PetManager {
         ap.nextIdleChat = System.currentTimeMillis() + randomIdle();
         ap.nextInteract = 400;
         ap.lastDrainCheck = System.currentTimeMillis();
+        plugin.abilityService().restore(ap);
         active.put(player.getUniqueId(), ap);
         if (!player.isDead()) spawnVisual(ap, follower.spawnSlot(ap), effects);
         else ap.deadHidden = true;
@@ -361,6 +377,7 @@ public final class PetManager {
         PetData pet = pd == null ? null : pd.active();
         if (p != null) {
             if (message) plugin.chat().say(p, "dismiss");
+            plugin.abilityService().remember(p);
             despawnVisual(p, true);
         }
         plugin.stats().clearPet(player);
@@ -445,10 +462,17 @@ public final class PetManager {
             d.text(Text.parse(nametagText(p)));
             d.setShadowed(true);
             d.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
-            d.setTeleportDuration(2);
+            // moved every nametag-update-ticks with the same interpolation, so it still glides smoothly
+            d.setTeleportDuration(Math.min(59, s().nametagUpdateTicks + 1));
             d.setViewRange((float) (s().viewDistance / 64.0));
         });
         p.nametag = td;
+        // same visibility as the model: viewers hiding this pet, and hidden states of the owner
+        for (UUID viewer : p.hiddenViewers) {
+            Player v = Bukkit.getPlayer(viewer);
+            if (v != null) v.hideEntity(plugin, td);
+        }
+        if (p.visual != null && (hiddenState(p.owner) || p.travelHidden || p.teleporting || p.deadHidden)) td.setVisibleByDefault(false);
     }
 
     private Location nametagLocation(ActivePet p) {
@@ -467,12 +491,20 @@ public final class PetManager {
 
     /** Called by the follower after every move. */
     void afterMove(ActivePet p) {
-        if (p.nametag != null && p.nametag.isValid()) {
+        // the name tag is a real entity: moved every few ticks only (each move is a packet to every viewer)
+        int every = s().nametagUpdateTicks;
+        if (p.nametag != null && p.nametag.isValid() && (every <= 1 || (Bukkit.getCurrentTick() + p.phase) % every == 0)) {
             Location at = nametagLocation(p);
             if (at.getWorld() != p.nametag.getWorld()) spawnNametag(p);
-            else if (at.distanceSquared(p.nametag.getLocation()) > 0.0004) p.nametag.teleport(at);
+            else if (at.distanceSquared(p.nametag.getLocation()) > 0.0025) p.nametag.teleport(at);
         }
         plugin.chat().tickBubble(p);
+    }
+
+    /** The server removed the name tag (its chunk unloaded, another plugin killed it): make a new one. */
+    private void checkNametag(ActivePet p) {
+        if (p.visual == null || p.visual.removed() || p.travelHidden || p.teleporting || p.deadHidden) return;
+        if (p.nametag == null || !p.nametag.isValid()) spawnNametag(p);
     }
 
     public void playAnimation(ActivePet p, String state) {
@@ -741,6 +773,10 @@ public final class PetManager {
 
     private void second() {
         seconds++;
+        if (seconds % 300 == 0) {
+            // swap cooldowns of players who left while it was running
+            lastSwap.keySet().removeIf(id -> !players.containsKey(id) && swapCooldownLeft(id) <= 0);
+        }
         long now = System.currentTimeMillis();
         for (ActivePet p : new ArrayList<>(active.values())) {
             try {
@@ -757,6 +793,7 @@ public final class PetManager {
                     if (p.shown() && !combat.tagged(p.ownerId)) plugin.chat().say(p, "idle");
                 }
                 updateHiddenState(p);
+                checkNametag(p);
             } catch (RuntimeException ex) {
                 plugin.getLogger().log(Level.WARNING, "Pet second task failed for " + p.owner.getName(), ex);
             }

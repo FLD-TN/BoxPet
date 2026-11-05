@@ -105,7 +105,16 @@ public final class IncubatorMenu extends Menu {
         }
         ItemStack stack = player.getInventory().getItem(rawSlot);
         if (stack == null || !stack.isSimilar(item)) return;
-        stack.setAmount(stack.getAmount() - 1);
+        // take the egg by writing the slot back (never through a possibly detached reference)
+        if (stack.getAmount() <= 1) {
+            player.getInventory().setItem(rawSlot, null);
+        } else {
+            ItemStack left = stack.clone();
+            left.setAmount(stack.getAmount() - 1);
+            player.getInventory().setItem(rawSlot, left);
+        }
+        // put() saves at once: the inventory is saved in the same moment (no egg kept after a crash)
+        pd.inventoryChanged = true;
         IncubatorSlot s = plugin.incubator().put(pd, free, info);
         Rarity r = plugin.rarities().get(s.rarity());
         plugin.messages().send(player, "incubator.placed", "time", Format.duration(r == null ? 0 : r.hatchSeconds()));

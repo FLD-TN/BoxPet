@@ -84,6 +84,7 @@ public final class BoxPetPlugin extends JavaPlugin {
     private PetActions actions;
     private ChatInput input;
     private InteractListener interact;
+    private XpListener xpListener;
 
     private BoxCoreHook boxCore;
     private CataMinesHook cataMines;
@@ -137,7 +138,7 @@ public final class BoxPetPlugin extends JavaPlugin {
         pm.registerEvents(new PlayerListener(this), this);
         pm.registerEvents(new CombatListener(this), this);
         pm.registerEvents(interact, this);
-        XpListener xpListener = new XpListener(this);
+        xpListener = new XpListener(this);
         pm.registerEvents(xpListener, this);
         xpListener.registerOptional();
 
@@ -342,6 +343,10 @@ public final class BoxPetPlugin extends JavaPlugin {
 
     public InteractListener interact() {
         return interact;
+    }
+
+    public XpListener xpListener() {
+        return xpListener;
     }
 
     public Optional<BoxCoreHook> boxCore() {

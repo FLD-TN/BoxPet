@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.4.1 (2026-11-05) — rà soát hiệu suất và lỗi
+
+### Sửa lỗi
+- Sát thương pet bỏ qua thời gian bất tử của mục tiêu rồi trả lại như cũ: không bị nuốt mất, không làm yếu đòn kế
+  tiếp của chủ.
+- Không còn giữ được cả vật phẩm lẫn hiệu quả khi server crash: túi đồ được lưu cùng lúc với dữ liệu pet sau khi
+  cho ăn kẹo / thức ăn, và lưu ngay khi đặt trứng vào lò.
+- Kẹo, thức ăn, trứng bị trừ bằng cách ghi lại đúng ô trong túi đồ, không dựa vào tham chiếu vật phẩm.
+- Tên pet: ai cũng dùng được màu và gradient; cấm `%` (placeholder), `#` chỉ trong mã màu hex, chỉ cho phép thẻ
+  màu và kiểu chữ. Bỏ quyền `boxpet.rename.color`.
+- Rò rỉ RAM: danh sách mob MyBoxMobs đã xử lý luôn được dọn sau 2 tick; các bộ đếm theo người chơi được dọn khi thoát
+  (thời gian chờ đang chạy vẫn giữ, thoát vào lại không lách được).
+- Tên trên đầu pet tự tạo lại nếu bị server xoá (chunk unload).
+- Thời gian hồi kỹ năng và khiên được giữ theo từng pet: cất rồi thả lại không reset.
+
+### Hiệu suất
+- Kết quả đọc block (mặt đất, chỗ trống) được dùng lại tới khi chủ sang block khác hoặc sau 10 tick.
+- Tên trên đầu pet di chuyển mỗi 3 tick có nội suy (`visibility.nametag-update-ticks`), thay vì mỗi tick.
+- Kỹ năng chiến đấu chưa bắn được (mục tiêu xa, bị che, vùng cấm) chờ 0,5 giây mới thử lại; kiểm tra khoảng cách
+  và tầm nhìn trước, WorldGuard sau cùng.
+
 ## 0.4.0 (2026-11-05) — bản đầu, đủ 4 giai đoạn của spec
 
 ### 0.1 Nền tảng

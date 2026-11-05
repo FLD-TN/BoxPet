@@ -29,8 +29,15 @@ import org.jetbrains.annotations.Nullable;
 /** Rename, evolve, release and staff actions (spec 9.3, 10.4, 12, 13). Main thread. */
 public final class PetActions {
 
-    private static final Pattern TAGS = Pattern.compile("<[^>]*>");
-    private static final Pattern LEGACY = Pattern.compile("[&§][0-9a-fk-orA-FK-OR]|[&§]#[0-9a-fA-F]{6}");
+    private static final Pattern TAGS = Pattern.compile("<([^>]*)>");
+    /** A hex colour where it belongs: &#RRGGBB, <#RRGGBB>, </#RRGGBB>, <color:#..>, <gradient:#..:#..>. */
+    private static final Pattern HEX_COLOUR = Pattern.compile("(?<=[&<:/])#[0-9a-fA-F]{6}");
+    /** MiniMessage tags a pet name may use: colours and text styles only (no click, hover, font, newline...). */
+    private static final java.util.Set<String> ALLOWED_TAGS = java.util.Set.of(
+            "black", "dark_blue", "dark_green", "dark_aqua", "dark_red", "dark_purple", "gold", "gray", "grey",
+            "dark_gray", "dark_grey", "blue", "green", "aqua", "red", "light_purple", "yellow", "white",
+            "color", "colour", "c", "gradient", "rainbow", "transition", "pride",
+            "bold", "b", "italic", "i", "em", "underlined", "u", "strikethrough", "st", "reset");
 
     private final BoxPetPlugin plugin;
     private final Map<UUID, Long> lastRename = new HashMap<>();
@@ -41,6 +48,11 @@ public final class PetActions {
 
     private Settings s() {
         return plugin.settings();
+    }
+
+    /** Logout: forget the rename cooldown. */
+    public void forget(UUID player) {
+        lastRename.remove(player);
     }
 
     // ------------------------------------------------------------------ rename (spec 12)
@@ -58,11 +70,7 @@ public final class PetActions {
             refreshActive(pet);
             return "rename.reset";
         }
-        boolean colours = player.hasPermission("boxpet.rename.color");
-        if (!colours) name = LEGACY.matcher(TAGS.matcher(name).replaceAll("")).replaceAll("");
-        String lower = name.toLowerCase(Locale.ROOT);
-        if (lower.contains("&k") || lower.contains("§k") || lower.contains("<obf") || lower.contains("<click")
-                || lower.contains("<hover") || lower.contains("<insert")) return "rename.invalid";
+        if (!validName(name)) return "rename.invalid";
         String plain = Text.plain(name).trim();
         if (plain.length() < s().renameMin || plain.length() > s().renameMax) return "rename.length";
         String plainLower = plain.toLowerCase(Locale.ROOT);
@@ -72,6 +80,28 @@ public final class PetActions {
         lastRename.put(player.getUniqueId(), now);
         refreshActive(pet);
         return "rename.done";
+    }
+
+    /**
+     * Everyone may use colours and gradients (owner decision 0.4.1). Refused: '%' anywhere (PlaceholderAPI), '#'
+     * outside a hex colour, obfuscated text (&k), and every MiniMessage tag that is not a colour or a text style.
+     */
+    static boolean validName(String name) {
+        if (name.indexOf('%') >= 0 || name.indexOf('\n') >= 0) return false;
+        if (HEX_COLOUR.matcher(name).replaceAll("").indexOf('#') >= 0) return false;
+        String lower = name.toLowerCase(Locale.ROOT);
+        if (lower.contains("&k") || lower.contains("§k")) return false;
+        var m = TAGS.matcher(lower);
+        while (m.find()) {
+            String tag = m.group(1).trim();
+            if (tag.startsWith("/")) tag = tag.substring(1);
+            if (tag.startsWith("!")) tag = tag.substring(1);
+            int colon = tag.indexOf(':');
+            String tagName = colon >= 0 ? tag.substring(0, colon) : tag;
+            if (tagName.startsWith("#") && tagName.length() == 7) continue;
+            if (!ALLOWED_TAGS.contains(tagName)) return false;
+        }
+        return true;
     }
 
     private void refreshActive(PetData pet) {

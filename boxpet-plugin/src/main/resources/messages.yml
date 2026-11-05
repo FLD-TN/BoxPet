@@ -97,7 +97,8 @@ rename:
   done: '<success>✔ Đã đổi tên thành %pet%'
   reset: '<success>✔ Đã bỏ tên riêng, pet dùng lại tên gốc'
   cooldown: '<error>✘ Chờ một lát rồi đổi tên tiếp'
-  invalid: '<error>✘ Tên có ký tự không được dùng'
+  # được dùng màu & gradient; cấm % ; # chỉ dùng trong mã màu hex; cấm chữ nhấp nháy và thẻ khác màu
+  invalid: '<error>✘ Tên có ký tự không được dùng <muted>(không dùng %, # chỉ dùng trong mã màu, không dùng chữ nhấp nháy)'
   length: '<error>✘ Tên phải dài từ <text>%min% <error>tới <text>%max% <error>ký tự'
   banned: '<error>✘ Tên có từ không được phép'
   no-active: '<error>✘ Hãy thả pet bạn muốn đổi tên trước'

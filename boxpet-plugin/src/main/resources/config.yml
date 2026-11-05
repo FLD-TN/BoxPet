@@ -57,6 +57,8 @@ visibility:
   # tên trên đầu pet. %name% %level% %hungry%
   nametag: '%name% <dark_gray>[<gray>Lv.%level%<dark_gray>]%hungry%'
   nametag-offset: 0.35
+  # di chuyển tên trên đầu pet mỗi bao nhiêu tick (có nội suy nên vẫn mượt); 1 = mỗi tick, tốn gói tin nhất
+  nametag-update-ticks: 3
 
 # Vị trí và cách đi theo (BOXPET_SPEC 4.1). Mỗi pet có thể ghi đè side / back / height / fly trong file pet.
 follow:

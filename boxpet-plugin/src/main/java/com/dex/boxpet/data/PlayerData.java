@@ -28,6 +28,8 @@ public final class PlayerData {
     public transient boolean dirty;
     public transient boolean incubatorDirty;
     public transient boolean collectionDirty;
+    /** A BoxPet item left the inventory since the last save: save the player file with the pet data. */
+    public transient boolean inventoryChanged;
     /** Pets removed from this player (released, transferred): saved then forgotten. */
     public final transient List<PetData> removed = new ArrayList<>();
 

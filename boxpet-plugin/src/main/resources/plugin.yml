@@ -24,9 +24,6 @@ permissions:
   boxpet.rename:
     description: Đặt tên cho pet
     default: true
-  boxpet.rename.color:
-    description: Dùng mã màu trong tên pet
-    default: op
   boxpet.admin:
     description: Lệnh /boxpet
     default: op

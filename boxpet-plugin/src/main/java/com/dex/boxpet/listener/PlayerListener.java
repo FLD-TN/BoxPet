@@ -36,6 +36,9 @@ public final class PlayerListener implements Listener {
     public void onQuit(PlayerQuitEvent e) {
         plugin.input().cancel(e.getPlayer());
         plugin.pets().quit(e.getPlayer());
+        plugin.interact().forget(e.getPlayer().getUniqueId());
+        plugin.actions().forget(e.getPlayer().getUniqueId());
+        plugin.xpListener().forget(e.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

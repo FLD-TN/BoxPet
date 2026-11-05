@@ -45,6 +45,12 @@ public final class XpListener implements Listener {
         if (killer == null || killer.equals(victim) || plugin.pets().active(killer.getUniqueId()) == null) return;
         if (src().blockSameIp && sameIp(killer, victim)) return;
         long now = System.currentTimeMillis();
+        long window = src().sameVictimCooldownSeconds * 1000L;
+        if (lastVictim.size() > 200) {
+            // killers who left with a running cooldown: drop them once it is over
+            lastVictim.values().forEach(m -> m.values().removeIf(t -> now - t >= window));
+            lastVictim.values().removeIf(Map::isEmpty);
+        }
         Map<UUID, Long> seen = lastVictim.computeIfAbsent(killer.getUniqueId(), k -> new HashMap<>());
         Long last = seen.get(victim.getUniqueId());
         if (last != null && now - last < src().sameVictimCooldownSeconds * 1000L) return;
@@ -53,6 +59,15 @@ public final class XpListener implements Listener {
         plugin.xp().give(killer, XpSources.PLAYER_KILL, src().get(XpSources.PLAYER_KILL).amount());
         var pet = plugin.pets().active(killer.getUniqueId());
         if (pet != null) plugin.chat().say(pet, "owner-kill");
+    }
+
+    /** Logout: drop expired kill cooldowns only (relogging must not reset a running cooldown). */
+    public void forget(UUID player) {
+        Map<UUID, Long> seen = lastVictim.get(player);
+        if (seen == null) return;
+        long now = System.currentTimeMillis();
+        seen.values().removeIf(t -> now - t >= src().sameVictimCooldownSeconds * 1000L);
+        if (seen.isEmpty()) lastVictim.remove(player);
     }
 
     private static boolean sameIp(Player a, Player b) {
@@ -122,7 +137,12 @@ public final class XpListener implements Listener {
                     org.bukkit.entity.Entity ent = (org.bukkit.entity.Entity) getEntity.invoke(ev);
                     String mobId = String.valueOf(getMobId.invoke(ev)).toLowerCase(Locale.ROOT);
                     UUID killerId = (UUID) getKiller.invoke(ev);
-                    if (ent != null) handledByMbm.add(ent.getUniqueId());
+                    if (ent != null) {
+                        UUID entId = ent.getUniqueId();
+                        handledByMbm.add(entId);
+                        // always forgotten 2 ticks later, whoever killed it (no growing set)
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> handledByMbm.remove(entId), 2L);
+                    }
                     Player killer = killerId == null ? null : Bukkit.getPlayer(killerId);
                     if (killer == null) return;
                     double amount = src().myBoxMobsOverrides.getOrDefault(mobId, src().myBoxMobsDefault);

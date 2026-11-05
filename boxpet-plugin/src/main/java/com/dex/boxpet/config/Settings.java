@@ -40,6 +40,7 @@ public final class Settings {
     public final int maxVisiblePerPlayer;
     public final String nametagFormat;
     public final double nametagOffset;
+    public final int nametagUpdateTicks;
 
     // follow
     public final double followSide;
@@ -140,6 +141,7 @@ public final class Settings {
         maxVisiblePerPlayer = Math.max(1, c.getInt("visibility.max-visible-per-player", 15));
         nametagFormat = c.getString("visibility.nametag", "%name% &8[&7Lv.%level%&8]%hungry%");
         nametagOffset = c.getDouble("visibility.nametag-offset", 0.35);
+        nametagUpdateTicks = Math.max(1, Math.min(20, c.getInt("visibility.nametag-update-ticks", 3)));
 
         followSide = c.getDouble("follow.side", 1.2);
         followBack = c.getDouble("follow.back", 0.8);
