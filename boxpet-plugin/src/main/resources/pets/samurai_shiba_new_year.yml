@@ -5,7 +5,7 @@ color: '#FF2E63'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: samurai_shiba
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
-role: combat
+role: boost
 # độ hiếm của pet này (một model = một pet = một độ hiếm). Độ hiếm cao hơn thì chỉ số gốc cao hơn
 rarity: rare
 # icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
@@ -26,11 +26,11 @@ follow:
   fly: false
 # chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
-  ATTACK_DAMAGE:
+  MAX_HEALTH:
     base: 1
     per-level: 0.05
-  PVP_DAMAGE:
-    base: 0.5
+  DEFENSE:
+    base: 0.3
     per-level: 0.02
 # kỹ năng trong abilities.yml
-ability: shiba_slash
+ability: shiba_lixi

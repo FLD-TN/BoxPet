@@ -37,6 +37,7 @@ abilities:
       - 'gây %damage% sát thương và đốt'
       - 'cháy %seconds% giây'
     cooldown: 8
+    pvp-multiplier: 0.5
     range: 14
     cast-delay-ticks: 18
     damage:
@@ -141,6 +142,7 @@ abilities:
       - 'gây %damage% sát thương trong'
       - '%radius% ô và đốt cháy %seconds% giây'
     cooldown: 9
+    pvp-multiplier: 0.7
     range: 14
     cast-delay-ticks: 18
     damage:
@@ -173,6 +175,7 @@ abilities:
       - 'gây %damage% sát thương và làm'
       - 'chậm %seconds% giây'
     cooldown: 8
+    pvp-multiplier: 0.5
     range: 14
     cast-delay-ticks: 18
     damage:
@@ -200,6 +203,7 @@ abilities:
       - 'gây %damage% sát thương và đốt'
       - 'cháy %seconds% giây'
     cooldown: 8
+    pvp-multiplier: 0.5
     range: 14
     cast-delay-ticks: 18
     damage:
@@ -233,6 +237,7 @@ abilities:
       - 'gây %damage% sát thương và làm'
       - 'chậm %seconds% giây'
     cooldown: 8
+    pvp-multiplier: 0.5
     range: 14
     cast-delay-ticks: 18
     damage:
@@ -298,19 +303,15 @@ abilities:
     color: '#FF6B6B:#FFD3D3'
     description:
       - 'Ném hộp quà vào mục tiêu,'
-      - 'gây %damage% sát thương và làm'
-      - 'chậm %seconds% giây'
-    cooldown: 8
+      - 'gây %damage% sát thương'
+    cooldown: 10
+    pvp-multiplier: 0.4
     range: 14
     cast-delay-ticks: 18
     damage:
       base: 3
       per-level: 0.1
     pve-multiplier: 1.0
-    debuff:
-      type: slow
-      seconds: 3
-      amplifier: 0
     fx:
       animation: skill
       sounds:
@@ -332,7 +333,8 @@ abilities:
     description:
       - 'Lao tới đâm thẳng mục tiêu,'
       - 'gây %damage% sát thương'
-    cooldown: 7
+    cooldown: 9
+    pvp-multiplier: 0.4
     range: 10
     cast-delay-ticks: 22
     damage:
@@ -360,6 +362,7 @@ abilities:
       - 'sát thương và chảy máu'
       - '%seconds% giây'
     cooldown: 9
+    pvp-multiplier: 0.5
     range: 10
     cast-delay-ticks: 20
     damage:
@@ -390,6 +393,7 @@ abilities:
       - 'đòn của chủ nhân lên nó mạnh'
       - 'hơn %bonus%%, kèm %damage% sát thương'
     cooldown: 12
+    pvp-multiplier: 0.5
     range: 16
     cast-delay-ticks: 30
     damage:
@@ -442,12 +446,12 @@ abilities:
       - 'Khi máu chủ nhân dưới %percent%%,'
       - 'tạo khiên %hearts% tim trong'
       - '%seconds% giây'
-    cooldown: 45
+    cooldown: 50
     shield:
       below-percent: 40
       hearts:
-        base: 2
-        per-level: 0.05
+        base: 1.5
+        per-level: 0.04
       seconds: 6
     fx:
       animation: skill
@@ -468,8 +472,12 @@ abilities:
     description:
       - 'Khi máu chủ nhân dưới %percent%%,'
       - 'tạo khiên %hearts% tim trong'
-      - '%seconds% giây'
+      - '%seconds% giây và đẩy nhẹ kẻ địch'
+      - 'trong %radius% ô'
     cooldown: 45
+    blast:
+      radius: 3
+      power: 0.6
     shield:
       below-percent: 40
       hearts:
@@ -756,6 +764,7 @@ abilities:
       - '%seconds% giây: chủ nhân đánh nó'
       - 'mạnh hơn %bonus%%'
     cooldown: 7
+    pvp-multiplier: 0.7
     range: 12
     cast-delay-ticks: 22
     damage:
@@ -905,3 +914,154 @@ abilities:
         - {sound: item.firecharge.use, volume: 0.8, pitch: 1.0}
       particles:
         - {particle: FLAME, count: 25, spread: 0.6, speed: 0.05, at: owner}
+  frog_tongue_basic:
+    type: projectile
+    name: 'Lưỡi Dính'
+    color: '#7BD88F:#C6F6A8'
+    description:
+      - 'Phóng lưỡi vào mục tiêu,'
+      - 'gây %damage% sát thương'
+    cooldown: 10
+    pvp-multiplier: 0.4
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 2.5
+      per-level: 0.1
+    pve-multiplier: 1.0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.frog.tongue, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+  shiba_slash_basic:
+    type: strike
+    name: 'Nhát Chém Tre'
+    color: '#F2545B:#FFB4A2'
+    description:
+      - 'Chém mục tiêu, gây %damage%'
+      - 'sát thương'
+    cooldown: 11
+    pvp-multiplier: 0.4
+    range: 10
+    cast-delay-ticks: 20
+    damage:
+      base: 3
+      per-level: 0.1
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.player.attack.sweep, volume: 0.9, pitch: 1.3, delay: 20}
+      particles:
+        - {particle: SWEEP_ATTACK, count: 2, spread: 0.2, speed: 0, at: target}
+      vfx:
+        model: vfx_light_slash_1
+        animation: left-right-horiz
+        life-ticks: 14
+        scale: 1.2
+        y-offset: 1.0
+  outlaw_mark_basic:
+    type: mark
+    name: 'Đánh Dấu Mục Tiêu'
+    color: '#FF5E5E:#FFC2A8'
+    description:
+      - 'Đánh dấu mục tiêu %seconds% giây:'
+      - 'đòn của chủ nhân lên nó mạnh'
+      - 'hơn %bonus%%'
+    cooldown: 14
+    pvp-multiplier: 0.4
+    range: 16
+    cast-delay-ticks: 30
+    mark:
+      seconds: 6
+      bonus-percent:
+        base: 3
+        per-level: 0.06
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.arrow.shoot, volume: 0.8, pitch: 0.8, delay: 28}
+        - {sound: block.note_block.bell, volume: 0.7, pitch: 1.6, delay: 30}
+      particles:
+        - {particle: CRIT, count: 10, spread: 0.3, speed: 0.1, at: target}
+      vfx:
+        model: vfx_red_target
+        animation: skill
+        life-ticks: 120
+        scale: 1.0
+        y-offset: 2.3
+  knight_frost:
+    type: strike
+    name: 'Mũi Giáo Băng'
+    color: '#8FD3FF:#E3F6FF'
+    description:
+      - 'Lao tới đâm thẳng mục tiêu,'
+      - 'gây %damage% sát thương và làm'
+      - 'chậm %seconds% giây'
+    cooldown: 7
+    pvp-multiplier: 0.5
+    range: 10
+    cast-delay-ticks: 22
+    damage:
+      base: 3.5
+      per-level: 0.12
+    debuff:
+      type: slow
+      seconds: 2
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: item.trident.throw, volume: 0.8, pitch: 1.2, delay: 18}
+        - {sound: entity.player.attack.strong, volume: 0.8, pitch: 1.0, delay: 22}
+      particles:
+        - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
+      vfx:
+        model: vfx_pet_pierce_1
+        animation: skill
+        life-ticks: 20
+        scale: 1.0
+        y-offset: 0.3
+  griffon_heal_basic:
+    type: heal
+    name: 'Lông Vũ Nhỏ'
+    color: '#FFD24D:#FFF5C2'
+    description:
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'hồi %heal% máu cho chủ nhân'
+    cooldown: 14
+    heal:
+      amount:
+        base: 1.5
+        per-level: 0.04
+      percent: false
+      below-percent: 50
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.allay.item_taken, volume: 1.0, pitch: 1.3}
+      particles:
+        - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
+        - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+  shiba_lixi:
+    type: boost
+    name: 'Lì Xì Năm Mới'
+    color: '#FF4D4D:#FFD24D'
+    description:
+      - 'Tăng %boost% phần thưởng khi'
+      - 'hoàn thành nhiệm vụ'
+    boost:
+      type: quest
+      tenths:
+        base: 1
+        per-level: 0.1
+      whole: false
+    fx:
+      animation: interact
+      sounds:
+        - {sound: entity.experience_orb.pickup, volume: 0.8, pitch: 1.3}
+      particles:
+        - {particle: HAPPY_VILLAGER, count: 8, spread: 0.5, speed: 0.02, at: owner}

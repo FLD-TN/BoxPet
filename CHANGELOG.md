@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.1 (2026-11-05)
+
+- Kỹ năng theo bậc: Thường đánh 1 đòn không hiệu ứng phụ, hồi lâu hơn 2 giây, hệ số PvP 0,4 (Lưỡi Dính, Nhát Chém Tre, Đánh Dấu Mục Tiêu chỉ đánh dấu, Mũi Giáo Xuyên, Hộp Quà Bất Ngờ); Hiếm có 1 hiệu ứng phụ, PvP 0,5 (Mũi Giáo Băng mới cho Hiệp Sĩ Băng Giá); Sử thi 0,6; Huyền thoại 0,7.
+- Hỗ trợ Thường yếu hơn: Lông Vũ Nhỏ (Sư Điểu), Khiên Gai Sa Mạc nhỏ hơn; Khiên Gai Băng (Hiếm) đẩy nhẹ kẻ địch 3 ô.
+- Shiba Năm Mới thành pet kinh tế: Lì Xì Năm Mới (tăng % thưởng nhiệm vụ), chỉ số Máu / Phòng thủ.
+- Cập nhật server: thay abilities.yml và các file pet frog_stone, frog_green, samurai_shiba_bamboo, outlaw_wild_west, knight_glacial, griffon_griffon, samurai_shiba_new_year.
+
 ## 0.8.0 (2026-11-05)
 
 - Chỉ số: toàn bộ x1,7 (config stats.multiplier), mỗi lần đột phá đã qua +5% chỉ số (breakthrough.stat-bonus-percent).

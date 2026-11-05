@@ -33,4 +33,4 @@ stats:
     base: 0.5
     per-level: 0.03
 # kỹ năng trong abilities.yml
-ability: knight_pierce
+ability: knight_frost
