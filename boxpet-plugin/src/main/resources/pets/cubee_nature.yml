@@ -1,0 +1,40 @@
+# Rồng Cubee Thiên Nhiên (cubee_dragon) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
+name: 'Rồng Cubee Thiên Nhiên'
+# họ pet: nhóm trong bộ sưu tập và bộ câu thoại riêng (dialogues.yml families)
+family: cubee_dragon
+# combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
+role: boost
+description:
+  - 'Rồng con vuông vức mang lại'
+  - 'may mắn khi làm nhiệm vụ'
+# icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
+icon: 'cubees:cubees-icon-nature_dragon'
+icon-fallback: DRAGON_EGG
+# độ hiếm trứng của pet này có thể có
+rarities: [common, rare, epic, legendary]
+# tỉ lệ ra từ Trứng Ngẫu Nhiên (0 = không bao giờ ra)
+egg-weight: 2
+# bậc tiến hóa: thêm dòng mới (model, min-level, cost-money, cost-gem, stat-multiplier) khi có model bậc sau
+stages:
+  - model: cubee-nature_dragon
+    scale: 0.6
+animations:
+  idle: idle
+  walk: walk
+  skill: execute
+  interact: pet
+  pet: pet
+follow:
+  fly: false
+carry:
+  enabled: true
+# chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, trước khi nhân độ hiếm / bậc / thân thiết
+stats:
+  MAX_HEALTH:
+    base: 1
+    per-level: 0.05
+  DEFENSE:
+    base: 0.3
+    per-level: 0.02
+# kỹ năng trong abilities.yml
+ability: cubee_luck

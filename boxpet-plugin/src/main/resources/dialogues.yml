@@ -1,0 +1,98 @@
+# BoxPet — pet nói chuyện với chủ (BOXPET_SPEC 11.4). Chỉ chủ thấy.
+# %pet% tên pet, %owner% tên chủ, %level% cấp, %age% số ngày tuổi (sinh nhật)
+# default: câu chung. families.<họ pet>: câu riêng của một họ (họ = "family" trong file pet), thay câu chung của sự kiện đó.
+format: '<#FFB3C7>%pet%<dark_gray>: <white>%line%'
+bubble-format: '<white>%line%'
+
+default:
+  summon:
+    - 'Đi thôi chủ ơi!'
+    - 'Mình tới đây rồi nè!'
+    - 'Hôm nay mình đi đâu thế chủ?'
+  dismiss:
+    - 'Mình về kho nghỉ chút nha'
+    - 'Lát nhớ gọi mình ra nha chủ'
+  level-up:
+    - 'Mình lên cấp %level% rồi nè!'
+    - 'Cấp %level%! Mình mạnh hơn rồi đó!'
+  evolve:
+    - 'Nhìn mình nè, khác hẳn luôn!'
+  little-hungry:
+    - 'Bụng mình bắt đầu sôi rồi...'
+    - 'Chủ ơi, sắp tới giờ ăn chưa?'
+  hungry:
+    - 'Chủ ơi, mình đói quá...'
+    - 'Đói quá không có sức đánh nhau nữa...'
+    - 'Cho mình ăn gì đi mà...'
+  fed:
+    - 'Ngon quá! Cảm ơn chủ!'
+    - 'Măm măm, no rồi nè!'
+    - 'Ngon ghê, mai cho mình ăn nữa nha!'
+  full:
+    - 'Mình no lắm rồi, để lát nữa nha'
+    - 'Bụng mình hết chỗ rồi chủ ơi'
+  petted:
+    - 'Hihi, thích quá!'
+    - 'Gãi thêm chút nữa đi chủ!'
+    - 'Chủ là nhất!'
+  low-bond:
+    - 'Lâu rồi chủ không vuốt ve mình...'
+    - 'Chủ còn thương mình không?'
+  birthday:
+    - 'Hôm nay mình tròn %age% ngày tuổi đó chủ!'
+  owner-low-hp:
+    - 'Cẩn thận! Máu chủ thấp lắm rồi!'
+    - 'Chủ ơi rút lui đi, nguy hiểm quá!'
+  owner-kill:
+    - 'Hạ gục rồi! Chủ đỉnh quá!'
+    - 'Một đối thủ nữa ra đi!'
+  owner-died:
+    - 'Chủ ơi!!!'
+    - 'Không... chủ ơi dậy đi!'
+  owner-joined:
+    - 'Chủ về rồi! Nhớ chủ quá!'
+    - 'Chào mừng chủ quay lại!'
+  idle:
+    - 'Trời hôm nay đẹp ghê'
+    - 'Chủ ơi, mình đi đào mỏ không?'
+    - 'Mình đứng đây canh cho chủ nè'
+    - 'Hôm nay chủ định làm gì thế?'
+  looked:
+    - 'Chủ nhìn gì mình thế?'
+    - 'Mình dễ thương lắm đúng không?'
+  talk:
+    - 'Chủ muốn nói chuyện với mình hả?'
+    - 'Mình thích đi chơi cùng chủ lắm!'
+    - 'Có chủ là mình vui rồi'
+  carried:
+    - 'Được chủ ẵm thích quá!'
+    - 'Cao quá, nhìn thấy hết luôn!'
+  arrived:
+    - 'Đợi mình với chủ ơi!'
+    - 'Chủ đi nhanh quá, mình theo không kịp!'
+
+families:
+  fire_dragon:
+    summon:
+      - 'Lửa của mình sẵn sàng rồi!'
+    hungry:
+      - 'Bụng đói thì lửa cũng tắt mất...'
+    owner-kill:
+      - 'Cháy thành tro rồi!'
+  shark:
+    summon:
+      - 'Cá mập con có mặt!'
+    idle:
+      - 'Ở đây không có nước để bơi...'
+      - 'Mình ngửi thấy mùi kho báu đâu đây'
+  samurai_shiba:
+    summon:
+      - 'Kiếm đã sẵn sàng, thưa chủ!'
+    owner-kill:
+      - 'Một nhát là xong!'
+  griffon:
+    owner-low-hp:
+      - 'Để mình hồi máu cho chủ!'
+  cubee_dragon:
+    idle:
+      - 'Rồng con này nhỏ nhưng có võ đó!'

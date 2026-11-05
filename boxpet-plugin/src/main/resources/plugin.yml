@@ -1,0 +1,32 @@
+name: BoxPet
+version: '${version}'
+main: com.dex.boxpet.BoxPetPlugin
+api-version: '1.21'
+author: dex
+description: Thú cưng 3D (ModelEngine) cộng chỉ số MMOItems, chiến đấu, hỗ trợ, tăng boost
+depend: [ModelEngine, MythicLib]
+softdepend: [BoxCore, BoxClans, WorldGuard, PlaceholderAPI, Vault, ItemsAdder, CataMines, BoxQuest, MyBoxMobs, MMOItems]
+
+commands:
+  pet:
+    description: Menu thú cưng
+    usage: /pet [summon|dismiss|hideothers|chat|rename]
+    aliases: [pets, thucung]
+  boxpet:
+    description: Quản lý BoxPet
+    usage: /boxpet <give|pets|transfer|set|delete|restore|incubator|models|reload>
+    permission: boxpet.admin
+
+permissions:
+  boxpet.use:
+    description: Dùng /pet
+    default: true
+  boxpet.rename:
+    description: Đặt tên cho pet
+    default: true
+  boxpet.rename.color:
+    description: Dùng mã màu trong tên pet
+    default: op
+  boxpet.admin:
+    description: Lệnh /boxpet
+    default: op

@@ -1,0 +1,539 @@
+# BoxPet — menus.yml: tiêu đề, nút và lore của các menu.
+# Chuẩn GUI BoxCore: tên không in đậm, dòng mô tả <#BFC7D5>, mục <#FFD166>Thông tin:, dòng "• Nhãn: giá trị",
+# dòng thao tác ở cuối <dark_gray>[<#7CFC9A>Chuột trái để ...<dark_gray>].
+# Một dòng lore chỉ có %tên% (ví dụ %stats%) được thay bằng nhiều dòng.
+
+roles:
+  combat: '<#FF8A8A>Chiến đấu'
+  support: '<#7CFC9A>Hỗ trợ'
+  boost: '<#FFD166>Kinh tế'
+
+boost-types:
+  mining: 'đào mỏ'
+  quest: 'nhiệm vụ'
+  mob: 'hạ mob, boss'
+
+fullness-states:
+  full: 'No căng'
+  fed: 'No'
+  little-hungry: 'Hơi đói'
+  hungry: '<#FF8A8A>Đói'
+
+age:
+  new: 'Mới nở'
+  days: '%days% ngày'
+
+state:
+  'on': '<#7CFC9A>✔ Bật'
+  'off': '<#FF8A8A>✘ Tắt'
+
+# Tên chỉ số MMOItems hiện trong menu (thiếu thì hiện mã gốc)
+stat-names:
+  ATTACK_DAMAGE: 'Sát thương'
+  CRITICAL_STRIKE_CHANCE: 'Tỉ lệ chí mạng'
+  CRITICAL_STRIKE_POWER: 'Sát thương chí mạng'
+  MAX_HEALTH: 'Máu tối đa'
+  DEFENSE: 'Phòng thủ'
+  ARMOR: 'Giáp'
+  PVP_DAMAGE: 'Sát thương PvP'
+  PVE_DAMAGE: 'Sát thương PvE'
+  SKILL_DAMAGE: 'Sát thương kỹ năng'
+  MAGIC_DAMAGE: 'Sát thương phép'
+  PHYSICAL_DAMAGE: 'Sát thương vật lý'
+  MOVEMENT_SPEED: 'Tốc độ chạy'
+  HEALTH_REGENERATION: 'Hồi máu'
+  DAMAGE_REDUCTION: 'Giảm sát thương'
+  DODGE_RATING: 'Né tránh'
+  BLOCK_RATING: 'Chặn đòn'
+  ATTACK_SPEED: 'Tốc độ đánh'
+  KNOCKBACK_RESISTANCE: 'Kháng đẩy lùi'
+
+actions:
+  detail: '<dark_gray>[<#7CFC9A>Chuột trái để xem chi tiết<dark_gray>]'
+  care: '<dark_gray>[<#7FDBFF>Chuột phải để chăm sóc<dark_gray>]'
+  quick-summon: '<dark_gray>[<#7FDBFF>Chuột phải để thả pet<dark_gray>]'
+  quick-dismiss: '<dark_gray>[<#FF8A8A>Chuột phải để cất pet<dark_gray>]'
+  admin-manage: '<dark_gray>[<#7CFC9A>Chuột trái để quản lý<dark_gray>]'
+  feed-one: '<dark_gray>[<#7CFC9A>Chuột trái để cho ăn 1 cái<dark_gray>]'
+  feed-all: '<dark_gray>[<#7FDBFF>Shift + chuột trái để ăn tới khi no<dark_gray>]'
+  restore: '<dark_gray>[<#7CFC9A>Chuột trái để khôi phục<dark_gray>]'
+
+common:
+  back:
+    name: '<#BFC7D5>Quay lại'
+    lore: []
+  close:
+    name: '<#FF8A8A>Đóng'
+    lore: []
+  previous:
+    name: '<#BFC7D5>Trang trước'
+    lore:
+      - '<gray>• Trang: <white>%page%'
+  next:
+    name: '<#BFC7D5>Trang sau'
+    lore:
+      - '<gray>• Trang: <white>%page%'
+
+# ------------------------------------------------------------------ thẻ pet
+
+pet-card:
+  name: '%name% <dark_gray>[<gray>Lv.%level%<dark_gray>]'
+  lore:
+    - '%description%'
+    - ''
+    - '<#FFD166>Thông tin:'
+    - '<gray>• Loại: %role%'
+    - '<gray>• Độ hiếm: %rarity%'
+    - '<gray>• Cấp: <white>%level%<gray>/%max_level%'
+    - '<gray>• XP: %xp_bar% <white>%xp%<gray>/%xp_need%'
+    - '<gray>• Thân thiết: <#FFB3C7>%bond% <dark_gray>(%bond_tier%)'
+    - '<gray>• Độ no: %fullness_bar% <white>%fullness% <dark_gray>(%fullness_state%)'
+    - '<gray>• Tuổi: <white>%age%'
+    - ''
+    - '<#FFD166>Chỉ số:'
+    - '%stats%'
+    - ''
+    - '%ability%'
+    - ''
+    - '%status%'
+    - ''
+    - '%actions%'
+  description-line: '<#BFC7D5>%line%'
+  stat-row: '<gray>• %stat%: <#7CFC9A>%value%'
+  no-stats: '<gray>• Không có'
+  ability-title: '<#FFD166>Kỹ năng: <white>%ability%'
+  ability-line: '<#BFC7D5>%line%'
+  no-ability: '<#FFD166>Kỹ năng: <gray>không có'
+  status-active: '<#7CFC9A>✔ Đang được thả'
+  status-hungry: '<#FF8A8A>(!) Đang đói, kỹ năng tạm ngừng'
+  unknown-type: '<#FF8A8A>Loại pet này không còn tồn tại'
+
+# ------------------------------------------------------------------ /pet
+
+main:
+  title: '<dark_gray>Thú cưng'
+  loading:
+    name: '<#BFC7D5>Đang tải dữ liệu'
+    lore: []
+  no-active:
+    material: LEAD
+    name: '<#BFC7D5>Chưa thả pet'
+    lore:
+      - '<#BFC7D5>Chọn một pet trong kho'
+      - '<#BFC7D5>để thả ra đi cùng bạn'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để mở kho pet<dark_gray>]'
+  storage:
+    material: CHEST
+    name: '<#7FDBFF>Kho pet <dark_gray>[<gray>%used%/%max%<dark_gray>]'
+    lore:
+      - '<#BFC7D5>Tất cả pet bạn đang có'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để mở<dark_gray>]'
+  incubator:
+    material: SNIFFER_EGG
+    name: '<#C3B1E1>Lò ấp'
+    lore:
+      - '<#BFC7D5>Đặt trứng vào lò để ấp ra pet'
+      - ''
+      - '<#FFD166>Thông tin:'
+      - '<gray>• Ô ấp: <white>%slots%'
+      - '<gray>• Đang ấp: <white>%hatching%'
+      - '<gray>• Đã nở xong: <#7CFC9A>%ready%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để mở<dark_gray>]'
+  collection:
+    material: BOOK
+    name: '<#FFD166>Bộ sưu tập <dark_gray>[<gray>%score% điểm<dark_gray>]'
+    lore:
+      - '<#BFC7D5>Mỗi loại pet từng sở hữu'
+      - '<#BFC7D5>cho điểm, đủ mốc nhận chỉ số'
+      - ''
+      - '<#FFD166>Thông tin:'
+      - '<gray>• Đã sở hữu: <white>%owned%<gray>/%total%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để xem<dark_gray>]'
+  dismiss:
+    material: GRAY_DYE
+    name: '<#FF8A8A>Cất pet'
+    lore:
+      - '<#BFC7D5>Cất %pet% <#BFC7D5>vào kho'
+      - '<#BFC7D5>Pet cất đi không cho chỉ số'
+      - '<#BFC7D5>và không dùng kỹ năng'
+      - ''
+      - '<dark_gray>[<#FF8A8A>Chuột trái để cất<dark_gray>]'
+  hide-others:
+    material: ENDER_EYE
+    name: '<#7FDBFF>Ẩn pet người khác'
+    lore:
+      - '<#BFC7D5>Chỉ ẩn với bạn, pet của bạn'
+      - '<#BFC7D5>vẫn luôn hiện khi được thả'
+      - ''
+      - '<gray>• Trạng thái: %state%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để đổi<dark_gray>]'
+  pet-chat:
+    material: WRITABLE_BOOK
+    name: '<#FFB3C7>Trò chuyện của pet'
+    lore:
+      - '<#BFC7D5>Pet nói chuyện với bạn trong chat'
+      - ''
+      - '<gray>• Trạng thái: %state%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để đổi<dark_gray>]'
+
+# ------------------------------------------------------------------ kho pet
+
+storage:
+  title: '<dark_gray>Kho pet'
+  empty:
+    name: '<#BFC7D5>Chưa có pet'
+    lore:
+      - '<#BFC7D5>Ấp trứng trong Lò ấp để có pet'
+  info:
+    name: '<#7FDBFF>Kho pet'
+    lore:
+      - '<gray>• Đang có: <white>%used%<gray>/%max%'
+      - '<gray>• Trang: <white>%page%<gray>/%pages%'
+  filter:
+    name: '<#7FDBFF>Lọc theo loại'
+    lore:
+      - '<gray>• Đang lọc: <white>%filter%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để đổi<dark_gray>]'
+  sort:
+    name: '<#7FDBFF>Sắp xếp'
+    lore:
+      - '<gray>• Đang xếp theo: <white>%sort%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để đổi<dark_gray>]'
+  deleted:
+    name: '<#FF8A8A>Pet đã xoá'
+    lore:
+      - '<#BFC7D5>Pet đã thả hoặc bị xoá gần đây'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để xem<dark_gray>]'
+
+storage-admin:
+  title: '<dark_gray>Kho pet của %player%'
+
+filters:
+  all: 'Tất cả'
+  combat: 'Chiến đấu'
+  support: 'Hỗ trợ'
+  boost: 'Kinh tế'
+
+sorts:
+  rarity: 'Độ hiếm'
+  level: 'Cấp'
+  newest: 'Mới nhất'
+
+# ------------------------------------------------------------------ chi tiết pet
+
+detail:
+  title: '<dark_gray>Chi tiết pet'
+  free: '<#7CFC9A>Miễn phí'
+  summon:
+    name: '<#7CFC9A>Thả pet'
+    lore:
+      - '<#BFC7D5>Thả %pet% <#BFC7D5>ra đi cùng bạn'
+      - '<#BFC7D5>Pet cũ (nếu có) sẽ được cất'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để thả<dark_gray>]'
+  dismiss:
+    name: '<#FF8A8A>Cất pet'
+    lore:
+      - '<#BFC7D5>Pet cất đi không cho chỉ số'
+      - '<#BFC7D5>và không dùng kỹ năng'
+      - ''
+      - '<dark_gray>[<#FF8A8A>Chuột trái để cất<dark_gray>]'
+  care:
+    name: '<#FFB3C7>Chăm sóc'
+    lore:
+      - '<#BFC7D5>Vuốt ve, cho ăn, trò chuyện'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để mở<dark_gray>]'
+  rename:
+    name: '<#7FDBFF>Đặt tên'
+    lore:
+      - '<#BFC7D5>Đặt tên riêng cho pet'
+      - ''
+      - '<gray>• Độ dài: <white>%min% - %max% ký tự'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để nhập tên<dark_gray>]'
+  evolve:
+    name: '<#C3B1E1>Tiến hóa'
+    lore:
+      - '<#BFC7D5>Lên bậc mới: model mới'
+      - '<#BFC7D5>và chỉ số cao hơn'
+      - ''
+      - '<gray>• Chi phí: %cost%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để tiến hóa<dark_gray>]'
+  evolve-locked:
+    name: '<#C3B1E1>Tiến hóa'
+    lore:
+      - '<#BFC7D5>Lên bậc mới: model mới'
+      - '<#BFC7D5>và chỉ số cao hơn'
+      - ''
+      - '<gray>• Cần cấp: <white>%level%'
+      - '<gray>• Chi phí: %cost%'
+  release:
+    name: '<#FF8A8A>Thả pet đi'
+    lore:
+      - '<#BFC7D5>Pet sẽ rời khỏi kho của bạn'
+      - '<#BFC7D5>và không lấy lại được'
+      - ''
+      - '<dark_gray>[<#FF8A8A>Chuột trái để thả đi<dark_gray>]'
+
+admin:
+  transfer:
+    name: '<#7FDBFF>Chuyển pet'
+    lore:
+      - '<#BFC7D5>Chuyển pet sang người chơi khác'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để nhập tên<dark_gray>]'
+  set-level:
+    name: '<#FFD166>Đặt cấp'
+    lore:
+      - '<dark_gray>[<#7CFC9A>Chuột trái để nhập cấp<dark_gray>]'
+  set-rarity:
+    name: '<#C3B1E1>Đặt độ hiếm'
+    lore:
+      - '<gray>• Có: <white>%rarities%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để nhập<dark_gray>]'
+  set-care:
+    name: '<#FFB3C7>Thân thiết / độ no'
+    lore:
+      - '<dark_gray>[<#7CFC9A>Chuột trái để nhập thân thiết<dark_gray>]'
+      - '<dark_gray>[<#7FDBFF>Chuột phải để nhập độ no<dark_gray>]'
+  delete:
+    name: '<#FF8A8A>Xoá pet'
+    lore:
+      - '<#BFC7D5>Xoá mềm, khôi phục được'
+      - ''
+      - '<dark_gray>[<#FF8A8A>Chuột trái để xoá<dark_gray>]'
+
+confirm:
+  title: '<dark_gray>Xác nhận'
+  evolve: '<#C3B1E1>Tiến hóa %pet% <gray>với %cost%<gray>?'
+  release: '<#FF8A8A>Thả %pet% <#FF8A8A>đi vĩnh viễn?'
+  admin-delete: '<#FF8A8A>Xoá pet %id%?'
+  speed-up: '<#C3B1E1>Ấp ngay với <white>%cost% <#8245F8>Gem<gray>?'
+  'yes':
+    name: '<#7CFC9A>Đồng ý'
+    lore: []
+  'no':
+    name: '<#FF8A8A>Thôi'
+    lore: []
+
+# ------------------------------------------------------------------ chăm sóc
+
+care:
+  title: '<dark_gray>Chăm sóc pet'
+  bond-ready: '<#7CFC9A>có thể tăng ngay'
+  bond-wait: '<white>sau %time%'
+  no-active:
+    name: '<#FF8A8A>Chưa thả pet'
+    lore: []
+  pet:
+    name: '<#FFB3C7>Vuốt ve'
+    lore:
+      - '<#BFC7D5>Vuốt ve bao nhiêu cũng được,'
+      - '<#BFC7D5>thân thiết tăng 4 giờ một lần'
+      - ''
+      - '<gray>• Thân thiết: <#FFB3C7>%bond%<gray>/100'
+      - '<gray>• Mỗi lần tăng: <white>+%gain%'
+      - '<gray>• Lần tăng tới: %next%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để vuốt ve<dark_gray>]'
+  feed:
+    name: '<#FFD166>Cho ăn'
+    lore:
+      - '<#BFC7D5>Kẹo cho XP, thức ăn cho thân thiết'
+      - '<#BFC7D5>Cả hai đều làm pet no'
+      - ''
+      - '<gray>• Độ no: <white>%fullness%<gray>/100'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để chọn đồ ăn<dark_gray>]'
+  talk:
+    name: '<#7FDBFF>Trò chuyện'
+    lore:
+      - '<#BFC7D5>Nghe pet nói gì đó'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để trò chuyện<dark_gray>]'
+  sit:
+    name: '<#BFC7D5>Ngồi yên'
+    lore:
+      - '<#BFC7D5>Pet ở lại đúng chỗ để ngắm'
+      - '<#BFC7D5>Tự đi theo khi bạn đi xa'
+      - '<#BFC7D5>hoặc vào giao tranh'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để ngồi yên<dark_gray>]'
+  follow:
+    name: '<#BFC7D5>Đi theo'
+    lore:
+      - '<#BFC7D5>Pet đi theo bạn lại'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để đi theo<dark_gray>]'
+  carry:
+    name: '<#FFB3C7>Ẵm lên'
+    lore:
+      - '<#BFC7D5>Ẵm pet đi cùng bạn'
+      - '<#BFC7D5>Kỹ năng tạm ngừng khi ẵm'
+      - '<#BFC7D5>Nhanh: Shift + chuột phải vào pet'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để ẵm<dark_gray>]'
+  put-down:
+    name: '<#FFB3C7>Đặt xuống'
+    lore:
+      - '<dark_gray>[<#7CFC9A>Chuột trái để đặt xuống<dark_gray>]'
+  details:
+    name: '<#7FDBFF>Chi tiết'
+    lore:
+      - '<dark_gray>[<#7CFC9A>Chuột trái để xem<dark_gray>]'
+
+food:
+  title: '<dark_gray>Cho pet ăn'
+  have: '<gray>• Đang có: <white>%amount%'
+  info:
+    name: '<#FFD166>Độ no của %pet%'
+    lore:
+      - '<gray>• Độ no: %bar% <white>%fullness%<gray>/100'
+      - ''
+      - '<#BFC7D5>No rồi thì không ăn thêm được'
+  none:
+    name: '<#BFC7D5>Không có đồ ăn'
+    lore:
+      - '<#BFC7D5>Túi đồ không có kẹo hay thức ăn pet'
+
+# ------------------------------------------------------------------ lò ấp
+
+incubator:
+  title: '<dark_gray>Lò ấp'
+  info:
+    name: '<#C3B1E1>Lò ấp'
+    lore:
+      - '<#BFC7D5>Bấm vào một quả trứng trong'
+      - '<#BFC7D5>túi đồ để đặt vào lò'
+      - '<#BFC7D5>Trứng vẫn nở khi bạn offline'
+      - ''
+      - '<gray>• Ô ấp: <white>%slots%'
+  locked:
+    name: '<#FF8A8A>✘ Ô bị khoá'
+    lore: []
+  empty:
+    name: '<#7CFC9A>Ô trống'
+    lore:
+      - '<#BFC7D5>Bấm vào một quả trứng trong'
+      - '<#BFC7D5>túi đồ để đặt vào ô này'
+  hatching:
+    name: '%egg% <dark_gray>[%rarity%<dark_gray>]'
+    lore:
+      - '<#BFC7D5>Đang ấp'
+      - ''
+      - '<gray>• Còn lại: <white>%time%'
+      - '<gray>• Tiến độ: %bar%'
+  hatching-gem:
+    name: '%egg% <dark_gray>[%rarity%<dark_gray>]'
+    lore:
+      - '<#BFC7D5>Đang ấp'
+      - ''
+      - '<gray>• Còn lại: <white>%time%'
+      - '<gray>• Tiến độ: %bar%'
+      - '<gray>• Ấp ngay: <white>%cost% <#8245F8>Gem'
+      - ''
+      - '<dark_gray>[<#7FDBFF>Chuột phải để ấp ngay<dark_gray>]'
+  ready:
+    name: '%egg% <dark_gray>[%rarity%<dark_gray>]'
+    lore:
+      - '<#7CFC9A>✔ Đã nở xong'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để mở trứng<dark_gray>]'
+
+hatch:
+  title: '<dark_gray>Mở trứng'
+  storage:
+    name: '<#7FDBFF>Kho pet'
+    lore:
+      - '<dark_gray>[<#7CFC9A>Chuột trái để mở kho<dark_gray>]'
+
+# ------------------------------------------------------------------ bộ sưu tập
+
+collection:
+  title: '<dark_gray>Bộ sưu tập'
+  owned:
+    name: '<white>%pet%'
+    lore:
+      - '<#7CFC9A>✔ Đã sở hữu'
+      - ''
+      - '<gray>• Loại: %role%'
+      - '<gray>• Cao nhất: %rarity%'
+      - '<gray>• Điểm: <white>%points%'
+  missing:
+    name: '<gray>%pet%'
+    lore:
+      - '<#FF8A8A>✘ Chưa sở hữu'
+      - ''
+      - '<gray>• Loại: %role%'
+  info:
+    name: '<#FFD166>Điểm sưu tập: <white>%score%'
+    lore:
+      - '<#BFC7D5>Mỗi loại pet cho điểm theo'
+      - '<#BFC7D5>độ hiếm cao nhất từng có'
+      - ''
+      - '<gray>• Đã sở hữu: <white>%owned%<gray>/%total%'
+      - ''
+      - '<#FFD166>Mốc thưởng:'
+      - '%milestones%'
+  milestone-done: '<#7CFC9A>✔ <white>%score% điểm<gray>: %stats%'
+  milestone-todo: '<#FF8A8A>✘ <white>%score% điểm<gray>: %stats%'
+
+deleted:
+  title: '<dark_gray>Pet đã xoá'
+
+# ------------------------------------------------------------------ vật phẩm
+
+items:
+  egg:
+    lore:
+      - '%description%'
+      - ''
+      - '<#FFD166>Thông tin:'
+      - '<gray>• Pet: <white>%pet%'
+      - '<gray>• Loại: %role%'
+      - '<gray>• Độ hiếm: %rarity%'
+      - '<gray>• Thời gian ấp: <white>%time%'
+      - ''
+      - '<#BFC7D5>Đặt vào Lò ấp (/pet) để ấp'
+  random-egg:
+    lore:
+      - '<#BFC7D5>Nở ra một pet ngẫu nhiên'
+      - '<#BFC7D5>đúng độ hiếm của trứng'
+      - ''
+      - '<#FFD166>Thông tin:'
+      - '<gray>• Độ hiếm: %rarity%'
+      - '<gray>• Số loại có thể nở: <white>%count%'
+      - '<gray>• Thời gian ấp: <white>%time%'
+      - ''
+      - '<#BFC7D5>Đặt vào Lò ấp (/pet) để ấp'
+  candy:
+    lore:
+      - '<#FFD166>Thông tin:'
+      - '<gray>• XP cho pet: <#7CFC9A>+%xp%'
+      - '<gray>• Làm no: <white>+%fullness%'
+      - ''
+      - '<#BFC7D5>No rồi thì pet không ăn được'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột phải để cho pet ăn<dark_gray>]'
+      - '<dark_gray>[<#7FDBFF>Shift + chuột phải: ăn tới khi no<dark_gray>]'
+  food:
+    lore:
+      - '<#FFD166>Thông tin:'
+      - '<gray>• Làm no: <white>+%fullness%'
+      - '<gray>• Thân thiết: <#FFB3C7>+%bond%'
+      - ''
+      - '<#BFC7D5>Thân thiết từ đồ ăn tối đa 5 mỗi ngày'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột phải để cho pet ăn<dark_gray>]'

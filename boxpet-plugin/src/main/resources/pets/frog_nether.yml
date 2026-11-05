@@ -1,0 +1,39 @@
+# Ếch Địa Ngục (frog) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
+name: 'Ếch Địa Ngục'
+# họ pet: nhóm trong bộ sưu tập và bộ câu thoại riêng (dialogues.yml families)
+family: frog
+# combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
+role: combat
+description:
+  - 'Chú ếch nhanh nhẹn, phóng lưỡi'
+  - 'làm chậm kẻ địch'
+# icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
+icon: 'companions_1:icon_frog_nether'
+icon-fallback: FROG_SPAWN_EGG
+# độ hiếm trứng của pet này có thể có
+rarities: [common, rare, epic, legendary]
+# tỉ lệ ra từ Trứng Ngẫu Nhiên (0 = không bao giờ ra)
+egg-weight: 2
+# bậc tiến hóa: thêm dòng mới (model, min-level, cost-money, cost-gem, stat-multiplier) khi có model bậc sau
+stages:
+  - model: pet_frog_nether
+    scale: 1
+animations:
+  idle: idle
+  walk: walk
+  skill: skill
+  interact: interact
+follow:
+  fly: false
+carry:
+  enabled: true
+# chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, trước khi nhân độ hiếm / bậc / thân thiết
+stats:
+  ATTACK_DAMAGE:
+    base: 0.8
+    per-level: 0.04
+  MAX_HEALTH:
+    base: 1
+    per-level: 0.05
+# kỹ năng trong abilities.yml
+ability: frog_tongue

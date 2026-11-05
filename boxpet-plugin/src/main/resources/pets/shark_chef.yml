@@ -1,0 +1,40 @@
+# Cá Mập Đầu Bếp (shark) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
+name: 'Cá Mập Đầu Bếp'
+# họ pet: nhóm trong bộ sưu tập và bộ câu thoại riêng (dialogues.yml families)
+family: shark
+# combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
+role: boost
+description:
+  - 'Cá mập con đánh hơi con mồi,'
+  - 'giúp chủ nhận thêm phần thưởng'
+  - 'khi hạ mob và boss'
+# icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
+icon: 'companions_2:icon_shark_chef'
+icon-fallback: COD
+# độ hiếm trứng của pet này có thể có
+rarities: [common, rare, epic, legendary]
+# tỉ lệ ra từ Trứng Ngẫu Nhiên (0 = không bao giờ ra)
+egg-weight: 2
+# bậc tiến hóa: thêm dòng mới (model, min-level, cost-money, cost-gem, stat-multiplier) khi có model bậc sau
+stages:
+  - model: pet_shark_chef
+    scale: 1
+animations:
+  idle: idle
+  walk: walk
+  skill: skill_digin
+  interact: interact
+follow:
+  fly: false
+carry:
+  enabled: true
+# chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, trước khi nhân độ hiếm / bậc / thân thiết
+stats:
+  PVE_DAMAGE:
+    base: 1
+    per-level: 0.05
+  MAX_HEALTH:
+    base: 1
+    per-level: 0.04
+# kỹ năng trong abilities.yml
+ability: shark_treasure

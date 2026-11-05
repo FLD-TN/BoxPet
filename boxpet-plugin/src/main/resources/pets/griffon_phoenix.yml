@@ -1,0 +1,39 @@
+# Sư Điểu Phượng Hoàng (griffon) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
+name: 'Sư Điểu Phượng Hoàng'
+# họ pet: nhóm trong bộ sưu tập và bộ câu thoại riêng (dialogues.yml families)
+family: griffon
+# combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
+role: support
+description:
+  - 'Sư điểu nhỏ, dùng lông vũ'
+  - 'chữa lành vết thương cho chủ'
+# icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
+icon: 'companions_2:icon_griffon_phoenix'
+icon-fallback: FEATHER
+# độ hiếm trứng của pet này có thể có
+rarities: [common, rare, epic, legendary]
+# tỉ lệ ra từ Trứng Ngẫu Nhiên (0 = không bao giờ ra)
+egg-weight: 2
+# bậc tiến hóa: thêm dòng mới (model, min-level, cost-money, cost-gem, stat-multiplier) khi có model bậc sau
+stages:
+  - model: pet_griffon_phoenix
+    scale: 1
+animations:
+  idle: idle
+  walk: walk
+  skill: skill
+  interact: interact
+follow:
+  fly: true
+carry:
+  enabled: true
+# chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, trước khi nhân độ hiếm / bậc / thân thiết
+stats:
+  MAX_HEALTH:
+    base: 2
+    per-level: 0.08
+  DEFENSE:
+    base: 0.5
+    per-level: 0.03
+# kỹ năng trong abilities.yml
+ability: griffon_heal

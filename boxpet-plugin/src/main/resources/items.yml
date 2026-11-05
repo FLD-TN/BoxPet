@@ -1,0 +1,79 @@
+# BoxPet — vật phẩm (BOXPET_SPEC 9.1, 10.1, 11.3)
+# itemsadder: mã ItemsAdder để làm hình (namespace:id), để trống thì dùng material (+ custom-model-data)
+# Kẹo: XP cho pet và làm no. Thức ăn: làm no và tăng thân thiết (tối đa bond.food-max-per-day mỗi ngày).
+# Một pet chỉ ăn được khi độ no + vật phẩm <= 100.
+candies:
+  candy_small:
+    name: 'Kẹo Pet Nhỏ'
+    color: '#BFC7D5'
+    material: SUGAR
+    itemsadder: ''
+    xp: 100
+    fullness: 5
+  candy_medium:
+    name: 'Kẹo Pet Vừa'
+    color: '#7FDBFF'
+    material: AMETHYST_SHARD
+    itemsadder: ''
+    xp: 500
+    fullness: 10
+  candy_large:
+    name: 'Kẹo Pet Lớn'
+    color: '#C3B1E1'
+    material: PRISMARINE_CRYSTALS
+    itemsadder: ''
+    xp: 2000
+    fullness: 20
+  candy_super:
+    name: 'Kẹo Pet Siêu Cấp'
+    color: '#FFD166'
+    material: NETHER_STAR
+    itemsadder: ''
+    xp: 10000
+    fullness: 35
+
+foods:
+  food_small:
+    name: 'Thức Ăn Pet'
+    color: '#BFC7D5'
+    material: COOKIE
+    itemsadder: ''
+    fullness: 10
+    bond: 1
+  food_medium:
+    name: 'Bữa Ăn Pet'
+    color: '#7CFC9A'
+    material: PUMPKIN_PIE
+    itemsadder: ''
+    fullness: 25
+    bond: 1
+  food_large:
+    name: 'Đại Tiệc Pet'
+    color: '#FFD166'
+    material: CAKE
+    itemsadder: ''
+    fullness: 40
+    bond: 2
+
+eggs:
+  # trứng của một pet cụ thể: hình là icon ItemsAdder của pet (icon trong file pet), %pet% = tên pet
+  fixed:
+    name: 'Trứng %pet%'
+  # Trứng Ngẫu Nhiên
+  random:
+    name: 'Trứng Ngẫu Nhiên'
+    material: SNIFFER_EGG
+    itemsadder: ''
+  # hình riêng theo độ hiếm (không bắt buộc)
+  random-by-rarity:
+    common:
+      material: SNIFFER_EGG
+    rare:
+      material: SNIFFER_EGG
+    epic:
+      material: SNIFFER_EGG
+    legendary:
+      material: DRAGON_EGG
+
+# Đồ ăn vanilla pet cũng ăn được (chuột phải vào pet): MATERIAL: độ no. Để {} là tắt.
+vanilla-food: {}

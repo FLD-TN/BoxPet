@@ -1,0 +1,626 @@
+# BoxPet — kỹ năng của pet (BOXPET_SPEC 6). Mỗi pet có tối đa 1 kỹ năng, mỗi kỹ năng tối đa 1 buff + 1 debuff.
+# Giá trị theo cấp và độ hiếm: (base + per-level × (cấp - 1)) × stat-multiplier của độ hiếm.
+#
+# type:
+#   projectile  bắn đạn (model VFX bay theo mục tiêu), trúng thì gây sát thương + debuff
+#   strike      đánh thẳng vào mục tiêu, hiện VFX tại mục tiêu
+#   mark        đánh dấu mục tiêu: đòn đánh thật của chủ lên nó mạnh hơn bonus-percent %
+#   heal        hồi máu cho chủ khi máu dưới below-percent %
+#   shield      khi máu chủ dưới below-percent %: khiên hấp thụ (hearts tim) trong seconds giây
+#   potion      giữ 1 hiệu ứng tốt cho chủ (amplifier-by-rarity: cấp hiệu ứng theo độ hiếm, 0 = cấp I)
+#   boost       cộng hệ số BoxCore (mining / quest / mob) theo phần mười (tenths: 5 = +x0,5); whole: true = chỉ số nguyên
+# Kỹ năng chiến đấu chỉ dùng khi chủ đang giao tranh, chỉ đánh người chủ vừa đánh hoặc người vừa đánh chủ.
+# Sát thương tính là đòn kỹ năng của chủ (MythicLib SKILL + MAGIC). pvp-multiplier: sát thương lên người chơi
+# (thiếu thì dùng abilities.pvp-multiplier trong config.yml), pve-multiplier: lên mob.
+# debuff.type: burn, slow, bleed (damage-ratio × sát thương mỗi giây), weakness
+# fx: animation (tên hoạt ảnh của pet, mặc định skill), sounds (delay tính bằng tick), particles (at: pet, target, owner, path),
+#     vfx: model ModelEngine (model, animation, speed ô/tick, life-ticks, scale, y-offset)
+# Mô tả: %damage% %heal% %hearts% %percent% %bonus% %boost% %boost_type% %cooldown% %seconds% %level% %range% %pvp%
+abilities:
+  fire_ball_fire:
+    type: projectile
+    name: 'Cầu Lửa'
+    description:
+      - 'Phun cầu lửa vào mục tiêu,'
+      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương và đốt'
+      - 'cháy %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 8
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 3
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: burn
+      seconds: 3
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.blaze.shoot, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: FLAME, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: FLAME, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_flame_shot_fire
+        animation: idle
+        speed: 0.7
+        life-ticks: 40
+        scale: 1.0
+  fire_ball_soulfire:
+    type: projectile
+    name: 'Cầu Lửa Linh Hồn'
+    description:
+      - 'Phun cầu lửa vào mục tiêu,'
+      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương và đốt'
+      - 'cháy %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 8
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 3
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: burn
+      seconds: 3
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.blaze.shoot, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: SOUL_FIRE_FLAME, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: SOUL_FIRE_FLAME, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_flame_shot_soulfire
+        animation: idle
+        speed: 0.7
+        life-ticks: 40
+        scale: 1.0
+  fire_ball_shadowflame:
+    type: projectile
+    name: 'Cầu Lửa Bóng Tối'
+    description:
+      - 'Phun cầu lửa vào mục tiêu,'
+      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương và đốt'
+      - 'cháy %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 8
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 3
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: burn
+      seconds: 3
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.blaze.shoot, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: PORTAL, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: PORTAL, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_flame_shot_shadowflame
+        animation: idle
+        speed: 0.7
+        life-ticks: 40
+        scale: 1.0
+  fire_ball_holyfire:
+    type: projectile
+    name: 'Cầu Lửa Thánh'
+    description:
+      - 'Phun cầu lửa vào mục tiêu,'
+      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương và đốt'
+      - 'cháy %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 8
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 3
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: burn
+      seconds: 3
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.blaze.shoot, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: END_ROD, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: END_ROD, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_flame_shot_holyfire
+        animation: idle
+        speed: 0.7
+        life-ticks: 40
+        scale: 1.0
+  frog_tongue:
+    type: projectile
+    name: 'Lưỡi Dính'
+    description:
+      - 'Phóng lưỡi vào mục tiêu,'
+      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương và làm'
+      - 'chậm %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 8
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 2.5
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: slow
+      seconds: 2
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.frog.tongue, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+  necro_fireball:
+    type: projectile
+    name: 'Cầu Lửa Phép'
+    description:
+      - 'Ném phép vào mục tiêu,'
+      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương'
+      - 'kèm hiệu ứng xấu %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 8
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 3
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: burn
+      seconds: 3
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.evoker.cast_spell, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: FLAME, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: FLAME, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_necromancer_cat_fireball
+        animation: loop
+        speed: 0.7
+        life-ticks: 40
+        scale: 1.0
+  necro_iceball:
+    type: projectile
+    name: 'Cầu Băng'
+    description:
+      - 'Ném phép vào mục tiêu,'
+      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương'
+      - 'kèm hiệu ứng xấu %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 8
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 3
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: slow
+      seconds: 3
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.evoker.cast_spell, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: SNOWFLAKE, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: SNOWFLAKE, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_necromancer_cat_iceball
+        animation: loop
+        speed: 0.7
+        life-ticks: 40
+        scale: 1.0
+  necro_skull:
+    type: projectile
+    name: 'Đầu Lâu Ma'
+    description:
+      - 'Ném phép vào mục tiêu,'
+      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương'
+      - 'kèm hiệu ứng xấu %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 8
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 3
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: weakness
+      seconds: 3
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.evoker.cast_spell, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: SOUL, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: SOUL, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_necromancer_cat_skull
+        animation: loop
+        speed: 0.7
+        life-ticks: 40
+        scale: 1.0
+  necro_gift:
+    type: projectile
+    name: 'Hộp Quà Bất Ngờ'
+    description:
+      - 'Ném phép vào mục tiêu,'
+      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương'
+      - 'kèm hiệu ứng xấu %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 8
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 3
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: slow
+      seconds: 3
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.evoker.cast_spell, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: HAPPY_VILLAGER, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: HAPPY_VILLAGER, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_necromancer_cat_gift
+        animation: loop
+        speed: 0.7
+        life-ticks: 40
+        scale: 1.0
+  knight_pierce:
+    type: strike
+    name: 'Mũi Giáo Xuyên'
+    description:
+      - 'Lao tới đâm thẳng mục tiêu,'
+      - 'gây <#FF8A8A>%damage%<#BFC7D5> sát thương'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 7
+    range: 10
+    cast-delay-ticks: 22
+    damage:
+      base: 3.5
+      per-level: 0.12
+    fx:
+      animation: skill
+      sounds:
+        - {sound: item.trident.throw, volume: 0.8, pitch: 1.2, delay: 18}
+        - {sound: entity.player.attack.strong, volume: 0.8, pitch: 1.0, delay: 22}
+      particles:
+        - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
+      vfx:
+        model: vfx_pet_pierce_1
+        animation: skill
+        life-ticks: 20
+        scale: 1.0
+        y-offset: 0.3
+  shiba_slash:
+    type: strike
+    name: 'Nhát Chém Ánh Sáng'
+    description:
+      - 'Chém mục tiêu, gây'
+      - '<#FF8A8A>%damage%<#BFC7D5> sát thương và chảy máu'
+      - '%seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 9
+    range: 10
+    cast-delay-ticks: 20
+    damage:
+      base: 3
+      per-level: 0.1
+    debuff:
+      type: bleed
+      seconds: 3
+      damage-ratio: 0.3
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.player.attack.sweep, volume: 0.9, pitch: 1.3, delay: 20}
+      particles:
+        - {particle: SWEEP_ATTACK, count: 2, spread: 0.2, speed: 0, at: target}
+      vfx:
+        model: vfx_light_slash_1
+        animation: left-right-horiz
+        life-ticks: 14
+        scale: 1.2
+        y-offset: 1.0
+  outlaw_mark:
+    type: mark
+    name: 'Đánh Dấu Mục Tiêu'
+    description:
+      - 'Bắn đánh dấu mục tiêu %seconds% giây:'
+      - 'đòn của chủ lên nó mạnh hơn'
+      - '<#7CFC9A>%bonus%%<#BFC7D5>, kèm <#FF8A8A>%damage%<#BFC7D5> sát thương'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 12
+    range: 16
+    cast-delay-ticks: 30
+    damage:
+      base: 1.5
+      per-level: 0.05
+    mark:
+      seconds: 6
+      bonus-percent:
+        base: 4
+        per-level: 0.08
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.arrow.shoot, volume: 0.8, pitch: 0.8, delay: 28}
+        - {sound: block.note_block.bell, volume: 0.7, pitch: 1.6, delay: 30}
+      particles:
+        - {particle: CRIT, count: 10, spread: 0.3, speed: 0.1, at: target}
+      vfx:
+        model: vfx_red_target
+        animation: skill
+        life-ticks: 120
+        scale: 1.0
+        y-offset: 2.3
+  griffon_heal:
+    type: heal
+    name: 'Lông Vũ Chữa Lành'
+    description:
+      - 'Khi máu chủ dưới %percent%%, hồi'
+      - '<#7CFC9A>%heal%<#BFC7D5> máu cho chủ'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 10
+    heal:
+      amount:
+        base: 2
+        per-level: 0.05
+      percent: false
+      below-percent: 70
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.allay.item_taken, volume: 1.0, pitch: 1.3}
+      particles:
+        - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
+        - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+  cacti_shield_desert:
+    type: shield
+    name: 'Khiên Gai Sa Mạc'
+    description:
+      - 'Khi máu chủ dưới %percent%%, tạo khiên'
+      - '<#7CFC9A>%hearts%<#BFC7D5> tim trong %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 45
+    shield:
+      below-percent: 40
+      hearts:
+        base: 2
+        per-level: 0.05
+      seconds: 6
+    fx:
+      animation: skill
+      sounds:
+        - {sound: block.amethyst_block.chime, volume: 1.0, pitch: 0.8}
+      particles:
+        - {particle: CRIT, count: 15, spread: 0.6, speed: 0.05, at: owner}
+      vfx:
+        model: vfx_spike_shield_desert
+        animation: idle
+        life-ticks: 120
+        scale: 1.0
+        y-offset: 0.0
+  cacti_shield_frozen:
+    type: shield
+    name: 'Khiên Gai Băng'
+    description:
+      - 'Khi máu chủ dưới %percent%%, tạo khiên'
+      - '<#7CFC9A>%hearts%<#BFC7D5> tim trong %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 45
+    shield:
+      below-percent: 40
+      hearts:
+        base: 2
+        per-level: 0.05
+      seconds: 6
+    fx:
+      animation: skill
+      sounds:
+        - {sound: block.amethyst_block.chime, volume: 1.0, pitch: 0.8}
+      particles:
+        - {particle: CRIT, count: 15, spread: 0.6, speed: 0.05, at: owner}
+      vfx:
+        model: vfx_spike_shield_frozen
+        animation: idle
+        life-ticks: 120
+        scale: 1.0
+        y-offset: 0.0
+  cacti_shield_sculk:
+    type: shield
+    name: 'Khiên Gai Sculk'
+    description:
+      - 'Khi máu chủ dưới %percent%%, tạo khiên'
+      - '<#7CFC9A>%hearts%<#BFC7D5> tim trong %seconds% giây'
+      - 'Hồi chiêu %cooldown% giây'
+    cooldown: 45
+    shield:
+      below-percent: 40
+      hearts:
+        base: 2
+        per-level: 0.05
+      seconds: 6
+    fx:
+      animation: skill
+      sounds:
+        - {sound: block.amethyst_block.chime, volume: 1.0, pitch: 0.8}
+      particles:
+        - {particle: CRIT, count: 15, spread: 0.6, speed: 0.05, at: owner}
+      vfx:
+        model: vfx_spike_shield_sculk
+        animation: idle
+        life-ticks: 120
+        scale: 1.0
+        y-offset: 0.0
+  unicorn_heavenly:
+    type: potion
+    name: 'Phước Lành Thiên Đường'
+    description:
+      - 'Chủ luôn có hiệu ứng'
+      - '<#7CFC9A>Kháng sát thương %level%<#BFC7D5> khi pet được thả'
+    cooldown: 30
+    potion:
+      effect: resistance
+      amplifier-by-rarity: [0, 0, 1, 1]
+    fx:
+      animation: interact
+      sounds:
+        - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
+      particles:
+        - {particle: END_ROD, count: 8, spread: 0.5, speed: 0.02, at: owner}
+  unicorn_nature:
+    type: potion
+    name: 'Sức Sống Rừng Xanh'
+    description:
+      - 'Chủ luôn có hiệu ứng'
+      - '<#7CFC9A>Hồi phục %level%<#BFC7D5> khi pet được thả'
+    cooldown: 30
+    potion:
+      effect: regeneration
+      amplifier-by-rarity: [0, 0, 1, 1]
+    fx:
+      animation: interact
+      sounds:
+        - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
+      particles:
+        - {particle: END_ROD, count: 8, spread: 0.5, speed: 0.02, at: owner}
+  unicorn_rainbow:
+    type: potion
+    name: 'Bước Chân Cầu Vồng'
+    description:
+      - 'Chủ luôn có hiệu ứng'
+      - '<#7CFC9A>Tốc độ %level%<#BFC7D5> khi pet được thả'
+    cooldown: 30
+    potion:
+      effect: speed
+      amplifier-by-rarity: [0, 0, 1, 1]
+    fx:
+      animation: interact
+      sounds:
+        - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
+      particles:
+        - {particle: END_ROD, count: 8, spread: 0.5, speed: 0.02, at: owner}
+  unicorn_undead:
+    type: potion
+    name: 'Sức Mạnh Bất Tử'
+    description:
+      - 'Chủ luôn có hiệu ứng'
+      - '<#7CFC9A>Sức mạnh %level%<#BFC7D5> khi pet được thả'
+    cooldown: 30
+    potion:
+      effect: strength
+      amplifier-by-rarity: [0, 0, 1, 1]
+    fx:
+      animation: interact
+      sounds:
+        - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
+      particles:
+        - {particle: END_ROD, count: 8, spread: 0.5, speed: 0.02, at: owner}
+  shark_treasure:
+    type: boost
+    name: 'Mũi Săn Mồi'
+    description:
+      - 'Tăng phần thưởng khi hạ mob,'
+      - 'boss thêm <#FFD166>+%boost%'
+      - '<dark_gray>(ngừng khi pet đói)'
+    boost:
+      type: mob
+      tenths:
+        base: 1
+        per-level: 0.1
+      whole: false
+  cubee_luck:
+    type: boost
+    name: 'Rồng Con May Mắn'
+    description:
+      - 'Tăng phần thưởng nhiệm vụ'
+      - 'thêm <#FFD166>+%boost%'
+      - '<dark_gray>(ngừng khi pet đói)'
+    boost:
+      type: quest
+      tenths:
+        base: 1
+        per-level: 0.1
+      whole: false
+  palcat_dig:
+    type: boost
+    name: 'Xẻng Thần'
+    description:
+      - 'Tăng vật phẩm khi đào mỏ'
+      - 'thêm <#FFD166>+%boost%<#BFC7D5> (chỉ số nguyên)'
+      - '<dark_gray>(ngừng khi pet đói)'
+    boost:
+      type: mining
+      tenths:
+        base: 6
+        per-level: 0.15
+      whole: true
+  palcat_art:
+    type: boost
+    name: 'Cảm Hứng Họa Sĩ'
+    description:
+      - 'Tăng phần thưởng nhiệm vụ'
+      - 'thêm <#FFD166>+%boost%'
+      - '<dark_gray>(ngừng khi pet đói)'
+    boost:
+      type: quest
+      tenths:
+        base: 1
+        per-level: 0.1
+      whole: false
+  palcat_music:
+    type: boost
+    name: 'Giai Điệu Vui Vẻ'
+    description:
+      - 'Tăng phần thưởng nhiệm vụ'
+      - 'thêm <#FFD166>+%boost%'
+      - '<dark_gray>(ngừng khi pet đói)'
+    boost:
+      type: quest
+      tenths:
+        base: 1
+        per-level: 0.1
+      whole: false

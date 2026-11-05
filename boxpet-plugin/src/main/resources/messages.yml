@@ -1,0 +1,155 @@
+# BoxPet — messages.yml
+# Chuẩn BoxPvP: mỗi tin một dòng, không chấm cuối câu. ✔ thành công, ✘ lỗi, (!) cảnh báo.
+# Màu: MiniMessage (<#hex>, <gray>...), mã & cũng dùng được, và <text> <muted> <accent> <success> <error> (config.yml).
+# Để '' là không gửi tin đó.
+
+prefix: '<dark_gray>(</dark_gray><bold><#FFB3C7>Thú Cưng</#FFB3C7></bold><dark_gray>)</dark_gray> '
+
+loading: '<muted>Dữ liệu thú cưng đang tải, thử lại sau giây lát'
+only-players: '<error>✘ Chỉ người chơi dùng được lệnh này'
+no-permission: '<error>✘ Bạn không có quyền dùng lệnh này'
+combat-locked: '<accent>(!) Đang giao tranh, chưa thể mở menu pet'
+
+nametag:
+  hungry: ' <#FF8A8A>(Đói)'
+
+summon:
+  done: '<success>✔ Đã thả <text>%pet%'
+  cooldown: '<error>✘ Chờ <text>%seconds% giây <error>nữa mới đổi pet được'
+  already: '<muted>%pet% <muted>đang được thả rồi'
+  no-model: '<error>✘ Model của %pet% <error>chưa có trên server, hãy báo quản trị viên'
+  unknown-type: '<error>✘ Loại pet của %pet% <error>không còn tồn tại, hãy báo quản trị viên'
+  cancelled: '<error>✘ Không thể thả %pet% <error>lúc này'
+  not-found: '<error>✘ Không tìm thấy pet <text>%name% <error>trong kho'
+
+dismiss:
+  done: '<success>✔ Đã cất <text>%pet% <success>vào kho'
+  none: '<error>✘ Bạn chưa thả pet nào'
+
+carry:
+  picked-up: '<success>✔ Đã ẵm <text>%pet%'
+  put-down: '<success>✔ Đã đặt <text>%pet% <success>xuống'
+  dropped: '<muted>Pet đã nhảy xuống khỏi tay bạn'
+  disabled: '<error>✘ Pet này không ẵm được'
+  cannot-now: '<error>✘ Không ẵm pet được lúc này'
+
+sit:
+  'on': '<success>✔ <text>%pet% <success>sẽ ngồi yên tại chỗ'
+  'off': '<success>✔ <text>%pet% <success>đi theo bạn lại'
+  auto-off: '<muted>Pet đã tự đi theo bạn lại'
+
+toggle:
+  hide-others-on: '<success>✔ Đã ẩn pet của người khác'
+  hide-others-off: '<success>✔ Đã hiện lại pet của người khác'
+  chat-on: '<success>✔ Đã bật trò chuyện của pet'
+  chat-off: '<success>✔ Đã tắt trò chuyện của pet'
+
+care:
+  petted-gain: '<success>✔ Vuốt ve %pet%<success>, thân thiết <text>+%amount% <muted>(%bond%/100)'
+  # action bar khi chưa tới lúc tăng thân thiết
+  petted-wait: '<muted>Thân thiết tăng lại sau <text>%time%'
+  candy-eaten: '<success>✔ %pet% <success>đã ăn <text>x%amount% %item% <muted>(+%xp% XP, no %fullness%/100)'
+  food-eaten: '<success>✔ %pet% <success>đã ăn <text>x%amount% %item% <muted>(no %fullness%/100)'
+  full: '<error>✘ %pet% <error>đã no, không ăn thêm được <muted>(no %fullness%/100)'
+  max-level: '<error>✘ %pet% <error>đã đạt cấp tối đa'
+  no-active: '<error>✘ Bạn chưa thả pet nào'
+
+egg:
+  hint: '<muted>Mở <text>/pet <muted>→ <text>Lò ấp <muted>rồi bấm vào quả trứng để ấp'
+  invalid: '<error>✘ Quả trứng này không còn hợp lệ, hãy báo quản trị viên'
+
+incubator:
+  full: '<error>✘ Lò ấp đã đầy'
+  placed: '<success>✔ Đã đặt trứng vào lò, nở sau <text>%time%'
+  storage-full: '<error>✘ Kho pet đã đầy <muted>(%max% pet)<error>, hãy thả bớt pet trước'
+  no-pet: '<error>✘ Không có pet nào để nở ra, hãy báo quản trị viên'
+  no-gems: '<error>✘ Không đủ <text>%cost% <#8245F8>Gem'
+  sped-up: '<success>✔ Đã ấp ngay với <text>%cost% <#8245F8>Gem'
+  hatched: '<success>✔ Trứng đã nở ra <text>%pet% <dark_gray>[%rarity%<dark_gray>]'
+
+hatched:
+  title: '%pet%'
+  subtitle: '<gray>đã nở ra <dark_gray>[%rarity%<dark_gray>]'
+
+level-up:
+  title: '<#FFD166>Lên cấp %level%'
+  subtitle: '%pet%'
+  chat: '<success>✔ %pet% <success>đã lên cấp <text>%level%'
+
+evolve-title:
+  title: '<#C3B1E1>Tiến hóa'
+  subtitle: '%pet% <gray>bậc %stage%'
+
+evolve:
+  done: '<success>✔ %pet% <success>đã tiến hóa lên bậc <text>%stage%'
+  none: '<error>✘ Pet này không còn bậc tiến hóa nào'
+  level: '<error>✘ Cần đạt cấp <text>%level% <error>để tiến hóa'
+  no-economy: '<error>✘ Chưa có hệ thống tiền, không tiến hóa được'
+  no-money: '<error>✘ Không đủ tiền để tiến hóa'
+  no-gems-plugin: '<error>✘ Chưa có hệ thống gem, không tiến hóa được'
+  no-gems: '<error>✘ Không đủ <#8245F8>Gem <error>để tiến hóa'
+
+release:
+  done: '<success>✔ Đã thả %pet% <success>đi'
+
+rename:
+  prompt: '<accent>(!) Nhập tên mới cho %pet% <accent>vào chat <muted>(nhập <text>-<muted> để bỏ tên, <text>huy<muted> để thôi)'
+  done: '<success>✔ Đã đổi tên thành %pet%'
+  reset: '<success>✔ Đã bỏ tên riêng, pet dùng lại tên gốc'
+  cooldown: '<error>✘ Chờ một lát rồi đổi tên tiếp'
+  invalid: '<error>✘ Tên có ký tự không được dùng'
+  length: '<error>✘ Tên phải dài từ <text>%min% <error>tới <text>%max% <error>ký tự'
+  banned: '<error>✘ Tên có từ không được phép'
+  no-active: '<error>✘ Hãy thả pet bạn muốn đổi tên trước'
+
+input:
+  hint: '<muted>Nhập vào chat, <text>huy<muted> để thôi'
+  timeout: '<muted>Hết thời gian nhập'
+  cancelled: '<muted>Đã hủy'
+
+usage:
+  pet: '<muted>Dùng: <text>/pet <muted>| <text>/pet summon <tên> <muted>| <text>/pet dismiss <muted>| <text>/pet hideothers <muted>| <text>/pet chat <muted>| <text>/pet rename <tên>'
+  summon: '<muted>Dùng: <text>/pet summon <tên pet>'
+  rename: '<muted>Dùng: <text>/pet rename <tên mới>'
+  admin:
+    - '<#FFB3C7>BoxPet <dark_gray>- <gray>lệnh quản lý'
+    - '<gray>• <white>/boxpet give egg <người> <pet> <độ hiếm> [số]'
+    - '<gray>• <white>/boxpet give randomegg <người> <độ hiếm> [số]'
+    - '<gray>• <white>/boxpet give candy|food <người> <mã> [số]'
+    - '<gray>• <white>/boxpet give pet <người> <pet> [độ hiếm] [cấp]'
+    - '<gray>• <white>/boxpet pets <người> <dark_gray>(xem kho, kể cả offline)'
+    - '<gray>• <white>/boxpet transfer <mã pet> <người>'
+    - '<gray>• <white>/boxpet set <mã pet> level|xp|rarity|bond|fullness <giá trị>'
+    - '<gray>• <white>/boxpet delete|restore <mã pet>'
+    - '<gray>• <white>/boxpet incubator <người> clear <ô>'
+    - '<gray>• <white>/boxpet models <dark_gray>| <white>/boxpet reload'
+
+admin:
+  unknown-player: '<error>✘ Không tìm thấy người chơi <text>%player%'
+  player-offline: '<error>✘ <text>%player% <error>không online'
+  transfer-prompt: '<accent>(!) Nhập tên người nhận pet vào chat'
+  transferred: '<success>✔ Đã chuyển pet <text>%id% <success>cho <text>%player%'
+  set-prompt: '<accent>(!) Nhập giá trị mới cho <text>%field%'
+  set-invalid: '<error>✘ Giá trị không hợp lệ'
+  set-field: '<error>✘ Chỉ sửa được level, xp, rarity, bond, fullness'
+  set-done: '<success>✔ Pet <text>%id%<success>: %field% = <text>%value%'
+  deleted: '<success>✔ Đã xoá pet <text>%id% <muted>(khôi phục bằng /boxpet restore %id%)'
+  restored: '<success>✔ Đã khôi phục pet <text>%id%'
+  already-deleted: '<error>✘ Pet <text>%id% <error>đã bị xoá rồi'
+  not-deleted: '<error>✘ Pet <text>%id% <error>chưa bị xoá'
+  reloaded: '<success>✔ Đã tải lại BoxPet <muted>(%pets% pet, %abilities% kỹ năng)'
+  bad-egg: '<error>✘ Không có pet <text>%pet% <error>với độ hiếm <text>%rarity%'
+  bad-rarity: '<error>✘ Độ hiếm <text>%rarity% <error>không có hoặc không có pet nào'
+  bad-item: '<error>✘ Không có vật phẩm <text>%item%'
+  given: '<success>✔ Đã tặng <text>x%amount% %item% <success>cho <text>%player%'
+  received-pet: '<success>✔ Bạn nhận được pet %pet% <muted>(/pet → Kho pet)'
+  db-error: '<error>✘ Lỗi cơ sở dữ liệu, xem console'
+  id-short: '<error>✘ Mã pet cần ít nhất 4 ký tự'
+  no-pet: '<error>✘ Không có pet nào có mã <text>%id%'
+  many-pets: '<error>✘ Có <text>%count% <error>pet trùng mã <text>%id%<error>, hãy nhập dài hơn'
+  incubator-empty: '<error>✘ Ô ấp <text>%slot% <error>đang trống'
+  incubator-cleared: '<success>✔ Đã dọn ô ấp <text>%slot% <success>của <text>%player%'
+  model-missing: '<error>✘ <text>%pet%<error>: chưa có model <text>%model% <error>trong ModelEngine'
+  ability-missing: '<error>✘ <text>%pet%<error>: kỹ năng <text>%ability% <error>không có trong abilities.yml'
+  models-ok: '<success>✔ Đủ model và kỹ năng cho cả <text>%pets% <success>pet'
+  models-bad: '<accent>(!) Thiếu <text>%count% <accent>model / kỹ năng, xem các dòng trên'

@@ -1,0 +1,13 @@
+# BoxPet — XP cần để lên cấp (BOXPET_SPEC 9.1)
+# mode: formula = dùng công thức, L là cấp hiện tại (XP để từ cấp L lên L + 1)
+#       table   = dùng bảng bên dưới, cấp nào thiếu thì dùng công thức
+# Công thức hỗ trợ + - * / ^ ( ) và floor() ceil() round() sqrt() abs()
+#
+# Mặc định 100 + 5 × L²: tổng XP tới cấp 30 = 45.675, cấp 40 = 106.600, cấp 50 = 207.025, cấp 60 = 356.950
+mode: formula
+formula: '100 + 5 * L^2'
+
+# Ví dụ bảng (mode: table): "cấp đạt tới: XP cần"
+table:
+  2: 105
+  3: 120

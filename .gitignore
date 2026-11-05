@@ -1,0 +1,12 @@
+.gradle/
+build/
+.idea/
+*.iml
+out/
+.snapshot-*/
+*.log
+# third-party plugin jars: never pushed (licensed); see README for where to get them
+libs/ModelEngine-*.jar
+libs/MythicLib-*.jar
+# bought model packs: their ToS forbid sharing, never committed
+PetModel/

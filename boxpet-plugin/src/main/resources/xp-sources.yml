@@ -1,0 +1,49 @@
+# BoxPet — XP từ hoạt động (BOXPET_SPEC 9.1). Chỉ pet đang thả nhận XP.
+# daily-cap: tối đa mỗi ngày (reset 00:00 giờ server), 0 = không giới hạn. Kẹo không tính vào giới hạn này.
+player-kill:
+  enabled: true
+  amount: 30
+  daily-cap: 300
+  # cùng một người chỉ tính 1 lần mỗi bao nhiêu giây
+  same-victim-cooldown-seconds: 600
+  # không tính khi 2 người cùng IP
+  block-same-ip: true
+mob-kill:
+  enabled: true
+  amount: 3
+  daily-cap: 600
+  # mob từ lồng spawner: nhân XP (0 = không tính)
+  spawner-multiplier: 1.0
+  # XP riêng theo loại mob vanilla
+  per-type:
+    WITHER: 50
+    ENDER_DRAGON: 100
+boss-kill:
+  enabled: true
+  # mob / boss của MyBoxMobs: XP theo mã mob, mob không có trong danh sách dùng myboxmobs-default
+  amount: 100
+  daily-cap: 0
+  myboxmobs-default: 10
+  myboxmobs: {}
+mining:
+  enabled: true
+  amount: 0.1
+  daily-cap: 400
+  # tính block đào trong các mine của CataMines
+  catamines: true
+  # và trong các region WorldGuard này
+  worldguard-regions: []
+  # true = đào ở đâu cũng tính (có daily-cap chặn farm)
+  everywhere: false
+quest:
+  enabled: true
+  # mỗi lần hoàn thành nhiệm vụ BoxQuest (cần BoxQuest 0.3.2)
+  amount: 50
+  daily-cap: 500
+online:
+  enabled: true
+  # mỗi phút online với pet đang thả
+  amount: 3
+  daily-cap: 900
+  # không tính khi đứng trong các region này (ví dụ vùng AFK)
+  skip-worldguard-regions: []

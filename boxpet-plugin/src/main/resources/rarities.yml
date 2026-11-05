@@ -1,0 +1,34 @@
+# BoxPet — độ hiếm, xếp từ thấp tới cao (BOXPET_SPEC 3.1)
+#   stat-multiplier    nhân chỉ số, kỹ năng và boost của pet
+#   max-level          cấp tối đa
+#   hatch-time         thời gian ấp trứng (10m, 1h30m, 2h...)
+#   collection-points  điểm bộ sưu tập khi đây là độ hiếm cao nhất của một loại pet
+rarities:
+  common:
+    name: 'Thường'
+    color: '#BFC7D5'
+    stat-multiplier: 1.0
+    max-level: 30
+    hatch-time: 10m
+    collection-points: 1
+  rare:
+    name: 'Hiếm'
+    color: '#7FDBFF'
+    stat-multiplier: 1.4
+    max-level: 40
+    hatch-time: 30m
+    collection-points: 2
+  epic:
+    name: 'Sử thi'
+    color: '#C3B1E1'
+    stat-multiplier: 1.9
+    max-level: 50
+    hatch-time: 1h
+    collection-points: 3
+  legendary:
+    name: 'Huyền thoại'
+    color: '#FFD166'
+    stat-multiplier: 2.5
+    max-level: 60
+    hatch-time: 2h
+    collection-points: 5

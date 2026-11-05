@@ -1,0 +1,178 @@
+package com.dex.boxpet.pet;
+
+import com.dex.boxpet.BoxPetPlugin;
+import com.dex.boxpet.config.ItemsConfig;
+import com.dex.boxpet.config.Settings;
+import com.dex.boxpet.text.Format;
+import java.time.LocalDate;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Player;
+
+/** Fullness, bond, petting and feeding (spec 11). Main thread only. */
+public final class CareService {
+
+    public enum FeedResult {
+        OK, FULL, MAX_LEVEL, NOTHING
+    }
+
+    private final BoxPetPlugin plugin;
+
+    public CareService(BoxPetPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    private Settings s() {
+        return plugin.settings();
+    }
+
+    // ------------------------------------------------------------------ every second
+
+    void second(ActivePet p, long now) {
+        // fullness drains only with the owner online and the pet out (spec 11.3)
+        long elapsed = Math.max(0, now - p.lastDrainCheck);
+        p.lastDrainCheck = now;
+        if (!p.deadHidden) p.data.drainMs += elapsed;
+        long per = s().drainMinutesPerPoint * 60_000L;
+        boolean changed = false;
+        while (p.data.drainMs >= per && p.data.fullness > 0) {
+            p.data.drainMs -= per;
+            int before = p.data.fullness;
+            p.data.fullness--;
+            p.data.dirty = true;
+            changed = true;
+            if (before >= s().littleHungry && p.data.fullness < s().littleHungry && p.data.fullness > 0) {
+                plugin.chat().say(p, "little-hungry");
+            }
+            if (p.data.fullness == 0) {
+                p.lastHungryChat = now;
+                plugin.chat().say(p, "hungry");
+                plugin.pets().refreshBonus(p);
+            }
+        }
+        if (p.data.fullness == 0) p.data.drainMs = Math.min(p.data.drainMs, per);
+        if (changed) plugin.pets().refreshNametag(p);
+        if (p.hungry() && now - p.lastHungryChat > s().hungryRepeatSeconds * 1000L) {
+            p.lastHungryChat = now;
+            plugin.chat().say(p, "hungry");
+        }
+        // owner low HP (spec 11.4)
+        AttributeInstance max = p.owner.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        if (max != null && !p.owner.isDead() && p.owner.getHealth() / max.getValue() * 100 < s().lowHpPercent
+                && now - p.lastLowHpChat > s().lowHpCooldownSeconds * 1000L) {
+            p.lastLowHpChat = now;
+            plugin.chat().say(p, "owner-low-hp");
+        }
+        // birthday (spec 11.5), once per summon/session
+        if (!p.birthdayChecked && p.shown()) {
+            p.birthdayChecked = true;
+            long age = p.data.ageDays(now);
+            if (s().birthdays.contains((int) age)) plugin.chat().say(p, "birthday", "age", String.valueOf(age));
+        }
+    }
+
+    // ------------------------------------------------------------------ petting (spec 11.2)
+
+    public void pet(Player player, ActivePet p) {
+        long now = System.currentTimeMillis();
+        String anim = p.type.animations.containsKey("pet") ? "pet" : "interact";
+        plugin.pets().playAnimation(p, anim);
+        Effects.hearts(p.pos.clone().add(0, p.visual == null ? 1 : p.visual.height(), 0));
+        Effects.sound(p.pos, "entity.cat.purr", 0.8f, 1.2f);
+        // petting always resets the neglect clock
+        p.data.neglectMs = 0;
+        p.data.neglectSteps = 0;
+        p.data.activeSince = now;
+        p.data.dirty = true;
+        if (now >= p.data.bondGainAt && s().bondPetGain > 0) {
+            int tierBefore = s().bondTier(p.data.bond).min();
+            int before = p.data.bond;
+            p.data.bond = Math.min(100, p.data.bond + s().bondPetGain);
+            p.data.bondGainAt = now + s().bondPetCooldownMillis;
+            plugin.messages().send(player, "care.petted-gain", "pet", plugin.pets().displayName(p.data),
+                    "amount", String.valueOf(p.data.bond - before), "bond", String.valueOf(p.data.bond));
+            if (s().bondTier(p.data.bond).min() != tierBefore) plugin.pets().refreshStats(p);
+        } else {
+            plugin.messages().actionBar(player, "care.petted-wait", "time",
+                    Format.duration((p.data.bondGainAt - now + 999) / 1000));
+        }
+        plugin.chat().say(p, "petted");
+    }
+
+    // ------------------------------------------------------------------ feeding (spec 9.1, 11.3)
+
+    /**
+     * Feeds the active pet with up to {@code max} items of one kind. Candies give XP, foods give bond; both fill the
+     * stomach, and nothing is eaten past 100.
+     *
+     * @return how many were eaten (0 with the reason in {@code result[0]})
+     */
+    public int feed(Player player, ActivePet p, ItemsConfig.Consumable c, int max, FeedResult[] result) {
+        int eaten = 0;
+        FeedResult why = FeedResult.NOTHING;
+        boolean wasHungry = p.hungry();
+        int maxLevel = p.rarity.maxLevel();
+        for (int i = 0; i < max; i++) {
+            if (c.candy() && p.data.level >= maxLevel) {
+                why = FeedResult.MAX_LEVEL;
+                break;
+            }
+            if (p.data.fullness + c.fullness() > 100) {
+                why = FeedResult.FULL;
+                break;
+            }
+            p.data.fullness += c.fullness();
+            if (c.candy()) plugin.xp().addXp(p, c.xp());
+            else addFoodBond(p, c.bond());
+            eaten++;
+        }
+        if (eaten > 0) {
+            p.data.dirty = true;
+            why = FeedResult.OK;
+            plugin.pets().playAnimation(p, "interact");
+            Effects.sound(p.pos, "entity.generic.eat", 0.8f, 1.1f);
+            if (wasHungry && !p.hungry()) {
+                plugin.pets().refreshBonus(p);
+            }
+            plugin.pets().refreshNametag(p);
+            plugin.chat().say(p, "fed");
+        } else if (why == FeedResult.FULL) {
+            plugin.chat().say(p, "full");
+        }
+        result[0] = why;
+        return eaten;
+    }
+
+    /** Vanilla food from items.yml {@code vanilla-food}: fullness only. */
+    public boolean feedVanilla(ActivePet p, int fullness) {
+        if (p.data.fullness + fullness > 100) {
+            plugin.chat().say(p, "full");
+            return false;
+        }
+        boolean wasHungry = p.hungry();
+        p.data.fullness += fullness;
+        p.data.dirty = true;
+        plugin.pets().playAnimation(p, "interact");
+        Effects.sound(p.pos, "entity.generic.eat", 0.8f, 1.1f);
+        if (wasHungry) plugin.pets().refreshBonus(p);
+        plugin.pets().refreshNametag(p);
+        plugin.chat().say(p, "fed");
+        return true;
+    }
+
+    private void addFoodBond(ActivePet p, int bond) {
+        if (bond <= 0) return;
+        long today = LocalDate.now().toEpochDay();
+        if (p.data.foodBondDay != today) {
+            p.data.foodBondDay = today;
+            p.data.foodBond = 0;
+        }
+        int room = Math.max(0, s().bondFoodMaxPerDay - p.data.foodBond);
+        int gain = Math.min(room, bond);
+        if (gain <= 0) return;
+        int tierBefore = s().bondTier(p.data.bond).min();
+        p.data.foodBond += gain;
+        p.data.bond = Math.min(100, p.data.bond + gain);
+        if (s().bondTier(p.data.bond).min() != tierBefore) plugin.pets().refreshStats(p);
+    }
+}
