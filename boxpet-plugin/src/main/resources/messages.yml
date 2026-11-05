@@ -8,7 +8,7 @@ prefix: '<dark_gray>(</dark_gray><bold><#FFB3C7>Thú Cưng</#FFB3C7></bold><dark
 loading: '<muted>Dữ liệu thú cưng đang tải, thử lại sau giây lát'
 only-players: '<error>✘ Chỉ người chơi dùng được lệnh này'
 no-permission: '<error>✘ Bạn không có quyền dùng lệnh này'
-combat-locked: '<accent>(!) Đang giao tranh, chưa thể mở menu pet'
+combat-locked: '<error>✘ Đang giao tranh, chưa thể mở menu pet'
 
 nametag:
   hungry: ' <#FF8A8A>(Đói)'
@@ -27,9 +27,8 @@ dismiss:
   none: '<error>✘ Bạn chưa thả pet nào'
 
 manage:
-  need-out-pet: '<accent>(!) Hãy thả %pet% <accent>ra trước rồi mới vuốt ve được'
-  need-out-talk: '<accent>(!) Hãy thả %pet% <accent>ra trước rồi mới trò chuyện được'
-  need-out-sit: '<accent>(!) Hãy thả %pet% <accent>ra trước rồi mới bảo ngồi yên được'
+  need-out-pet: '<error>✘ Hãy thả %pet% <error>ra trước rồi mới vuốt ve được'
+  need-out-sit: '<error>✘ Hãy thả %pet% <error>ra trước rồi mới bảo ngồi yên được'
 
 sit:
   'on': '<success>✔ <text>%pet% <success>sẽ ngồi yên tại chỗ'

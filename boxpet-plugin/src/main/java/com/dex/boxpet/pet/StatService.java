@@ -63,8 +63,9 @@ public final class StatService {
 
     /** @return false when MythicLib has not loaded the player yet (retry later) */
     public boolean applyPet(Player player, ActivePet pet, Settings settings) {
-        Map<String, Double> stats = petStats(pet.type, pet.data.level, pet.rarity.statMultiplier(), pet.data.stage,
-                settings.bondTier(pet.data.bond).stats());
+        // a hungry pet (fullness 0) gives no stats at all: at least 1 fullness is needed (0.5.2)
+        Map<String, Double> stats = pet.hungry() ? Map.of() : petStats(pet.type, pet.data.level, pet.rarity.statMultiplier(),
+                pet.data.stage, settings.bondTier(pet.data.bond).stats());
         return apply(player, PET_KEY, stats, pet.type);
     }
 

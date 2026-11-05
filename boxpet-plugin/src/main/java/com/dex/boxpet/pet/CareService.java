@@ -49,6 +49,7 @@ public final class CareService {
                 p.lastHungryChat = now;
                 plugin.chat().say(p, "hungry");
                 plugin.pets().refreshBonus(p);
+                plugin.pets().refreshStats(p);
             }
         }
         if (p.data.fullness == 0) p.data.drainMs = Math.min(p.data.drainMs, per);
@@ -136,7 +137,10 @@ public final class CareService {
             if (out) {
                 plugin.pets().playAnimation(p, "interact");
                 Effects.sound(p.pos, "entity.generic.eat", 0.8f, 1.1f);
-                if (wasHungry && !p.hungry()) plugin.pets().refreshBonus(p);
+                if (wasHungry && !p.hungry()) {
+                    plugin.pets().refreshBonus(p);
+                    plugin.pets().refreshStats(p);
+                }
                 plugin.pets().refreshNametag(p);
                 plugin.chat().say(p, "fed");
             } else {
@@ -160,7 +164,10 @@ public final class CareService {
         p.data.dirty = true;
         plugin.pets().playAnimation(p, "interact");
         Effects.sound(p.pos, "entity.generic.eat", 0.8f, 1.1f);
-        if (wasHungry) plugin.pets().refreshBonus(p);
+        if (wasHungry) {
+            plugin.pets().refreshBonus(p);
+            plugin.pets().refreshStats(p);
+        }
         plugin.pets().refreshNametag(p);
         plugin.chat().say(p, "fed");
         return true;

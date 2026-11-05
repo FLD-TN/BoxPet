@@ -50,8 +50,10 @@ public final class MenuTexts {
         }
         // drop empty lines left by empty blocks at the start, end, or doubled
         List<String> clean = new ArrayList<>();
-        for (String s : out) {
-            if (s.isEmpty() && (clean.isEmpty() || clean.get(clean.size() - 1).isEmpty())) continue;
+        for (int i = 0; i < out.size(); i++) {
+            String s = out.get(i);
+            // an empty first line written in the file is kept (blank line under the item name)
+            if (s.isEmpty() && (clean.isEmpty() ? i != 0 : clean.get(clean.size() - 1).isEmpty())) continue;
             clean.add(s);
         }
         while (!clean.isEmpty() && clean.get(clean.size() - 1).isEmpty()) clean.remove(clean.size() - 1);

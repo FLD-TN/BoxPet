@@ -23,6 +23,11 @@ import org.bukkit.inventory.ItemStack;
  */
 public final class PetIcons {
 
+    /** Bar and number colours of bond and fullness (different from the section titles). */
+    static final String BOND = "<#FF8FC7>";
+    static final String FULLNESS = "<#FF9F5A>";
+    static final String HUNGRY = "<#FF4D4D>";
+
     private PetIcons() {
     }
 
@@ -87,82 +92,63 @@ public final class PetIcons {
         return out;
     }
 
-    /** Library: value at level 1 and at the max level of the pet's rarity. */
-    public static List<String> statRangeLines(BoxPetPlugin plugin, PetType type) {
+    /** Library: the base value of each stat (level 1, with the pet's rarity). */
+    public static List<String> statBaseLines(BoxPetPlugin plugin, PetType type) {
         Rarity r = rarity(plugin, type);
-        Map<String, Double> low = StatService.petStats(type, 1, r.statMultiplier(), 0, 1.0);
-        Map<String, Double> high = StatService.petStats(type, r.maxLevel(), r.statMultiplier(), 0, 1.0);
+        Map<String, Double> base = StatService.petStats(type, 1, r.statMultiplier(), 0, 1.0);
         List<String> out = new ArrayList<>();
-        for (Map.Entry<String, Double> e : low.entrySet()) {
-            String range = plugin.menus().text("library.range", "from", signed(e.getValue()),
-                    "to", signed(high.getOrDefault(e.getKey(), e.getValue())));
-            out.add(statRow(plugin, e.getKey(), range));
-        }
+        for (Map.Entry<String, Double> e : base.entrySet()) out.add(statRow(plugin, e.getKey(), signed(e.getValue())));
         if (out.isEmpty()) out.add(plugin.menus().text("pet-card.no-stats"));
         return out;
     }
 
     // ------------------------------------------------------------------ skill
 
-    /** Skill title, short description and one row per fact (menus.yml ability-rows). */
+    /**
+     * "Kỹ năng:", the skill name in 〈 〉, the description of abilities.yml with its numbers coloured, then the
+     * cooldown on its own line (0.5.2 layout).
+     */
     public static List<String> abilityLines(BoxPetPlugin plugin, PetType type, int level) {
         MenuTexts m = plugin.menus();
         Ability a = plugin.abilities().get(type.ability);
         if (a == null) return List.of(m.text("pet-card.no-ability"));
         Rarity r = rarity(plugin, type);
         double mul = r.statMultiplier();
+        int tenths = (int) Math.floor(a.boostTenths.at(level, mul));
+        if (a.boostWhole) tenths -= tenths % 10;
+        String potion = m.text("potions." + a.potion.toLowerCase(Locale.ROOT));
+        if (potion.startsWith("potions.")) potion = a.potion;
+        String[] ph = {
+                "damage", num(m, "damage", round1(a.damage.at(level, mul))),
+                "heal", num(m, "heal", round1(a.heal.at(level, mul))),
+                "hearts", num(m, "shield", round1(a.shieldHearts.at(level, mul))),
+                "percent", num(m, "percent", a.type == Ability.Type.SHIELD ? a.shieldBelowPercent : a.healBelowPercent),
+                "bonus", num(m, "bonus", round1(a.markBonus.at(level, mul))),
+                "boost", paint(m, "boost", tenths > 0 ? boost(tenths) : "x0"),
+                "boost_type", m.text("boost-types." + a.boostType),
+                "seconds", num(m, "time", (a.type == Ability.Type.MARK ? a.markTicks : a.type == Ability.Type.SHIELD ? a.shieldTicks : a.debuffTicks) / 20.0),
+                "level", paint(m, "effect", roman(a.potionAmplifier(r.index()) + 1)),
+                "potion", paint(m, "effect", potion),
+                "range", num(m, "time", a.range),
+                "pvp", num(m, "percent", Math.round(a.pvp(plugin.settings().defaultPvpMultiplier) * 100))
+        };
         List<String> out = new ArrayList<>();
-        out.add(m.text("pet-card.ability-title", "ability", PetType.paint(a.color, a.name)));
-        for (String line : a.description) out.add(m.text("pet-card.ability-line", "line", line));
-        String kind = m.text("ability-kinds." + a.type.name().toLowerCase(Locale.ROOT));
-        out.add(m.text("ability-rows.kind", "value", kind));
-        switch (a.type) {
-            case PROJECTILE, STRIKE, MARK -> {
-                out.add(m.text("ability-rows.trigger", "value", m.text("ability-triggers.combat")));
-                double dmg = round1(a.damage.at(level, mul));
-                if (dmg > 0) out.add(m.text("ability-rows.damage", "value", Format.decimal(dmg)));
-                if (a.type == Ability.Type.MARK) {
-                    out.add(m.text("ability-rows.mark", "value", Format.decimal(round1(a.markBonus.at(level, mul))),
-                            "seconds", Format.decimal(a.markTicks / 20.0)));
-                }
-                if (a.debuff != Ability.Debuff.NONE) {
-                    out.add(m.text("ability-rows.debuff", "value", m.text("debuffs." + a.debuff.name().toLowerCase(Locale.ROOT)),
-                            "seconds", Format.decimal(a.debuffTicks / 20.0)));
-                }
-                out.add(m.text("ability-rows.range", "value", Format.decimal(a.range)));
-                out.add(m.text("ability-rows.pvp", "value", String.valueOf(Math.round(a.pvp(plugin.settings().defaultPvpMultiplier) * 100))));
-            }
-            case HEAL -> {
-                out.add(m.text("ability-rows.trigger", "value", m.text("ability-triggers.low-hp", "percent", String.valueOf(a.healBelowPercent))));
-                double heal = round1(a.heal.at(level, mul));
-                out.add(m.text(a.healPercent ? "ability-rows.heal-percent" : "ability-rows.heal", "value", Format.decimal(heal)));
-            }
-            case SHIELD -> {
-                out.add(m.text("ability-rows.trigger", "value", m.text("ability-triggers.low-hp", "percent", String.valueOf(a.shieldBelowPercent))));
-                out.add(m.text("ability-rows.shield", "value", Format.decimal(round1(a.shieldHearts.at(level, mul))),
-                        "seconds", Format.decimal(a.shieldTicks / 20.0)));
-            }
-            case POTION -> {
-                out.add(m.text("ability-rows.trigger", "value", m.text("ability-triggers.always")));
-                String effect = m.text("potions." + a.potion.toLowerCase(Locale.ROOT));
-                if (effect.startsWith("potions.")) effect = a.potion;
-                out.add(m.text("ability-rows.potion", "value", effect + " " + roman(a.potionAmplifier(r.index()) + 1)));
-            }
-            case BOOST -> {
-                out.add(m.text("ability-rows.trigger", "value", m.text("ability-triggers.always")));
-                int tenths = (int) Math.floor(a.boostTenths.at(level, mul));
-                if (a.boostWhole) tenths -= tenths % 10;
-                out.add(m.text("ability-rows.boost", "value", tenths > 0 ? boost(tenths) : "x0",
-                        "type", m.text("boost-types." + a.boostType)));
-            }
-            default -> {
-            }
+        out.add(m.text("pet-card.ability-title"));
+        out.add(m.text("pet-card.ability-name", "ability", PetType.paint(a.color, a.name)));
+        for (String line : a.description) out.add(m.text("pet-card.ability-line", "line", Messages.apply(line, ph)));
+        if (a.type != Ability.Type.BOOST && a.type != Ability.Type.POTION && a.type != Ability.Type.NONE) {
+            out.add(m.text("pet-card.ability-cooldown", "value", Format.decimal(a.cooldownTicks / 20.0)));
         }
-        if (a.type != Ability.Type.BOOST && a.type != Ability.Type.POTION) {
-            out.add(m.text("ability-rows.cooldown", "value", Format.decimal(a.cooldownTicks / 20.0)));
-        }
-        if (a.type != Ability.Type.NONE) out.add(m.text("ability-rows.hungry-note"));
         return out;
+    }
+
+    /** A number in the colour of its kind (menus.yml ability-numbers), then back to the description colour. */
+    private static String num(MenuTexts m, String kind, double value) {
+        return paint(m, kind, Format.decimal(value));
+    }
+
+    private static String paint(MenuTexts m, String kind, String text) {
+        return m.text("ability-numbers." + kind) + text + m.text("ability-numbers.reset");
     }
 
     private static double round1(double v) {
@@ -199,9 +185,11 @@ public final class PetIcons {
                 "xp_bar", max ? Format.bar(1, 1, 10, "<#FFD166>", "<dark_gray>") : Format.bar(d.xp, need, 10, "<#7CFC9A>", "<dark_gray>"),
                 "bond", String.valueOf(d.bond),
                 "bond_tier", plugin.settings().bondTier(d.bond).name(),
-                "bond_bar", Format.bar(d.bond, 100, 10, "<#FFB3C7>", "<dark_gray>"),
+                "bond_bar", Format.bar(d.bond, 100, 10, BOND, "<dark_gray>"),
+                "bond_colour", BOND,
                 "fullness", String.valueOf(d.fullness),
-                "fullness_bar", Format.bar(d.fullness, 100, 10, d.fullness > 0 ? "<#FFD166>" : "<#FF8A8A>", "<dark_gray>"),
+                "fullness_bar", Format.bar(d.fullness, 100, 10, d.fullness > 0 ? FULLNESS : HUNGRY, "<dark_gray>"),
+                "fullness_colour", d.fullness > 0 ? FULLNESS : HUNGRY,
                 "fullness_state", fullnessState(plugin, d.fullness),
                 "age", age(d),
                 "stage", String.valueOf(d.stage + 1),
@@ -221,14 +209,15 @@ public final class PetIcons {
         blocks.put("status", statusLines);
         blocks.put("actions", actions);
         String[] ph = placeholders(plugin, d, type);
-        return Menu.decorate(icon(plugin, type), plugin.menus().name("pet-card", ph), plugin.menus().lore("pet-card", blocks, ph));
+        return Menu.decorate(icon(plugin, type), plugin.menus().name("pet-card", ph),
+                withWarning(plugin, plugin.menus().lore("pet-card", blocks, ph)));
     }
 
     /** Library card: what a pet type gives, at level 1 and at its max level. */
     public static ItemStack libraryCard(BoxPetPlugin plugin, PetType type, boolean owned, List<String> actions) {
         Rarity r = rarity(plugin, type);
         Map<String, List<String>> blocks = new HashMap<>();
-        blocks.put("stats", statRangeLines(plugin, type));
+        blocks.put("stats", statBaseLines(plugin, type));
         blocks.put("ability", abilityLines(plugin, type, 1));
         blocks.put("actions", actions);
         String[] ph = {
@@ -236,11 +225,25 @@ public final class PetIcons {
                 "role", roleName(plugin, type),
                 "rarity", r.coloured(),
                 "max_level", level(plugin, r.maxLevel()),
-                "hatch", Format.duration(r.hatchSeconds()),
-                "points", String.valueOf(r.collectionPoints()),
                 "owned", plugin.menus().text(owned ? "library.owned" : "library.not-owned")
         };
-        return Menu.decorate(icon(plugin, type), plugin.menus().name("library.card", ph), plugin.menus().lore("library.card", blocks, ph));
+        return Menu.decorate(icon(plugin, type), plugin.menus().name("library.card", ph),
+                withWarning(plugin, plugin.menus().lore("library.card", blocks, ph)));
+    }
+
+    /** Adds the hunger warning (menus.yml pet-card.warning) as the last line, centred under the widest line. */
+    static List<String> withWarning(BoxPetPlugin plugin, List<String> lore) {
+        String warning = plugin.menus().text("pet-card.warning");
+        if (warning.isEmpty() || warning.equals("pet-card.warning")) return lore;
+        List<String> out = new ArrayList<>(lore);
+        int widest = 0;
+        for (String line : out) widest = Math.max(widest, com.dex.boxpet.text.Text.plain(line).length());
+        int len = com.dex.boxpet.text.Text.plain(warning).length();
+        // a space is narrower than a letter in the Minecraft font: about 1.5 spaces per missing character
+        int pad = Math.max(0, (int) Math.round((widest - len) * 1.5 / 2));
+        out.add("");
+        out.add(" ".repeat(pad) + warning);
+        return out;
     }
 
     public static List<String> status(BoxPetPlugin plugin, PetData d, boolean active) {

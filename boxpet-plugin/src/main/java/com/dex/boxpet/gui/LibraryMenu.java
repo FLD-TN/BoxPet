@@ -19,14 +19,12 @@ public final class LibraryMenu extends Menu {
     private int page;
     private final Cycler role;
     private final Cycler rarity;
-    private final Cycler sort;
 
     public LibraryMenu(BoxPetPlugin plugin, Player player, PlayerData pd) {
         super(plugin, player, 6, plugin.menus().title("library"));
         this.pd = pd;
         this.role = Cycler.roles(plugin);
         this.rarity = Cycler.rarities(plugin);
-        this.sort = Cycler.sorts(plugin, "library");
     }
 
     private List<PetType> list() {
@@ -37,13 +35,7 @@ public final class LibraryMenu extends Menu {
             out.add(t);
         }
         Comparator<PetType> byRarity = Comparator.comparingInt(t -> PetIcons.rarity(plugin, t).index());
-        // 0 rarity up, 1 rarity down, 2 name A-Z, 3 by family
-        out.sort(switch (sort.index()) {
-            case 1 -> byRarity.reversed().thenComparing(t -> t.name);
-            case 2 -> Comparator.comparing((PetType t) -> t.name);
-            case 3 -> Comparator.comparing((PetType t) -> t.family).thenComparing(byRarity);
-            default -> byRarity.thenComparing(t -> t.name);
-        });
+        out.sort(byRarity.thenComparing(t -> t.name));
         return out;
     }
 
@@ -60,30 +52,27 @@ public final class LibraryMenu extends Menu {
         }
         set(4, button("library.info", Material.KNOWLEDGE_BOOK, "total", String.valueOf(plugin.types().size())), null);
         set(45, button("common.back", Material.ARROW), click -> new MainMenu(plugin, player).open());
-        set(46, role.icon(), click -> {
+        set(52, role.icon(), click -> {
             if (role.click(click)) {
                 page = 0;
                 refresh();
             }
         });
-        set(47, rarity.icon(), click -> {
+        set(53, rarity.icon(), click -> {
             if (rarity.click(click)) {
                 page = 0;
                 refresh();
             }
         });
-        if (page > 0) set(48, button("common.previous", Material.ARROW, "page", String.valueOf(page)), click -> {
+        if (page > 0) set(48, button("common.previous", Material.SPECTRAL_ARROW, "page", String.valueOf(page)), click -> {
             page--;
             refresh();
         });
         set(49, button("library.page", Material.PAPER, "page", String.valueOf(page + 1), "pages", String.valueOf(pages),
                 "count", String.valueOf(types.size())), null);
-        if (page < pages - 1) set(50, button("common.next", Material.ARROW, "page", String.valueOf(page + 2)), click -> {
+        if (page < pages - 1) set(50, button("common.next", Material.SPECTRAL_ARROW, "page", String.valueOf(page + 2)), click -> {
             page++;
             refresh();
-        });
-        set(52, sort.icon(), click -> {
-            if (sort.click(click)) refresh();
         });
         fill();
     }

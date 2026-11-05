@@ -24,7 +24,6 @@ public final class StorageMenu extends Menu {
     private int page;
     private final Cycler role;
     private final Cycler rarity;
-    private final Cycler sort;
 
     public StorageMenu(BoxPetPlugin plugin, Player player, PlayerData target, boolean admin, int page) {
         super(plugin, player, 6, admin ? plugin.menus().title("storage-admin", "player", name(target))
@@ -34,7 +33,6 @@ public final class StorageMenu extends Menu {
         this.page = page;
         this.role = Cycler.roles(plugin);
         this.rarity = Cycler.rarities(plugin);
-        this.sort = Cycler.sorts(plugin, "storage");
     }
 
     private static String name(PlayerData pd) {
@@ -59,14 +57,8 @@ public final class StorageMenu extends Menu {
             if (rarity.index() > 0 && rarityIndex(d) != rarity.index() - 1) continue;
             out.add(d);
         }
-        // 0 rarity up, 1 rarity down, 2 highest level, 3 newest
-        Comparator<PetData> c = switch (sort.index()) {
-            case 1 -> Comparator.<PetData>comparingInt(d -> -rarityIndex(d)).thenComparingInt(d -> -d.level);
-            case 2 -> Comparator.<PetData>comparingInt(d -> -d.level).thenComparingInt(d -> -rarityIndex(d));
-            case 3 -> Comparator.<PetData>comparingLong(d -> -d.createdAt);
-            default -> Comparator.<PetData>comparingInt(this::rarityIndex).thenComparingInt(d -> -d.level);
-        };
-        out.sort(c);
+        // always rarity going up, then highest level first
+        out.sort(Comparator.<PetData>comparingInt(this::rarityIndex).thenComparingInt(d -> -d.level));
         PetData active = target.active();
         if (active != null && out.remove(active)) out.add(0, active);
         return out;
@@ -102,33 +94,30 @@ public final class StorageMenu extends Menu {
         }
         if (list.isEmpty()) set(22, button("storage.empty", Material.BARRIER), null);
         if (!admin) set(45, button("common.back", Material.ARROW), click -> new MainMenu(plugin, player).open());
-        set(46, role.icon(), click -> {
+        set(52, role.icon(), click -> {
             if (role.click(click)) {
                 page = 0;
                 refresh();
             }
         });
-        set(47, rarity.icon(), click -> {
+        set(53, rarity.icon(), click -> {
             if (rarity.click(click)) {
                 page = 0;
                 refresh();
             }
         });
-        if (page > 0) set(48, button("common.previous", Material.ARROW, "page", String.valueOf(page)), click -> {
+        if (page > 0) set(48, button("common.previous", Material.SPECTRAL_ARROW, "page", String.valueOf(page)), click -> {
             page--;
             refresh();
         });
         set(49, button("storage.info", Material.CHEST, "used", String.valueOf(target.pets.size()),
                 "max", admin ? "-" : String.valueOf(plugin.pets().capacity(player)),
                 "page", String.valueOf(page + 1), "pages", String.valueOf(pages)), null);
-        if (page < pages - 1) set(50, button("common.next", Material.ARROW, "page", String.valueOf(page + 2)), click -> {
+        if (page < pages - 1) set(50, button("common.next", Material.SPECTRAL_ARROW, "page", String.valueOf(page + 2)), click -> {
             page++;
             refresh();
         });
-        set(52, sort.icon(), click -> {
-            if (sort.click(click)) refresh();
-        });
-        if (admin) set(53, button("storage.deleted", Material.LAVA_BUCKET), click -> DeletedMenu.open(plugin, player, target));
+        if (admin) set(46, button("storage.deleted", Material.LAVA_BUCKET), click -> DeletedMenu.open(plugin, player, target));
         fill();
     }
 

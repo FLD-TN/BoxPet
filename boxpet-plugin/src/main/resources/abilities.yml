@@ -15,15 +15,18 @@
 # debuff.type: burn, slow, bleed (damage-ratio × sát thương mỗi giây), weakness
 # fx: animation (tên hoạt ảnh của pet, mặc định skill), sounds (delay tính bằng tick), particles (at: pet, target, owner, path),
 #     vfx: model ModelEngine (model, animation, speed ô/tick, life-ticks, scale, y-offset)
-# name / color: tên kỹ năng và màu (hex hoặc gradient '#A:#B'). description: một câu ngắn; các con số (sát thương,
-# hồi chiêu, tầm đánh...) tự hiện ở các dòng thông tin bên dưới trong lore và tăng theo cấp độ của pet.
+# name / color: tên kỹ năng và màu (hex hoặc gradient '#A:#B').
+# description: mô tả, các số tự tô màu (menus.yml ability-numbers) và tăng theo cấp độ; hồi chiêu tự hiện ở dòng riêng.
+#   %damage% %heal% %hearts% %percent% %bonus% %boost% %boost_type% %seconds% %potion% %level% %range% %pvp%
 abilities:
   fire_ball_fire:
     type: projectile
     name: 'Cầu Lửa'
     color: '#FF7A45:#FFC15E'
     description:
-      - 'Phun cầu lửa đốt cháy kẻ địch'
+      - 'Phun cầu lửa vào mục tiêu,'
+      - 'gây %damage% sát thương và đốt'
+      - 'cháy %seconds% giây'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -54,7 +57,9 @@ abilities:
     name: 'Cầu Lửa Linh Hồn'
     color: '#5FE1E8:#B8FFF9'
     description:
-      - 'Phun lửa linh hồn lạnh buốt'
+      - 'Phun cầu lửa vào mục tiêu,'
+      - 'gây %damage% sát thương và đốt'
+      - 'cháy %seconds% giây'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -85,7 +90,9 @@ abilities:
     name: 'Cầu Lửa Bóng Tối'
     color: '#9B6BFF:#E3B6FF'
     description:
-      - 'Phun lửa bóng tối thiêu đốt'
+      - 'Phun cầu lửa vào mục tiêu,'
+      - 'gây %damage% sát thương và đốt'
+      - 'cháy %seconds% giây'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -116,7 +123,9 @@ abilities:
     name: 'Cầu Lửa Thánh'
     color: '#FFF1A8:#FFB347'
     description:
-      - 'Phun lửa thánh rực sáng'
+      - 'Phun cầu lửa vào mục tiêu,'
+      - 'gây %damage% sát thương và đốt'
+      - 'cháy %seconds% giây'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -147,7 +156,9 @@ abilities:
     name: 'Lưỡi Dính'
     color: '#7BD88F:#C6F6A8'
     description:
-      - 'Phóng lưỡi dính làm chậm kẻ địch'
+      - 'Phóng lưỡi vào mục tiêu,'
+      - 'gây %damage% sát thương và làm'
+      - 'chậm %seconds% giây'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -172,7 +183,9 @@ abilities:
     name: 'Cầu Lửa Phép'
     color: '#FF9A3C:#FFD27A'
     description:
-      - 'Ném cầu lửa phép thiêu đốt'
+      - 'Ném cầu lửa vào mục tiêu,'
+      - 'gây %damage% sát thương và đốt'
+      - 'cháy %seconds% giây'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -203,7 +216,9 @@ abilities:
     name: 'Cầu Băng'
     color: '#7FD4FF:#D6F4FF'
     description:
-      - 'Ném cầu băng làm chậm kẻ địch'
+      - 'Ném cầu băng vào mục tiêu,'
+      - 'gây %damage% sát thương và làm'
+      - 'chậm %seconds% giây'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -234,7 +249,9 @@ abilities:
     name: 'Đầu Lâu Ma'
     color: '#8E7CFF:#C9B8FF'
     description:
-      - 'Ném đầu lâu ma làm suy yếu'
+      - 'Ném đầu lâu ma vào mục tiêu,'
+      - 'gây %damage% sát thương và làm'
+      - 'suy yếu %seconds% giây'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -265,7 +282,9 @@ abilities:
     name: 'Hộp Quà Bất Ngờ'
     color: '#FF6B6B:#FFD3D3'
     description:
-      - 'Ném hộp quà bất ngờ làm chậm'
+      - 'Ném hộp quà vào mục tiêu,'
+      - 'gây %damage% sát thương và làm'
+      - 'chậm %seconds% giây'
     cooldown: 8
     range: 14
     cast-delay-ticks: 18
@@ -296,7 +315,8 @@ abilities:
     name: 'Mũi Giáo Xuyên'
     color: '#B8C4CF:#FFFFFF'
     description:
-      - 'Lao tới đâm xuyên mục tiêu'
+      - 'Lao tới đâm thẳng mục tiêu,'
+      - 'gây %damage% sát thương'
     cooldown: 7
     range: 10
     cast-delay-ticks: 22
@@ -321,7 +341,9 @@ abilities:
     name: 'Nhát Chém Ánh Sáng'
     color: '#F2545B:#FFB4A2'
     description:
-      - 'Chém một nhát gây chảy máu'
+      - 'Chém mục tiêu, gây %damage%'
+      - 'sát thương và chảy máu'
+      - '%seconds% giây'
     cooldown: 9
     range: 10
     cast-delay-ticks: 20
@@ -349,7 +371,9 @@ abilities:
     name: 'Đánh Dấu Mục Tiêu'
     color: '#FF5E5E:#FFC2A8'
     description:
-      - 'Đánh dấu để chủ nhân hạ gục'
+      - 'Đánh dấu mục tiêu %seconds% giây:'
+      - 'đòn của chủ nhân lên nó mạnh'
+      - 'hơn %bonus%%, kèm %damage% sát thương'
     cooldown: 12
     range: 16
     cast-delay-ticks: 30
@@ -379,7 +403,8 @@ abilities:
     name: 'Lông Vũ Chữa Lành'
     color: '#FFD24D:#FFF5C2'
     description:
-      - 'Lông vũ chữa lành vết thương'
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'hồi %heal% máu cho chủ nhân'
     cooldown: 10
     heal:
       amount:
@@ -399,7 +424,9 @@ abilities:
     name: 'Khiên Gai Sa Mạc'
     color: '#E6C27A:#FFF0C2'
     description:
-      - 'Dựng khiên gai bảo vệ chủ nhân'
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'tạo khiên %hearts% tim trong'
+      - '%seconds% giây'
     cooldown: 45
     shield:
       below-percent: 40
@@ -424,7 +451,9 @@ abilities:
     name: 'Khiên Gai Băng'
     color: '#9EE7FF:#E3FAFF'
     description:
-      - 'Dựng khiên gai băng bảo vệ chủ nhân'
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'tạo khiên %hearts% tim trong'
+      - '%seconds% giây'
     cooldown: 45
     shield:
       below-percent: 40
@@ -449,7 +478,9 @@ abilities:
     name: 'Khiên Gai Sculk'
     color: '#3FC1C9:#A7F3F7'
     description:
-      - 'Dựng khiên sculk bảo vệ chủ nhân'
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'tạo khiên %hearts% tim trong'
+      - '%seconds% giây'
     cooldown: 45
     shield:
       below-percent: 40
@@ -474,7 +505,8 @@ abilities:
     name: 'Phước Lành Thiên Đường'
     color: '#FFFFFF:#B8E6FF'
     description:
-      - 'Ban phước kháng sát thương'
+      - 'Chủ nhân luôn có hiệu ứng'
+      - '%potion% %level% khi pet được thả'
     cooldown: 30
     potion:
       effect: resistance
@@ -490,7 +522,8 @@ abilities:
     name: 'Sức Sống Rừng Xanh'
     color: '#8EE07A:#D8F8C6'
     description:
-      - 'Ban phước hồi phục'
+      - 'Chủ nhân luôn có hiệu ứng'
+      - '%potion% %level% khi pet được thả'
     cooldown: 30
     potion:
       effect: regeneration
@@ -506,7 +539,8 @@ abilities:
     name: 'Bước Chân Cầu Vồng'
     color: '#FF8FB1:#8FD3FF'
     description:
-      - 'Ban phước tốc độ'
+      - 'Chủ nhân luôn có hiệu ứng'
+      - '%potion% %level% khi pet được thả'
     cooldown: 30
     potion:
       effect: speed
@@ -522,7 +556,8 @@ abilities:
     name: 'Sức Mạnh Bất Tử'
     color: '#A3B18A:#E2E8CE'
     description:
-      - 'Ban phước sức mạnh'
+      - 'Chủ nhân luôn có hiệu ứng'
+      - '%potion% %level% khi pet được thả'
     cooldown: 30
     potion:
       effect: strength
@@ -538,7 +573,8 @@ abilities:
     name: 'Mũi Săn Mồi'
     color: '#3FA7D6:#9BE3FF'
     description:
-      - 'Đánh hơi chiến lợi phẩm'
+      - 'Tăng phần thưởng khi hạ mob,'
+      - 'boss thêm %boost%'
     boost:
       type: mob
       tenths:
@@ -550,7 +586,8 @@ abilities:
     name: 'Rồng Con May Mắn'
     color: '#7B6CFF:#FF7BD5'
     description:
-      - 'Mang may mắn cho mỗi nhiệm vụ'
+      - 'Tăng phần thưởng nhiệm vụ'
+      - 'thêm %boost%'
     boost:
       type: quest
       tenths:
@@ -562,7 +599,8 @@ abilities:
     name: 'Xẻng Thần'
     color: '#E0B36A:#FFE3A8'
     description:
-      - 'Đào mỏ cùng chủ nhân'
+      - 'Tăng vật phẩm khi đào mỏ'
+      - 'thêm %boost% (chỉ số nguyên)'
     boost:
       type: mining
       tenths:
@@ -574,7 +612,8 @@ abilities:
     name: 'Cảm Hứng Họa Sĩ'
     color: '#FFA7C4:#FFD9E6'
     description:
-      - 'Cảm hứng cho mỗi nhiệm vụ'
+      - 'Tăng phần thưởng nhiệm vụ'
+      - 'thêm %boost%'
     boost:
       type: quest
       tenths:
@@ -586,7 +625,8 @@ abilities:
     name: 'Giai Điệu Vui Vẻ'
     color: '#A5B4FF:#DCE2FF'
     description:
-      - 'Giai điệu vui cho mỗi nhiệm vụ'
+      - 'Tăng phần thưởng nhiệm vụ'
+      - 'thêm %boost%'
     boost:
       type: quest
       tenths:

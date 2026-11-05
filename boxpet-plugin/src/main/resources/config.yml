@@ -22,7 +22,7 @@ style:
     muted: '#C8C8C8'
     accent: '#FFD166'
     success: '#7CFC9A'
-    error: '#FF6B6B'
+    error: '#FF4D4D'
 
 # Giao tranh: bị đánh hoặc đánh ai trong N giây gần nhất
 combat-tag-seconds: 10

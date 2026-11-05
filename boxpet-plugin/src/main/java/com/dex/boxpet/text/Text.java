@@ -26,7 +26,7 @@ public final class Text {
 
     /** Palette tags of the BoxCore standard ({@code <text>}, {@code <muted>}, ...), set from config.yml style.palette. */
     private static volatile java.util.Map<String, String> palette = java.util.Map.of(
-            "text", "#FFFFFF", "muted", "#C8C8C8", "accent", "#FFD166", "success", "#7CFC9A", "error", "#FF6B6B");
+            "text", "#FFFFFF", "muted", "#C8C8C8", "accent", "#FFD166", "success", "#7CFC9A", "error", "#FF4D4D");
 
     public static void setPalette(java.util.Map<String, String> colours) {
         if (colours != null && !colours.isEmpty()) palette = java.util.Map.copyOf(colours);

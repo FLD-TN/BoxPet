@@ -81,18 +81,9 @@ public final class ManageMenu extends Menu {
             plugin.care().pet(player, p);
             refresh();
         });
-        set(32, button("manage.talk", Material.PAPER, "pet", name), click -> {
-            ActivePet p = out();
-            if (p == null) {
-                plugin.messages().send(player, "manage.need-out-talk", "pet", name);
-                return;
-            }
-            plugin.chat().say(p, "talk");
-            plugin.pets().playAnimation(p, "interact");
-        });
         ActivePet p = out();
         boolean sitting = p != null && p.sitting;
-        set(33, button(sitting ? "manage.follow" : "manage.sit", sitting ? Material.LEAD : Material.OAK_SIGN, "pet", name), click -> {
+        set(32, button(sitting ? "manage.follow" : "manage.sit", sitting ? Material.LEAD : Material.OAK_SIGN, "pet", name), click -> {
             ActivePet o = out();
             if (o == null) {
                 plugin.messages().send(player, "manage.need-out-sit", "pet", name);
@@ -131,10 +122,8 @@ public final class ManageMenu extends Menu {
                         }, this::open).open();
             });
         }
-        // the release button stands alone, framed in red, so it is read before clicking
-        set(48, icon(Material.RED_STAINED_GLASS_PANE, " ", List.of()), null);
-        set(50, icon(Material.RED_STAINED_GLASS_PANE, " ", List.of()), null);
-        set(49, button("manage.release", Material.LAVA_BUCKET, "pet", name), click -> new ConfirmMenu(plugin, player,
+        // the release button stands alone in the last slot, away from the other buttons
+        set(53, button("manage.release", Material.LAVA_BUCKET, "pet", name), click -> new ConfirmMenu(plugin, player,
                 plugin.menus().text("confirm.release", "pet", plugin.pets().displayName(pet)), () -> {
             plugin.actions().release(player, owner, pet);
             plugin.messages().send(player, "release.done", "pet", plugin.pets().displayName(pet));
@@ -172,9 +161,7 @@ public final class ManageMenu extends Menu {
         });
         set(31, button("admin.set-level", Material.EXPERIENCE_BOTTLE), click -> askSet("level"));
         set(33, button("admin.set-care", Material.COOKIE), click -> askSet(click.isRightClick() ? "fullness" : "bond"));
-        set(48, icon(Material.RED_STAINED_GLASS_PANE, " ", List.of()), null);
-        set(50, icon(Material.RED_STAINED_GLASS_PANE, " ", List.of()), null);
-        set(49, button("admin.delete", Material.LAVA_BUCKET), click -> new ConfirmMenu(plugin, player,
+        set(53, button("admin.delete", Material.LAVA_BUCKET), click -> new ConfirmMenu(plugin, player,
                 plugin.menus().text("confirm.admin-delete", "id", pet.shortId()), () -> {
             plugin.actions().setDeleted(player, pet, true);
             owner.pets.remove(pet.id);

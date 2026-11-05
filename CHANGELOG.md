@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.2 (2026-11-05)
+
+- Pet đói (độ no 0) mất cả chỉ số lẫn kỹ năng; còn ít nhất 1 điểm no mới có buff. Lore có dòng cảnh báo canh giữa ở cuối.
+- Thông báo lỗi màu đỏ (#FF4D4D); thông báo đang giao tranh / cần thả pet đổi sang ✘ đỏ.
+- Kỹ năng: dòng "Kỹ năng:", tên trong 〈 〉, mô tả dạng câu như cũ với số có màu, dòng Hồi chiêu riêng.
+- Chỉ số MMOItems bỏ khoảng trắng sau 」; Thư viện hiện "Chỉ số cơ bản" (cấp 1); lore pet có dòng trống sau tên.
+- Thân thiết / độ no chỉ hiện số, cùng màu thanh (hồng / cam).
+- Bỏ nút sắp xếp (luôn theo độ hiếm tăng dần), 2 ô lọc ở góc phải; nút trang dùng mũi tên vàng.
+- /pet 54 ô, Thư viện ở giữa hàng đầu; Quản lý pet bỏ nút trò chuyện, nút thả pet đi ở ô cuối.
+- BALANCE.md: bảng chỉ số cấp 1 → tối đa của cả 52 pet.
+
 ## 0.5.0 (2026-11-05) — làm mới giao diện và dữ liệu pet
 
 ### Thay đổi lớn

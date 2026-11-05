@@ -37,45 +37,45 @@ level-colors:
 # Dòng "Chỉ số cộng thêm" theo đúng icon và màu của MMOItems (font mmostats của ItemsAdder). %value% = +1,5
 # Chỉ số không có ở đây hiện theo pet-card.stat-row.
 stat-display:
-  ATTACK_DAMAGE: "<#B3EFEE>「<white><#B3EFEE>」 <#84EAFF>Sát thương<gray>: <white>%value%"
-  ATTACK_SPEED: "<#CBDCF9>「<white><#CBDCF9>」 <#CBDCF9>Tốc độ đánh<gray>: <white>%value%"
-  CRITICAL_STRIKE_CHANCE: "<#F699B1>「<white><#F699B1>」 <#F15858>Tỉ lệ chí mạng<gray>: <white>%value%%"
-  CRITICAL_STRIKE_POWER: "<#E6426D>「<white><#E6426D>」 <#EA7A6E>Sát thương chí mạng<gray>: <white>%value%%"
-  SKILL_CRITICAL_STRIKE_CHANCE: "<#F699B1>「<white><#F699B1>」 <#F699B1>Chí mạng phép<gray>: <white>%value%%"
-  SKILL_CRITICAL_STRIKE_POWER: "<#E6426D>「<white><#E6426D>」 <#E6426D>Sát thương chí mạng phép<gray>: <white>%value%%"
-  LIFESTEAL: "<#E2A2E0>「<white><#E2A2E0>」 <#E3A5E1>Hút máu<gray>: <white>%value%%"
-  SPELL_VAMPIRISM: "<#E2A2E0>「<white><#E2A2E0>」 <#E2A2E0>Hút máu phép<gray>: <white>%value%%"
-  PVE_DAMAGE: "<#B3EFEE>「<white><#B3EFEE>」 <#C5E6F1>Công kích PvE<gray>: <white>%value%%"
-  PVP_DAMAGE: "<#B3EFEE>「<white><#B3EFEE>」 <#C5E6F1>Công kích PvP<gray>: <white>%value%%"
-  MAGIC_DAMAGE: "<#F1D3F6>「<white><#F1D3F6>」 <#F1D3F6>Công kích phép<gray>: <white>%value%%"
-  WEAPON_DAMAGE: "<#F1D3F6>「<white><#F1D3F6>」 <#FFA55E>Công kích vũ khí<gray>: <white>%value%%"
-  UNDEAD_DAMAGE: "<#ADFCCF>「<white><#ADFCCF>」 <#ADFCCF>Công kích undead<gray>: <white>%value%%"
-  SKILL_DAMAGE: "<#ADFCCF>「<white><#ADFCCF>」 <#B8FBDB>Công kích kỹ năng<gray>: <white>%value%%"
-  PHYSICAL_DAMAGE: "<#ADFCCF>「<white><#ADFCCF>」 <#ADFCCF>Công kích vật lý<gray>: <white>%value%%"
-  PROJECTILE_DAMAGE: "<#ADFCCF>「<white><#ADFCCF>」 <#ADFCCF>Công kích tầm xa<gray>: <white>%value%%"
-  BLOCK_POWER: "<#9FB7F5>「<white><#9FB7F5>」 <#9FB7F5>Lực chặn<gray>: <white>%value%%"
-  BLOCK_RATING: "<#9FB7F5>「<white><#9FB7F5>」 <#A2B8F4>Tỉ lệ chặn<gray>: <white>%value%%"
-  DODGE_RATING: "<#9FB7F5>「<white><#9FB7F5>」 <#A4B9F4>Né đòn<gray>: <white>%value%%"
-  PARRY_RATING: "<#9FF5E2>「<white><#9FF5E2>」 <#A3F4E4>Đỡ đòn<gray>: <white>%value%%"
-  ARMOR: "<#F59FB5>「<white><#F59FB5>」 <#F4A4B9>Áo giáp<gray>: <white>%value%"
-  ARMOR_TOUGHNESS: "<#F59FB5>「<white><#F59FB5>」 <#F4A5BA>Bền bỉ<gray>: <white>%value%"
-  KNOCKBACK_RESISTANCE: "<#ACF59F>「<white><#ACF59F>」 <#ACF59F>Kháng đẩy lùi<gray>: <white>%value%"
-  MAX_HEALTH: "<#F35959>「<white><#F35959>」 <#F35959>Máu<gray>: <white>%value%"
-  MOVEMENT_SPEED: "<#ACF59F>「<white><#ACF59F>」 <#B0F4A3>Tốc độ di chuyển<gray>: <white>%value%"
-  DEFENSE: "<#9FF3F5>「<white><#9FF3F5>」 <#91EBF1>Phòng thủ<gray>: <white>%value%"
-  DAMAGE_REDUCTION: "<#9FF3F5>「<white><#9FF3F5>」 <#9FF3F5>Giảm sát thương<gray>: <white>%value%%"
-  FALL_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」 <#CFF59F>Giảm sát thương rơi<gray>: <white>%value%%"
-  FIRE_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」 <#CFF59F>Giảm sát thương lửa<gray>: <white>%value%%"
-  MAGIC_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」 <#CFF59F>Giảm sát thương phép<gray>: <white>%value%%"
-  PROJECTILE_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」 <#CFF59F>Giảm sát thương tầm xa<gray>: <white>%value%%"
-  PHYSICAL_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」 <#CFF59F>Giảm sát thương vật lý<gray>: <white>%value%%"
-  PVE_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」 <#CFF59F>Giảm sát thương PvE<gray>: <white>%value%%"
-  PVP_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」 <#CFF59F>Giảm sát thương PvP<gray>: <white>%value%%"
-  HEALTH_REGENERATION: "<#9FF0F5>「<white><#9FF0F5>」 <#9FF0F5>Hồi sinh lực<gray>: <white>%value%"
-  MAX_MANA: "<#9FF0F5>「<white><#9FF0F5>」 <#9FF0F5>Năng lượng<gray>: <white>%value%"
-  MANA_REGENERATION: "<#9FF0F5>「<white><#9FF0F5>」 <#9FF0F5>Hồi năng lượng<gray>: <white>%value%"
-  COOLDOWN_REDUCTION: "<#CBDCF9>「<white><#CBDCF9>」 <#CBDCF9>Giảm hồi chiêu<gray>: <white>%value%%"
-  ADDITIONAL_EXPERIENCE: "<#CBDCF9>「<white><#CBDCF9>」 <#CBDCF9>Kinh nghiệm thêm<gray>: <white>%value%%"
+  ATTACK_DAMAGE: "<#B3EFEE>「<white><#B3EFEE>」<#84EAFF>Sát thương<gray>: <white>%value%"
+  ATTACK_SPEED: "<#CBDCF9>「<white><#CBDCF9>」<#CBDCF9>Tốc độ đánh<gray>: <white>%value%"
+  CRITICAL_STRIKE_CHANCE: "<#F699B1>「<white><#F699B1>」<#F15858>Tỉ lệ chí mạng<gray>: <white>%value%%"
+  CRITICAL_STRIKE_POWER: "<#E6426D>「<white><#E6426D>」<#EA7A6E>Sát thương chí mạng<gray>: <white>%value%%"
+  SKILL_CRITICAL_STRIKE_CHANCE: "<#F699B1>「<white><#F699B1>」<#F699B1>Chí mạng phép<gray>: <white>%value%%"
+  SKILL_CRITICAL_STRIKE_POWER: "<#E6426D>「<white><#E6426D>」<#E6426D>Sát thương chí mạng phép<gray>: <white>%value%%"
+  LIFESTEAL: "<#E2A2E0>「<white><#E2A2E0>」<#E3A5E1>Hút máu<gray>: <white>%value%%"
+  SPELL_VAMPIRISM: "<#E2A2E0>「<white><#E2A2E0>」<#E2A2E0>Hút máu phép<gray>: <white>%value%%"
+  PVE_DAMAGE: "<#B3EFEE>「<white><#B3EFEE>」<#C5E6F1>Công kích PvE<gray>: <white>%value%%"
+  PVP_DAMAGE: "<#B3EFEE>「<white><#B3EFEE>」<#C5E6F1>Công kích PvP<gray>: <white>%value%%"
+  MAGIC_DAMAGE: "<#F1D3F6>「<white><#F1D3F6>」<#F1D3F6>Công kích phép<gray>: <white>%value%%"
+  WEAPON_DAMAGE: "<#F1D3F6>「<white><#F1D3F6>」<#FFA55E>Công kích vũ khí<gray>: <white>%value%%"
+  UNDEAD_DAMAGE: "<#ADFCCF>「<white><#ADFCCF>」<#ADFCCF>Công kích undead<gray>: <white>%value%%"
+  SKILL_DAMAGE: "<#ADFCCF>「<white><#ADFCCF>」<#B8FBDB>Công kích kỹ năng<gray>: <white>%value%%"
+  PHYSICAL_DAMAGE: "<#ADFCCF>「<white><#ADFCCF>」<#ADFCCF>Công kích vật lý<gray>: <white>%value%%"
+  PROJECTILE_DAMAGE: "<#ADFCCF>「<white><#ADFCCF>」<#ADFCCF>Công kích tầm xa<gray>: <white>%value%%"
+  BLOCK_POWER: "<#9FB7F5>「<white><#9FB7F5>」<#9FB7F5>Lực chặn<gray>: <white>%value%%"
+  BLOCK_RATING: "<#9FB7F5>「<white><#9FB7F5>」<#A2B8F4>Tỉ lệ chặn<gray>: <white>%value%%"
+  DODGE_RATING: "<#9FB7F5>「<white><#9FB7F5>」<#A4B9F4>Né đòn<gray>: <white>%value%%"
+  PARRY_RATING: "<#9FF5E2>「<white><#9FF5E2>」<#A3F4E4>Đỡ đòn<gray>: <white>%value%%"
+  ARMOR: "<#F59FB5>「<white><#F59FB5>」<#F4A4B9>Áo giáp<gray>: <white>%value%"
+  ARMOR_TOUGHNESS: "<#F59FB5>「<white><#F59FB5>」<#F4A5BA>Bền bỉ<gray>: <white>%value%"
+  KNOCKBACK_RESISTANCE: "<#ACF59F>「<white><#ACF59F>」<#ACF59F>Kháng đẩy lùi<gray>: <white>%value%"
+  MAX_HEALTH: "<#F35959>「<white><#F35959>」<#F35959>Máu<gray>: <white>%value%"
+  MOVEMENT_SPEED: "<#ACF59F>「<white><#ACF59F>」<#B0F4A3>Tốc độ di chuyển<gray>: <white>%value%"
+  DEFENSE: "<#9FF3F5>「<white><#9FF3F5>」<#91EBF1>Phòng thủ<gray>: <white>%value%"
+  DAMAGE_REDUCTION: "<#9FF3F5>「<white><#9FF3F5>」<#9FF3F5>Giảm sát thương<gray>: <white>%value%%"
+  FALL_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」<#CFF59F>Giảm sát thương rơi<gray>: <white>%value%%"
+  FIRE_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」<#CFF59F>Giảm sát thương lửa<gray>: <white>%value%%"
+  MAGIC_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」<#CFF59F>Giảm sát thương phép<gray>: <white>%value%%"
+  PROJECTILE_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」<#CFF59F>Giảm sát thương tầm xa<gray>: <white>%value%%"
+  PHYSICAL_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」<#CFF59F>Giảm sát thương vật lý<gray>: <white>%value%%"
+  PVE_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」<#CFF59F>Giảm sát thương PvE<gray>: <white>%value%%"
+  PVP_DAMAGE_REDUCTION: "<#CFF59F>「<white><#CFF59F>」<#CFF59F>Giảm sát thương PvP<gray>: <white>%value%%"
+  HEALTH_REGENERATION: "<#9FF0F5>「<white><#9FF0F5>」<#9FF0F5>Hồi sinh lực<gray>: <white>%value%"
+  MAX_MANA: "<#9FF0F5>「<white><#9FF0F5>」<#9FF0F5>Năng lượng<gray>: <white>%value%"
+  MANA_REGENERATION: "<#9FF0F5>「<white><#9FF0F5>」<#9FF0F5>Hồi năng lượng<gray>: <white>%value%"
+  COOLDOWN_REDUCTION: "<#CBDCF9>「<white><#CBDCF9>」<#CBDCF9>Giảm hồi chiêu<gray>: <white>%value%%"
+  ADDITIONAL_EXPERIENCE: "<#CBDCF9>「<white><#CBDCF9>」<#CBDCF9>Kinh nghiệm thêm<gray>: <white>%value%%"
 
 # Tên ngắn của chỉ số (mốc thưởng bộ sưu tập)
 stat-names:
@@ -126,27 +126,24 @@ potions:
   haste: 'Đào nhanh'
   fire_resistance: 'Kháng lửa'
 
-ability-rows:
-  kind: '<gray>• Kiểu: <white>%value%'
-  trigger: '<gray>• Kích hoạt: <white>%value%'
-  damage: '<gray>• Sát thương: <#FF8A8A>%value%'
-  debuff: '<gray>• Hiệu ứng: <#FFB86B>%value% <gray>%seconds% giây'
-  mark: '<gray>• Đòn của chủ nhân: <#7CFC9A>+%value%% <gray>trong %seconds% giây'
-  heal: '<gray>• Hồi máu: <#7CFC9A>%value% ❤'
-  heal-percent: '<gray>• Hồi máu: <#7CFC9A>%value%% máu tối đa'
-  shield: '<gray>• Khiên: <#FFD166>%value% tim <gray>trong %seconds% giây'
-  potion: '<gray>• Hiệu ứng tốt: <#7CFC9A>%value%'
-  boost: '<gray>• Thưởng thêm: <#FFC857>+%value% <gray>%type%'
-  range: '<gray>• Tầm đánh: <white>%value% ô'
-  pvp: '<gray>• Lên người chơi: <white>%value%% sát thương'
-  cooldown: '<gray>• Hồi chiêu: <white>%value% giây'
-  hungry-note: '<dark_gray>Tạm ngừng khi pet đói'
+# Màu các con số trong mô tả kỹ năng (abilities.yml), reset = màu chữ mô tả
+ability-numbers:
+  damage: '<#FF6B6B>'
+  heal: '<#7CFC9A>'
+  shield: '<#FFD166>'
+  percent: '<#FFB86B>'
+  bonus: '<#7CFC9A>'
+  boost: '<#FFC857>'
+  time: '<#7FDBFF>'
+  effect: '<#C9A7FF>'
+  reset: '<#BFC7D5>'
 
 # ------------------------------------------------------------------ thẻ pet
 
 pet-card:
   name: '%name%'
   lore:
+    - ''
     - '<#FFD166>Thông tin:'
     - '<gray>• Độ hiếm: %rarity%'
     - '<gray>• Loại: %role%'
@@ -156,8 +153,8 @@ pet-card:
     - '<gray>• EXP: %xp_bar% %xp%'
     - ''
     - '<#FFD166>Tình trạng:'
-    - '<gray>• Thân thiết: %bond_bar% <white>%bond% <dark_gray>(%bond_tier%)'
-    - '<gray>• Độ no: %fullness_bar% <white>%fullness% <dark_gray>(%fullness_state%)'
+    - '<gray>• Thân thiết: %bond_bar% %bond_colour%%bond%'
+    - '<gray>• Độ no: %fullness_bar% %fullness_colour%%fullness%'
     - '<gray>• Tuổi: <white>%age%'
     - ''
     - '<#FFD166>Chỉ số cộng thêm:'
@@ -173,11 +170,15 @@ pet-card:
   level-inline: '<gray>Cấp độ: %level%'
   stat-row: '<gray>• %stat%: <white>%value%'
   no-stats: '<gray>• Không có'
-  ability-title: '<#FFD166>Kỹ năng: %ability%'
+  ability-title: '<#FFD166>Kỹ năng:'
+  ability-name: '<gray>〈 %ability% <gray>〉'
   ability-line: '<#BFC7D5>%line%'
+  ability-cooldown: '<gray>• Hồi chiêu: <#7FDBFF>%value% giây'
+  # dòng cảnh báo cuối lore, tự canh giữa
+  warning: '<#FF4D4D>(!) Pet đói sẽ mất chỉ số và kỹ năng (!)'
   no-ability: '<#FFD166>Kỹ năng: <gray>không có'
   status-active: '<#7CFC9A>✔ Đang được thả'
-  status-hungry: '<#FF8A8A>(!) Đang đói, kỹ năng tạm ngừng'
+  status-hungry: '<#FF4D4D>✘ Đang đói: không có chỉ số và kỹ năng'
   unknown-type: '<#FF8A8A>Loại pet này không còn tồn tại'
 
 actions:
@@ -221,26 +222,6 @@ filters:
     name: '<#C9A7FF>Lọc theo độ hiếm <dark_gray>[%option%<dark_gray>]'
     lore:
       - '<#BFC7D5>Chỉ hiện pet có độ hiếm này'
-  sort:
-    name: '<#FFD166>Sắp xếp <dark_gray>[<white>%option%<dark_gray>]'
-    lore:
-      - '<#BFC7D5>Thứ tự hiện pet trong menu'
-  sorts:
-    storage:
-      - 'Độ hiếm tăng dần'
-      - 'Độ hiếm giảm dần'
-      - 'Cấp độ cao nhất'
-      - 'Mới nhận nhất'
-    collection:
-      - 'Độ hiếm tăng dần'
-      - 'Độ hiếm giảm dần'
-      - 'Đã sở hữu trước'
-      - 'Chưa sở hữu trước'
-    library:
-      - 'Độ hiếm tăng dần'
-      - 'Độ hiếm giảm dần'
-      - 'Tên A - Z'
-      - 'Theo họ pet'
 
 # ------------------------------------------------------------------ /pet
 
@@ -347,12 +328,12 @@ library:
   title: '<dark_gray>Thư viện thú cưng'
   owned: '<#7CFC9A>✔ Đã sở hữu'
   not-owned: '<#FF8A8A>✘ Chưa sở hữu'
-  range: '%from% <dark_gray>→ <white>%to%'
   info:
     name: '<#9BE7FF>Thư viện thú cưng'
     lore:
-      - '<#BFC7D5>Chỉ số hiện từ cấp 1 tới'
-      - '<#BFC7D5>cấp tối đa, kỹ năng ở cấp 1'
+      - '<#BFC7D5>Thư viện chứa toàn bộ thông tin'
+      - '<#BFC7D5>về các thú cưng hiện có trên'
+      - '<#BFC7D5>server: độ hiếm, chỉ số, kỹ năng'
       - ''
       - '<gray>• Số loại pet: <white>%total%'
   page:
@@ -362,14 +343,13 @@ library:
   card:
     name: '%name%'
     lore:
+      - ''
       - '<#FFD166>Thông tin:'
       - '<gray>• Độ hiếm: %rarity%'
       - '<gray>• Loại: %role%'
       - '<gray>• Cấp tối đa: %max_level%'
-      - '<gray>• Thời gian ấp: <white>%hatch%'
-      - '<gray>• Điểm sưu tập: <white>%points%'
       - ''
-      - '<#FFD166>Chỉ số cộng thêm <gray>(cấp 1 → tối đa)<#FFD166>:'
+      - '<#FFD166>Chỉ số cơ bản:'
       - '%stats%'
       - ''
       - '%ability%'
@@ -419,13 +399,6 @@ manage:
       - '<#BFC7D5>Cần thả pet ra để vuốt ve'
       - ''
       - '<dark_gray>[<#7CFC9A>Chuột trái để vuốt ve<dark_gray>]'
-  talk:
-    name: '<#7FDBFF>Trò chuyện'
-    lore:
-      - '<#BFC7D5>Nghe pet nói gì đó'
-      - '<#BFC7D5>Cần thả pet ra để trò chuyện'
-      - ''
-      - '<dark_gray>[<#7CFC9A>Chuột trái để trò chuyện<dark_gray>]'
   sit:
     name: '<#BFC7D5>Ngồi yên'
     lore:
