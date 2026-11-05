@@ -68,18 +68,7 @@ public final class XpService {
         if (needsBreakthrough(d)) return false;
         int before = d.level;
         d.xp += amount;
-        while (d.level < max) {
-            double need = plugin.levels().need(d.level);
-            if (d.xp < need) break;
-            // a breakthrough level: EXP stops at full, the rest is lost
-            if (gateLevel(d.level, max)) {
-                d.xp = need;
-                break;
-            }
-            d.xp -= need;
-            d.level++;
-        }
-        if (d.level >= max) d.xp = 0;
+        climb(d, max);
         d.dirty = true;
         if (d.level > before) levelUp(owner, d, before);
         if (needsBreakthrough(d)) {
@@ -87,6 +76,25 @@ public final class XpService {
                     "level", String.valueOf(d.level));
         }
         return true;
+    }
+
+    /**
+     * Levels up while the EXP reaches the next level. On a breakthrough level it stops; the EXP past full is kept and
+     * goes to the next levels once the breakthrough succeeds.
+     */
+    private void climb(PetData d, int max) {
+        while (d.level < max) {
+            double need = plugin.levels().need(d.level);
+            if (d.xp < need || gateLevel(d.level, max)) break;
+            d.xp -= need;
+            d.level++;
+        }
+        if (d.level >= max) d.xp = 0;
+    }
+
+    /** EXP stored past full on a breakthrough level (carried over after the breakthrough). */
+    public double extraXp(PetData d) {
+        return needsBreakthrough(d) ? Math.max(0, d.xp - plugin.levels().need(d.level)) : 0;
     }
 
     private boolean gateLevel(int level, int max) {
@@ -118,8 +126,10 @@ public final class XpService {
             return false;
         }
         int before = d.level;
+        // the EXP past full is kept: it can level up further, up to the next breakthrough level
+        d.xp = Math.max(0, d.xp - plugin.levels().need(d.level));
         d.level++;
-        d.xp = 0;
+        climb(d, plugin.pets().rarity(d).maxLevel());
         d.dirty = true;
         plugin.messages().send(owner, "breakthrough.success", "pet", name, "level", String.valueOf(d.level));
         Effects.sound(owner.getLocation(), "ui.toast.challenge_complete", 0.7f, 1.2f);

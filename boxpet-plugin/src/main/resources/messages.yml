@@ -42,13 +42,13 @@ toggle:
   chat-off: '<success>✔ Đã tắt trò chuyện của pet'
 
 autofeed:
-  locked: '<error>✘ Bạn chưa sở hữu tính năng tự động cho ăn'
+  locked: '<error>✘ Bạn chưa mở khoá tính năng tự động cho ăn'
   not-food: '<error>✘ Chỉ bỏ được kẹo hoặc thức ăn pet vào hộp'
   box-full: '<error>✘ Hộp thức ăn đã đầy'
   inventory-full: '<error>✘ Túi đồ đã đầy'
 
 breakthrough:
-  ready: '<#FF9F5A>(!) %pet% <#FF9F5A>đã đầy EXP cấp %level%, cần đột phá để lên cấp tiếp'
+  ready: '<#FF9F5A>(!) %pet% <#FF9F5A>đã đầy EXP cấp %level%, cần đột phá để lên cấp tiếp (EXP dư được giữ lại)'
   need: '<error>✘ %pet% <error>đã đầy EXP cấp %level%, hãy đột phá trước'
   not-full: '<error>✘ %pet% <error>chưa đầy EXP cấp %level%, chưa đột phá được'
   not-needed: '<error>✘ %pet% <error>không cần đột phá ở cấp này'

@@ -170,6 +170,8 @@ pet-card:
   xp-value: '<white>%xp%<gray>/%need%'
   xp-max: '<#FFD166>Đã tối đa'
   xp-breakthrough: '<#FF9F5A>Cần đột phá'
+  # EXP dư khi đầy mốc, được cộng vào cấp sau khi đột phá thành công
+  xp-breakthrough-extra: '<#FF9F5A>Cần đột phá <dark_gray>(<gray>dư <#7CFC9A>%extra% EXP<dark_gray>)'
   level-inline: '<gray>Cấp độ: %level%'
   stat-row: '<gray>• %stat%: <white>%value%'
   no-stats: '<gray>• Không có'
@@ -445,7 +447,7 @@ manage:
       - '<#BFC7D5>Pet đang thả tự ăn đồ trong'
       - '<#BFC7D5>hộp khi đói'
       - ''
-      - '<gray>• Trạng thái: <#FF4D4D>✘ Chưa sở hữu'
+      - '<gray>• Trạng thái: <#FF4D4D>✘ Chưa mở khoá'
   breakthrough:
     name: '<#FF9F5A>Đột phá'
     lore:
@@ -563,7 +565,7 @@ breakthrough:
     name: '<#FF9F5A>Đột phá %pet%'
     lore:
       - '<gray>1. Chọn một Đá Đột Phá bên dưới'
-      - '<gray>2. Thành công: lên cấp %next%'
+      - '<gray>2. Thành công: lên cấp %next%, EXP dư được giữ'
       - '<gray>3. Thất bại: mất đá, giữ cấp %level%'
       - ''
       - '<dark_gray>Tỉ lệ ghi trên từng viên đá'

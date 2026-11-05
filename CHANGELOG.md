@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.1 (2026-11-05)
+
+- EXP dư khi chạm mốc đột phá được giữ lại và cộng vào cấp sau khi đột phá thành công (lore: "Cần đột phá (dư X EXP)"). Thất bại vẫn giữ.
+- Tự động cho ăn khi chưa có quyền: "✘ Chưa mở khoá".
+
 ## 0.7.0 (2026-11-05)
 
 - Đột phá: ở cấp 9, 19, 29, 39, 49, 59 (nhỏ hơn cấp tối đa của độ hiếm; config breakthrough.levels) pet đầy EXP thì đứng lại, kẹo báo lỗi. Dùng Đá Đột Phá (tỉ lệ 1-100% nằm trên từng viên, /boxpet give breakthrough <người> <tỉ lệ> [số]): thành công lên cấp kế tiếp, thất bại mất đá. Dùng bằng cầm đá chuột phải vào pet, hoặc nút Đột phá trong Quản lý pet (ô 32, chỉ hiện khi cần). Lore EXP hiện "Cần đột phá".
