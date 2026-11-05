@@ -175,8 +175,8 @@ pet-card:
   level-inline: '<gray>Cấp độ: %level%'
   stat-row: '<gray>• %stat%: <white>%value%'
   no-stats: '<gray>• Không có'
-  ability-title: '<#FFD166>Kỹ năng:'
-  ability-name: '<gray>- %ability%'
+  # dòng đầu của kỹ năng: Kỹ năng: <tên kỹ năng>
+  ability-header: '<#FFD166>Kỹ năng: %ability%'
   # dòng mô tả đầu có dấu •, các dòng sau thụt vào 1 khoảng trắng
   ability-line-first: '<gray>• <#BFC7D5>%line%'
   ability-line: '  <#BFC7D5>%line%'

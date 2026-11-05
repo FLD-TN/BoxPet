@@ -133,9 +133,9 @@ public final class PetIcons {
                 "pvp", num(m, "percent", Math.round(a.pvp(plugin.settings().defaultPvpMultiplier) * 100))
         };
         List<String> out = new ArrayList<>();
-        out.add(m.text("pet-card.ability-title"));
+        // "Kỹ năng: <tên>", a blank line, then the description
+        out.add(m.text("pet-card.ability-header", "ability", PetType.paint(a.color, a.name)));
         out.add("");
-        out.add(m.text("pet-card.ability-name", "ability", PetType.paint(a.color, a.name)));
         // first description line with a bullet, the next ones indented under it
         for (int i = 0; i < a.description.size(); i++) {
             out.add(m.text(i == 0 ? "pet-card.ability-line-first" : "pet-card.ability-line", "line",

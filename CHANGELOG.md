@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.2 (2026-11-05)
+
+- Lore kỹ năng: tên kỹ năng nằm trên dòng "Kỹ năng: <tên>" (menus.yml pet-card.ability-header), dòng trống, rồi mô tả và hồi chiêu.
+
 ## 0.7.1 (2026-11-05)
 
 - EXP dư khi chạm mốc đột phá được giữ lại và cộng vào cấp sau khi đột phá thành công (lore: "Cần đột phá (dư X EXP)"). Thất bại vẫn giữ.
