@@ -18,7 +18,7 @@ Bản cũ hơn của BoxCore / BoxQuest vẫn chạy, chỉ thiếu tính năng 
 
 ## Cài đặt
 
-1. Bỏ `BoxPet-0.4.1.jar` (trong `boxpet-plugin/build/libs/`) vào `plugins/`. Nâng cấp BoxCore lên
+1. Bỏ `BoxPet-0.4.2.jar` (trong `boxpet-plugin/build/libs/`) vào `plugins/`. Nâng cấp BoxCore lên
    `BoxCore-1.6.0.jar` và BoxQuest lên `BoxQuest-0.3.2.jar` (chỉ thay jar).
 2. **Model** (thư mục `PetModel/`, không có trong git):
    - Chép mọi file `.bbmodel` (cả pet lẫn `vfx_*`) của 4 pack vào `plugins/ModelEngine/blueprints/`.

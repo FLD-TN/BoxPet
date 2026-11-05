@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2 (2026-11-05)
+
+- Mặc định nhẹ hơn: `visibility.view-distance` 24 (trước 32), `visibility.max-visible-per-player` 10 (trước 15).
+  File config.yml đã có sẵn trên server giữ số cũ: sửa 2 dòng đó hoặc xoá đi để dùng mặc định mới.
+- `abilities.knockback` (mặc định false): đòn kỹ năng của pet không đẩy lùi mục tiêu.
+
 ## 0.4.1 (2026-11-05) — rà soát hiệu suất và lỗi
 
 ### Sửa lỗi

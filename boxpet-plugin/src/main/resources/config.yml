@@ -50,10 +50,10 @@ menu:
   input-timeout-seconds: 30
 
 visibility:
-  # khoảng cách nhìn thấy pet (ô)
-  view-distance: 32
-  # mỗi người chơi thấy tối đa bao nhiêu pet của người khác (gần nhất trước)
-  max-visible-per-player: 15
+  # khoảng cách nhìn thấy pet (ô). Thấp hơn = ít người nhận gói tin của mỗi pet, nhẹ server và mạng
+  view-distance: 24
+  # mỗi người chơi thấy tối đa bao nhiêu pet của người khác (gần nhất trước), pet của mình luôn thấy
+  max-visible-per-player: 10
   # tên trên đầu pet. %name% %level% %hungry%
   nametag: '%name% <dark_gray>[<gray>Lv.%level%<dark_gray>]%hungry%'
   nametag-offset: 0.35
@@ -150,6 +150,8 @@ fullness:
 abilities:
   # sát thương kỹ năng pet lên người chơi so với lên mob (mỗi kỹ năng có thể ghi đè)
   pvp-multiplier: 0.6
+  # đòn pet có đẩy lùi mục tiêu không (false = không, để pet không đẩy kẻ địch ra khỏi combo của chủ)
+  knockback: false
 
 rename:
   min-length: 3

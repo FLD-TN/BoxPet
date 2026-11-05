@@ -90,6 +90,7 @@ public final class Settings {
 
     // pvp
     public final double defaultPvpMultiplier;
+    public final boolean abilityKnockback;
 
     // rename
     public final int renameMin;
@@ -137,8 +138,8 @@ public final class Settings {
         inputTimeoutSeconds = Math.max(5, c.getInt("menu.input-timeout-seconds", 30));
         hideWhenInvisible = c.getBoolean("hide-when-invisible", true);
 
-        viewDistance = Math.max(8, c.getInt("visibility.view-distance", 32));
-        maxVisiblePerPlayer = Math.max(1, c.getInt("visibility.max-visible-per-player", 15));
+        viewDistance = Math.max(8, c.getInt("visibility.view-distance", 24));
+        maxVisiblePerPlayer = Math.max(1, c.getInt("visibility.max-visible-per-player", 10));
         nametagFormat = c.getString("visibility.nametag", "%name% &8[&7Lv.%level%&8]%hungry%");
         nametagOffset = c.getDouble("visibility.nametag-offset", 0.35);
         nametagUpdateTicks = Math.max(1, Math.min(20, c.getInt("visibility.nametag-update-ticks", 3)));
@@ -185,6 +186,7 @@ public final class Settings {
         littleHungry = clamp(c.getInt("fullness.little-hungry-below", 30));
 
         defaultPvpMultiplier = Math.max(0, c.getDouble("abilities.pvp-multiplier", 0.6));
+        abilityKnockback = c.getBoolean("abilities.knockback", false);
 
         renameMin = Math.max(1, c.getInt("rename.min-length", 3));
         renameMax = Math.max(renameMin, c.getInt("rename.max-length", 16));

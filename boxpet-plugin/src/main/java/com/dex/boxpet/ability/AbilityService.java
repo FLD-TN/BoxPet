@@ -252,8 +252,10 @@ public final class AbilityService {
         try {
             // the owner's stats as a skill attack: MMOItems skill damage, magic defence, PvP damage apply
             var caster = MMOPlayerData.get(o).getStatMap().cache(io.lumine.mythic.lib.api.player.EquipmentSlot.MAIN_HAND);
-            if (dot) caster.attack(target, ev.getDamage(), DamageType.SKILL, DamageType.MAGIC, DamageType.DOT);
-            else caster.attack(target, ev.getDamage(), DamageType.SKILL, DamageType.MAGIC);
+            // knockback off by default: a pet must not push the target out of its owner's combo
+            boolean kb = plugin.settings().abilityKnockback && !dot;
+            if (dot) caster.attack(target, ev.getDamage(), kb, DamageType.SKILL, DamageType.MAGIC, DamageType.DOT);
+            else caster.attack(target, ev.getDamage(), kb, DamageType.SKILL, DamageType.MAGIC);
         } catch (RuntimeException | LinkageError ex) {
             plugin.getLogger().log(Level.WARNING, "MythicLib attack failed, using plain damage", ex);
             target.damage(ev.getDamage(), o);
