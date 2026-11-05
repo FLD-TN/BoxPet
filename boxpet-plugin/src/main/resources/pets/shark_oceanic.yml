@@ -1,7 +1,7 @@
 # Cá Mập Đại Dương (shark) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Cá Mập Đại Dương'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#3FA7D6'
+color: '#0096C7'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: shark
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)

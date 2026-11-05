@@ -1,7 +1,7 @@
 # Mèo Ông Già Noel (necromancer_cat) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Mèo Ông Già Noel'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#FF6B6B'
+color: '#E63946'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: necromancer_cat
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)

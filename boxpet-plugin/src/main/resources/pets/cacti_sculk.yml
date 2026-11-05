@@ -1,7 +1,7 @@
 # Xương Rồng Sculk (cacti) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Xương Rồng Sculk'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#3FC1C9'
+color: '#0B6E79:#29E7CD'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: cacti
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)

@@ -1,7 +1,7 @@
 # Sư Điểu Phượng Hoàng (griffon) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Sư Điểu Phượng Hoàng'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#FF6B3D:#FFD24D'
+color: '#D00000:#FF7B00:#FFD000'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: griffon
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)

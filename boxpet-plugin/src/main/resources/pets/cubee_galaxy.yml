@@ -1,7 +1,7 @@
-# Rồng Cubee Thiên Hà (cubee_dragon) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
-name: 'Rồng Cubee Thiên Hà'
+# Tinh Linh Thiên Hà (cubee_dragon) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
+name: 'Tinh Linh Thiên Hà'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#7B6CFF:#FF7BD5'
+color: '#4CC9F0:#7209B7:#F72585:#FFD6FF'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: cubee_dragon
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)

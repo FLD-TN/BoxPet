@@ -1,7 +1,7 @@
 # Thợ Máy Steampunk (outlaw) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Thợ Máy Steampunk'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#C08552'
+color: '#B8860B'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: outlaw
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)

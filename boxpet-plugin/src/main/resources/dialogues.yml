@@ -203,9 +203,9 @@ families:
       - 'Chiến lợi phẩm là của chủ nhân hết!'
   cubee_dragon:
     summon:
-      - 'Rồng vuông nhỏ đã tới!'
+      - 'Tinh linh nhỏ đã tới!'
     idle:
-      - 'Rồng con này nhỏ nhưng có võ đó!'
+      - 'Tinh linh nhỏ nhưng có võ đó!'
       - 'Đi làm nhiệm vụ đi chủ nhân, em mang may mắn tới'
   palcat:
     summon:

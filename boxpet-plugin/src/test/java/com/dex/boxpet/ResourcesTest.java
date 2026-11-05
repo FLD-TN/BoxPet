@@ -48,6 +48,10 @@ class ResourcesTest {
             YamlConfiguration y = YamlConfiguration.loadConfiguration(f);
             assertNotNull(y.getString("rarity"), f.getName());
             assertNotNull(y.getString("color"), f.getName());
+            // common / rare: one colour; epic and up: a gradient
+            boolean gradient = y.getString("color").contains(":");
+            boolean high = y.getString("rarity").equals("epic") || y.getString("rarity").equals("legendary");
+            assertEquals(high, gradient, f.getName() + " colour style");
             assertTrue(abilities.contains("abilities." + y.getString("ability")), f.getName() + " ability");
         }
     }

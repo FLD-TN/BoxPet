@@ -1,7 +1,7 @@
 # Hiệp Sĩ Thánh (knight) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Hiệp Sĩ Thánh'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#FFF6C2:#FFC857'
+color: '#FFFFFF:#FFE066:#FFB300'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: knight
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)

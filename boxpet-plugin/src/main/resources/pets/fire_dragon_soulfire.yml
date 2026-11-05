@@ -1,7 +1,7 @@
 # Rồng Lửa Linh Hồn (fire_dragon) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Rồng Lửa Linh Hồn'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#5FE1E8'
+color: '#00F5D4:#00BBF9'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: fire_dragon
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)

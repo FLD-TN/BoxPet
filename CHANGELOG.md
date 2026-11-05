@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.3 (2026-11-05)
+
+- Màu tên pet làm lại: Thường và Hiếm một màu, mỗi pet một vùng màu riêng; Sử thi gradient 2-5 màu; Huyền thoại gradient 3-4 màu.
+- Rồng Cubee đổi thành Tinh Linh (Tinh Linh Lửa, Tinh Linh Đất...); kỹ năng Tinh Linh May Mắn.
+
 ## 0.5.2 (2026-11-05)
 
 - Pet đói (độ no 0) mất cả chỉ số lẫn kỹ năng; còn ít nhất 1 điểm no mới có buff. Lore có dòng cảnh báo canh giữa ở cuối.

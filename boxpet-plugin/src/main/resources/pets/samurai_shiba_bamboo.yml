@@ -1,7 +1,7 @@
 # Shiba Rừng Trúc (samurai_shiba) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Shiba Rừng Trúc'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#9BD770'
+color: '#7FB347'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: samurai_shiba
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)

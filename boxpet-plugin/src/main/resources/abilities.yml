@@ -583,7 +583,7 @@ abilities:
       whole: false
   cubee_luck:
     type: boost
-    name: 'Rồng Con May Mắn'
+    name: 'Tinh Linh May Mắn'
     color: '#7B6CFF:#FF7BD5'
     description:
       - 'Tăng phần thưởng nhiệm vụ'

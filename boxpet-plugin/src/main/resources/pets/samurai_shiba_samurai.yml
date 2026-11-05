@@ -1,7 +1,7 @@
 # Shiba Samurai (samurai_shiba) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Shiba Samurai'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#F2545B'
+color: '#D00000:#FFBA08'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: samurai_shiba
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)

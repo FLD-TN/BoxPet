@@ -1,7 +1,7 @@
 # Kỳ Lân Thiên Đường (unicorn) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
 name: 'Kỳ Lân Thiên Đường'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
-color: '#FFFFFF:#B8E6FF'
+color: '#FFFFFF:#BDE0FE:#FFC8DD:#CDB4DB'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: unicorn
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
