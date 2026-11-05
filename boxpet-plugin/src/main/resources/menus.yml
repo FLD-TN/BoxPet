@@ -147,11 +147,13 @@ ability-rows:
 pet-card:
   name: '%name%'
   lore:
-    - '%rarity% <dark_gray>• %role%'
+    - '<#FFD166>Thông tin:'
+    - '<gray>• Độ hiếm: %rarity%'
+    - '<gray>• Loại: %role%'
     - ''
     - '<#FFD166>Phát triển:'
     - '<gray>• Cấp độ: %level%'
-    - '<gray>• Kinh nghiệm: %xp_bar% %xp%'
+    - '<gray>• EXP: %xp_bar% %xp%'
     - ''
     - '<#FFD166>Tình trạng:'
     - '<gray>• Thân thiết: %bond_bar% <white>%bond% <dark_gray>(%bond_tier%)'
@@ -360,9 +362,9 @@ library:
   card:
     name: '%name%'
     lore:
-      - '%rarity% <dark_gray>• %role%'
-      - ''
       - '<#FFD166>Thông tin:'
+      - '<gray>• Độ hiếm: %rarity%'
+      - '<gray>• Loại: %role%'
       - '<gray>• Cấp tối đa: %max_level%'
       - '<gray>• Thời gian ấp: <white>%hatch%'
       - '<gray>• Điểm sưu tập: <white>%points%'
@@ -397,7 +399,7 @@ manage:
   feed:
     name: '<#FFD166>Cho ăn'
     lore:
-      - '<#BFC7D5>Kẹo cho kinh nghiệm, thức ăn'
+      - '<#BFC7D5>Kẹo cho EXP, thức ăn'
       - '<#BFC7D5>cho thân thiết. Pet trong kho'
       - '<#BFC7D5>cũng ăn được'
       - ''
@@ -637,7 +639,7 @@ items:
   candy:
     lore:
       - '<#FFD166>Thông tin:'
-      - '<gray>• Kinh nghiệm cho pet: <#7CFC9A>+%xp%'
+      - '<gray>• EXP cho pet: <#7CFC9A>+%xp%'
       - '<gray>• Làm no: <white>+%fullness%'
       - ''
       - '<#BFC7D5>No rồi thì pet không ăn được'
