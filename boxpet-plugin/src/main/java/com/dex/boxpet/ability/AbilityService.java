@@ -172,7 +172,7 @@ public final class AbilityService {
                 if (a.vfx != null) onOwner(p, a, a.vfx.life());
                 announce(p, a);
                 p.cooldown = a.cooldownTicks;
-                if (a.areaRadius > 0 && a.damage.base() > 0) domain(p, a);
+                if (a.areaRadius > 0 && (a.damage.base() > 0 || !a.enemyStat.isEmpty())) domain(p, a);
             }
             case POTION -> {
                 if (--p.potionRefresh > 0) return;
@@ -684,7 +684,14 @@ public final class AbilityService {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if (plugin.pets().active(p.ownerId) != p || p.abilityPaused() || !p.owner.isOnline()) return;
                 for (LivingEntity e : around(p.owner, p.owner.getLocation(), a.areaRadius)) {
-                    if (damage(p, a, e, dmg, false)) particles(p, a, e, true);
+                    // 0.14.1: an enemy player inside loses the stat for a short while, renewed every wave: it lasts
+                    // as long as they stay in the domain
+                    if (!a.enemyStat.isEmpty() && e instanceof Player ep) {
+                        plugin.stats().tempStat(plugin, ep, DEBUFF_KEY, a.enemyStat,
+                                -a.enemyAmount.at(p.data.level, p.rarity.statMultiplier()), false, a.enemyTicks);
+                        particles(p, a, e, true);
+                    }
+                    if (dmg > 0 && damage(p, a, e, dmg, false)) particles(p, a, e, true);
                 }
             }, a.novaHits.get(hit));
         }

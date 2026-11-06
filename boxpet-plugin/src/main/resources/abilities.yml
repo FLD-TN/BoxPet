@@ -1387,11 +1387,7 @@ abilities:
     name: 'Lãnh Địa Phượng Hoàng'
     color: '#FF7B00:#FFD000'
     description:
-      - 'Khi máu chủ nhân dưới %percent%%:'
-      - 'triển khai lãnh địa lửa, hồi'
-      - '%heal% máu cho chủ nhân, kẻ địch'
-      - 'trong %radius% ô bị thiêu %hit_count% đợt,'
-      - 'mỗi đợt %damage% sát thương'
+      - 'Hồi %heal% máu, địch trong lãnh địa -%enemy% %enemy_stat%'
     cooldown: 14
     heal:
       amount:
@@ -1400,14 +1396,16 @@ abilities:
       percent: false
       below-percent: 60
     area:
-      radius: 2.5
-    damage:
-      base: 1.2
-      per-level: 0.04
-    pvp-multiplier: 0.7
-    # 3 đợt lúc các cột lửa đứng (1,2 tới 3,6 giây)
+      radius: 3.5
+    # kẻ địch đứng trong lãnh địa bị giảm chỉ số, làm mới mỗi nửa giây (rời vùng là hết sau 0,6 giây)
+    enemy-stat:
+      stat: ATTACK_DAMAGE
+      seconds: 0.6
+      amount:
+        base: 1.5
+        per-level: 0.05
     nova:
-      hit-ticks: [26, 46, 66]
+      hit-ticks: [0, 10, 20, 30, 40, 50, 60, 70]
     fx:
       animation: skill
       sounds:
@@ -1416,16 +1414,15 @@ abilities:
         - {sound: entity.blaze.burn, volume: 0.8, pitch: 1.2, delay: 44}
       particles:
         - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
-        - {particle: FLAME, count: 6, spread: 0.4, speed: 0.02, at: target}
+        - {particle: FLAME, count: 3, spread: 0.3, speed: 0.01, at: target}
       vfx:
         model: vfx_domain_phoenix
         animation: skill
         life-ticks: 79
-        scale: 1.0
+        scale: 1.4
         y-offset: 0.0
         # vòng cột đứng yên, không xoay theo người chơi
         turn: false
-
   cubee_galaxy_nova:
     type: nova
     name: 'Tinh Vân Xoáy'
