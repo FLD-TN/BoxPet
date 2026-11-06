@@ -52,6 +52,13 @@ public final class CombatListener implements Listener {
         LivingEntity a = attacker(e.getDamager());
         if (a == null || a == victim) return;
         Player attackerPlayer = a instanceof Player p ? p : null;
+        if (AbilityService.dealing()) {
+            // 0.13.3: a pet skill hits as its owner; it must not count as the owner (or the victim) choosing a fight,
+            // else every pet hit renews the owner's target + tag and the victim's pet answers: pets fought forever.
+            // The victim is still kept in combat (no menus while a pet hits them).
+            if (victim instanceof Player vp) plugin.pets().combat().tagOnly(vp);
+            return;
+        }
         plugin.pets().combat().hit(attackerPlayer, victim, a);
         if (plugin.settings().closeMenuOnCombat) {
             if (attackerPlayer != null) closeMenu(attackerPlayer);

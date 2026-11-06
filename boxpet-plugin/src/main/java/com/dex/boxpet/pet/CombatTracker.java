@@ -55,6 +55,11 @@ public final class CombatTracker {
         }
     }
 
+    /** 0.13.3: in combat (menus locked) without becoming anyone's target or attacker. */
+    public void tagOnly(Player player) {
+        state(player.getUniqueId()).taggedUntil = System.currentTimeMillis() + tagMillis;
+    }
+
     public boolean tagged(UUID player) {
         State s = states.get(player);
         return s != null && s.taggedUntil > System.currentTimeMillis();
