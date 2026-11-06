@@ -140,7 +140,8 @@ public final class PetIcons {
         Ability b = plugin.abilities().get(type.ability2);
         if (b != null) {
             out.add("");
-            out.addAll(skillLines(plugin, type, level, b));
+            if (level >= plugin.settings().secondSkillLevel) out.addAll(skillLines(plugin, type, level, b));
+            else out.add(plugin.menus().text("pet-card.ability-locked", "ability", b.name));
         }
         return out;
     }

@@ -107,7 +107,7 @@ public final class AbilityService {
     public void tick(ActivePet p) {
         slotNow = 0;
         tickSkill(p);
-        if (p.ability2 == null) return;
+        if (!p.hasSecond(plugin.settings().secondSkillLevel)) return;
         // 0.9.0: the second skill runs with its own cooldowns
         p.swapSkills();
         slotNow = 1;
@@ -129,7 +129,8 @@ public final class AbilityService {
      * cast skills are ready the one whose turn it is goes first.
      */
     private boolean myTurn(ActivePet p) {
-        if (p.ability2 == null) return true;
+        // while slot 1 runs, the fields of slot 0 are in the second slot: both mean "the pet has 2 working skills"
+        if (p.ability2 == null || p.data.level < plugin.settings().secondSkillLevel) return true;
         if (ticks - p.lastSkillTick < SKILL_GAP_TICKS) return false;
         if (p.skillTurn == slotNow) return true;
         // the other skill (now in the second slot) only waits for its turn when it is a ready cast skill
@@ -693,7 +694,7 @@ public final class AbilityService {
     public void onOwnerDamaged(ActivePet p, double healthAfter, @Nullable LivingEntity attacker) {
         slotNow = 0;
         ownerDamaged(p, healthAfter, attacker);
-        if (p.ability2 == null) return;
+        if (!p.hasSecond(plugin.settings().secondSkillLevel)) return;
         p.swapSkills();
         slotNow = 1;
         try {

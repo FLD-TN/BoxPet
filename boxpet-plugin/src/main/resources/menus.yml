@@ -186,6 +186,8 @@ pet-card:
   bonus-locked: '<dark_gray>「?」<obfuscated>%stat%'
   # dòng đầu của kỹ năng: Kỹ năng: <tên kỹ năng>
   ability-header: '<#FFD166>Kỹ năng: %ability%'
+  # kỹ năng thứ 2 chưa mở (pet huyền thoại dưới breakthrough.second-skill-level)
+  ability-locked: '<dark_gray>Kỹ năng: <obfuscated>%ability%'
   # dòng mô tả đầu có dấu •, các dòng sau thụt vào 1 khoảng trắng
   ability-line-first: '<gray>• <#BFC7D5>%line%'
   ability-line: '  <#BFC7D5>%line%'

@@ -50,8 +50,10 @@ breakthrough:
   stat-bonus-percent: 5
   # cấp mở dòng chỉ số thứ 3 (đột phá lên cấp này), 0 hoặc không ghi = không có
   bonus-stat-unlock:
-    epic: 20
-    legendary: 10
+    epic: 30
+    legendary: 20
+  # kỹ năng thứ 2 của pet huyền thoại hoạt động từ cấp này (đột phá cấp 39 lên 40); trước đó lore hiện mã hoá
+  second-skill-level: 40
 
 stats:
   # nhân toàn bộ chỉ số pet (file pets/*.yml giữ nguyên số gốc)

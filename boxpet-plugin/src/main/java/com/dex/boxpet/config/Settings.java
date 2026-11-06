@@ -83,6 +83,8 @@ public final class Settings {
     public final double breakthroughStatBonus;
     /** 0.8.0: rarity id -> level the 3rd stat unlocks at (0 = never). */
     public final java.util.Map<String, Integer> bonusStatUnlock;
+    /** 0.9.2: level the second skill (legendary pets) starts working at. */
+    public final int secondSkillLevel;
     public final double abilityHealMultiplier;
     /** 0.7.0: levels where the pet stops at full EXP until a breakthrough (only below the rarity's max level). */
     public final java.util.Set<Integer> breakthroughLevels;
@@ -201,10 +203,11 @@ public final class Settings {
         var us = c.getConfigurationSection("breakthrough.bonus-stat-unlock");
         if (us != null) for (String k : us.getKeys(false)) unlock.put(k.toLowerCase(Locale.ROOT), Math.max(0, us.getInt(k)));
         else {
-            unlock.put("epic", 20);
-            unlock.put("legendary", 10);
+            unlock.put("epic", 30);
+            unlock.put("legendary", 20);
         }
         bonusStatUnlock = java.util.Map.copyOf(unlock);
+        secondSkillLevel = Math.max(1, c.getInt("breakthrough.second-skill-level", 40));
         abilityHealMultiplier = Math.max(0, c.getDouble("abilities.heal-multiplier", 1.3));
         breakthroughLevels = java.util.Set.copyOf(c.contains("breakthrough.levels")
                 ? c.getIntegerList("breakthrough.levels") : List.of(9, 19, 29, 39, 49, 59));

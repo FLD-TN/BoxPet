@@ -78,6 +78,11 @@ public final class ActivePet {
     public int skillTurn;
     public int lastSkillTick = -10_000;
 
+    /** 0.9.2: the second skill exists and the pet's level has unlocked it. */
+    public boolean hasSecond(int unlockLevel) {
+        return ability2 != null && data.level >= unlockLevel;
+    }
+
     /** Puts the second skill in the first slot and back (main thread only, always called in pairs). */
     public void swapSkills() {
         Ability a = ability;

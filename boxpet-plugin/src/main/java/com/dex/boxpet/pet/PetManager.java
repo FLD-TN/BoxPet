@@ -700,7 +700,8 @@ public final class PetManager {
     /** Recomputes the boost bonus of the active pet and tells BoxCore (spec 8). */
     public void refreshBonus(ActivePet p) {
         Map<String, Integer> m = new HashMap<>();
-        for (Ability a : new Ability[]{p.ability, p.ability2}) {
+        Ability second = p.hasSecond(s().secondSkillLevel) ? p.ability2 : null;
+        for (Ability a : new Ability[]{p.ability, second}) {
             if (a == null || a.type != Ability.Type.BOOST || a.boostType.isEmpty() || p.abilityPaused()) continue;
             int tenths = (int) Math.floor(a.boostTenths.at(p.data.level, p.rarity.statMultiplier()));
             if (a.boostWhole) tenths -= tenths % 10;

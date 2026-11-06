@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.2 (2026-11-06)
+
+- Dòng chỉ số thứ 3: Sử thi mở ở cấp 30, Huyền thoại ở cấp 20.
+- Kỹ năng thứ 2 của pet huyền thoại hoạt động từ cấp 40 (breakthrough.second-skill-level). Trước đó lore và thư viện chỉ hiện "Kỹ năng:" mã hoá màu xám.
+
 ## 0.9.1 (2026-11-06)
 
 - Dòng chỉ số thứ 3 chỉ cho Sử thi (đột phá cấp 20) và Huyền thoại (cấp 10). Trước khi mở hiện mã hoá: 「?」 + chữ nhiễu.
