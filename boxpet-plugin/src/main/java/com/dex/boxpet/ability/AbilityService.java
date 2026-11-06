@@ -761,6 +761,11 @@ public final class AbilityService {
     }
 
     private void applyDebuff(ActivePet p, Ability a, LivingEntity target, double base) {
+        // 0.9.9: a hit can lower an MMOItems stat of an enemy player for a while (instead of potion effects)
+        if (a.type != Ability.Type.BUFF && !a.enemyStat.isEmpty() && target instanceof Player tp) {
+            plugin.stats().tempStat(plugin, tp, DEBUFF_KEY, a.enemyStat, -a.enemyAmount.at(p.data.level, p.rarity.statMultiplier()),
+                    false, a.enemyTicks);
+        }
         switch (a.debuff) {
             case BURN -> target.setFireTicks(Math.max(target.getFireTicks(), a.debuffTicks));
             case SLOW -> target.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, a.debuffTicks, a.debuffAmplifier, false, true, true));

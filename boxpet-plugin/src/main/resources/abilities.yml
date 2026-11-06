@@ -40,7 +40,7 @@ abilities:
     name: 'Cầu Lửa'
     color: '#FF7A45:#FFC15E'
     description:
-      - 'Phun cầu lửa vào mục tiêu,'
+      - 'Phun cầu lửa lớn vào 1 mục tiêu,'
       - 'gây %damage% sát thương và đốt'
       - 'cháy %seconds% giây'
     cooldown: 8
@@ -48,12 +48,12 @@ abilities:
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 3
-      per-level: 0.1
+      base: 4.5
+      per-level: 0.15
     pve-multiplier: 1.0
     debuff:
       type: burn
-      seconds: 3
+      seconds: 4
       amplifier: 0
     fx:
       animation: skill
@@ -112,8 +112,9 @@ abilities:
     color: '#9B6BFF:#E3B6FF'
     description:
       - 'Phun cầu lửa nổ trong %radius% ô,'
-      - 'gây %damage% sát thương và làm'
-      - 'suy yếu %seconds% giây'
+      - 'gây %damage% sát thương và giảm'
+      - '%enemy% Sát thương của kẻ địch'
+      - 'trong %enemy_seconds% giây'
     cooldown: 8
     pvp-multiplier: 0.7
     area:
@@ -124,10 +125,12 @@ abilities:
       base: 3
       per-level: 0.1
     pve-multiplier: 1.0
-    debuff:
-      type: weakness
+    enemy-stat:
+      stat: ATTACK_DAMAGE
       seconds: 3
-      amplifier: 0
+      amount:
+        base: 1
+        per-level: 0.04
     fx:
       area-vfx: vfx_burst_shadow
       animation: skill
@@ -291,8 +294,9 @@ abilities:
     color: '#8E7CFF:#C9B8FF'
     description:
       - 'Ném đầu lâu ma nổ trong %radius% ô,'
-      - 'gây %damage% sát thương và làm'
-      - 'suy yếu %seconds% giây'
+      - 'gây %damage% sát thương và giảm'
+      - '%enemy% Sát thương của kẻ địch'
+      - 'trong %enemy_seconds% giây'
     cooldown: 8
     area:
       radius: 3
@@ -302,10 +306,12 @@ abilities:
       base: 3
       per-level: 0.1
     pve-multiplier: 1.0
-    debuff:
-      type: weakness
+    enemy-stat:
+      stat: ATTACK_DAMAGE
       seconds: 3
-      amplifier: 0
+      amount:
+        base: 0.8
+        per-level: 0.035
     fx:
       area-vfx: vfx_burst_arcane
       animation: skill
@@ -1184,21 +1190,21 @@ abilities:
     name: 'Cầu Thánh Quang'
     color: '#FFF1A8:#FFB347'
     description:
-      - 'Bắn cầu thánh quang vào mục tiêu,'
-      - 'gây %damage% sát thương và làm'
-      - 'suy yếu %seconds% giây'
+      - 'Bắn cầu thánh quang gây %damage%'
+      - 'sát thương, rồi nảy sang %chain% kẻ'
+      - 'địch gần đó (mỗi lần còn 75%)'
     cooldown: 8
     pvp-multiplier: 0.7
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 3.5
-      per-level: 0.12
+      base: 3.8
+      per-level: 0.13
+    chain:
+      targets: 2
+      range: 6
+      ratio: 0.75
     pve-multiplier: 1.0
-    debuff:
-      type: weakness
-      seconds: 3
-      amplifier: 0
     fx:
       animation: skill
       sounds:
@@ -1444,8 +1450,8 @@ abilities:
     color: '#C77DFF:#F3D9FF'
     description:
       - 'Phóng lưỡi bào tử, gây %damage%'
-      - 'sát thương và làm suy yếu'
-      - '%seconds% giây'
+      - 'sát thương và giảm %enemy% Sát thương'
+      - 'của mục tiêu trong %enemy_seconds% giây'
     cooldown: 8
     pvp-multiplier: 0.5
     range: 14
@@ -1454,10 +1460,12 @@ abilities:
       base: 2.5
       per-level: 0.1
     pve-multiplier: 1.0
-    debuff:
-      type: weakness
-      seconds: 2
-      amplifier: 0
+    enemy-stat:
+      stat: ATTACK_DAMAGE
+      seconds: 3
+      amount:
+        base: 0.6
+        per-level: 0.03
     fx:
       animation: skill
       sounds:
@@ -1730,7 +1738,7 @@ abilities:
       - 'Xé vết nứt %radius% ô dưới mục tiêu'
       - 'trong %seconds% giây: kẻ địch đứng'
       - 'trong mỗi giây nhận %damage% sát'
-      - 'thương và bị suy yếu'
+      - 'thương và bị giảm %enemy% Sát thương'
     cooldown: 20
     pvp-multiplier: 0.7
     range: 12
@@ -1743,10 +1751,12 @@ abilities:
     zone:
       seconds: 4
       interval-ticks: 20
-    debuff:
-      type: weakness
+    enemy-stat:
+      stat: ATTACK_DAMAGE
       seconds: 2
-      amplifier: 0
+      amount:
+        base: 0.8
+        per-level: 0.035
     fx:
       animation: skill
       sounds:

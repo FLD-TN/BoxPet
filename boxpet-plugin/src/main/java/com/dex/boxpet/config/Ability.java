@@ -141,6 +141,8 @@ public final class Ability {
     public final String enemyStat;
     public final Scaled enemyAmount;
     public final double enemyRadius;
+    /** 0.9.9: how long a stat taken by a hit lasts ({@code enemy-stat.seconds}; buffs use buff.seconds). */
+    public final int enemyTicks;
     /** Shield: enemies around the owner are pushed away when the shield comes up. */
     public final double blastRadius;
     public final double blastPower;
@@ -230,6 +232,7 @@ public final class Ability {
         enemyStat = en == null ? "" : en.getString("stat", "").toUpperCase(Locale.ROOT);
         enemyAmount = en == null ? Scaled.ZERO : Scaled.read(en, "amount", 0);
         enemyRadius = en == null ? 0 : Math.max(0, Math.min(10, en.getDouble("radius", 0)));
+        enemyTicks = en == null || !en.contains("seconds") ? buffTicks : (int) Math.round(en.getDouble("seconds") * 20);
         vfxAnimations = s.getStringList("fx.vfx.animations");
         areaVfx = s.getString("fx.area-vfx", "");
         debuffVfx = d == null ? "" : d.getString("vfx", "");

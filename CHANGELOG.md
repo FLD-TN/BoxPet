@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.9 (2026-11-06)
+
+- Bỏ hết hiệu ứng suy yếu (weakness, trùng CE): Cầu Lửa Bóng Tối, Đầu Lâu Ma, Lưỡi Bào Tử, Vết Nứt Hư Không giờ giảm chỉ số Sát thương (MMOItems) của người chơi trúng đòn trong vài giây (enemy-stat trên kỹ năng chiến đấu, enemy-stat.seconds).
+- Rồng Lửa: Cầu Lửa thành đòn dồn 1 mục tiêu (sát thương +50%, đốt 4 giây). Rồng Thánh Quang: Cầu Thánh Quang nảy sang 2 kẻ địch (mỗi lần 75%), không còn hiệu ứng.
+- Cập nhật server: thay abilities.yml.
+
 ## 0.9.8 (2026-11-06)
 
 - Rồng Linh Hồn: kỹ năng 2 mới Xích Linh Hồn (kiểu tether): xích lửa linh hồn nối pet với mục tiêu 4 giây, mỗi nửa giây gây sát thương và làm chậm; mục tiêu chạy xa hoặc khuất tầm nhìn thì xích đứt. Thay Hồn Lửa Truy Kích (trùng kiểu bắn cầu lửa với kỹ năng 1).

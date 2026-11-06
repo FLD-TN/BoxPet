@@ -169,6 +169,7 @@ public final class PetIcons {
                         : a.type == Ability.Type.ZONE ? a.zoneTicks : a.type == Ability.Type.TETHER ? a.tetherTicks
                         : a.debuffTicks) / 20.0),
                 "debuff_seconds", num(m, "time", a.debuffTicks / 20.0),
+                "enemy_seconds", num(m, "time", a.enemyTicks / 20.0),
                 "level", paint(m, "effect", roman(a.potionAmplifier(r.index()) + 1)),
                 "potion", paint(m, "effect", potion),
                 "range", num(m, "time", a.range),
