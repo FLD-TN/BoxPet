@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public final class Ability {
 
     public enum Type {
-        PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE, HEAL, SHIELD, BUFF, POTION, BOOST, NONE;
+        PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE, TETHER, HEAL, SHIELD, BUFF, POTION, BOOST, NONE;
 
         public static Type of(String s) {
             if (s == null) return NONE;
@@ -25,7 +25,7 @@ public final class Ability {
         }
 
         public boolean combat() {
-            return this == PROJECTILE || this == STRIKE || this == MARK || this == METEOR || this == ZONE;
+            return this == PROJECTILE || this == STRIKE || this == MARK || this == METEOR || this == ZONE || this == TETHER;
         }
     }
 
@@ -127,6 +127,9 @@ public final class Ability {
     public final int zoneInterval;
     /** 0.9.7: a projectile is fired at this many different enemies around the target. */
     public final int multiTargets;
+    /** 0.9.8 tether: a chain from the pet to the target for tetherTicks, hitting every tetherInterval ticks. */
+    public final int tetherTicks;
+    public final int tetherInterval;
     /** Buff: when it goes off (combat, hurt, low-hp) and the owner-only stat buff it gives. */
     public final String trigger;
     public final int buffBelowPercent;
@@ -211,6 +214,9 @@ public final class Ability {
         zoneTicks = zn == null ? 80 : (int) Math.round(Math.max(1, zn.getDouble("seconds", 4)) * 20);
         zoneInterval = zn == null ? 20 : Math.max(5, zn.getInt("interval-ticks", 20));
         multiTargets = Math.max(1, Math.min(5, s.getInt("targets", 1)));
+        ConfigurationSection te = s.getConfigurationSection("tether");
+        tetherTicks = te == null ? 80 : (int) Math.round(Math.max(1, te.getDouble("seconds", 4)) * 20);
+        tetherInterval = te == null ? 10 : Math.max(5, te.getInt("interval-ticks", 10));
         ConfigurationSection ob = s.getConfigurationSection("orbit");
         orbitTicks = ob == null ? 120 : (int) Math.round(Math.max(1, ob.getDouble("seconds", 6)) * 20);
         trigger = s.getString("trigger", "combat").toLowerCase(Locale.ROOT);

@@ -20,6 +20,8 @@
 #   %radius% %chain% %hits% %count% %buff% %buff_stat% %enemy% %enemy_stat% %debuff_seconds%
 # Thêm (0.9.4): fx.area-vfx: model nổ (nổ lan, thiên thạch, cầu lửa xoay), scale theo bán kính. Model riêng của BoxPet: vfx/ trong repo.
 # Thêm (0.9.0): fx.vfx.animations (mỗi nhát một hoạt ảnh), debuff.vfx (model trên mục tiêu khi chảy máu).
+#   tether (0.9.8): xích nối pet với mục tiêu tether.seconds giây, mỗi tether.interval-ticks gây sát thương + debuff;
+#   đứt khi mục tiêu ra xa range + 4 ô hoặc khuất tầm nhìn.
 #   orbit (0.9.1): orbit.count cầu (model fx.vfx) xoay quanh chủ orbit.seconds giây, bán kính area.radius, chạm kẻ
 #   địch thì nổ (damage + debuff). meteor có fx.vfx: model rơi từ trên trời xuống vòng báo.
 #   Pet huyền thoại có kỹ năng thứ 2: "ability-2" trong file pet, hồi chiêu riêng.
@@ -1757,37 +1759,42 @@ abilities:
         animation: idle
         life-ticks: 80
         scale: 1.0
-  dragon_soul_hunt:
-    type: projectile
-    name: 'Hồn Lửa Truy Kích'
+  dragon_soul_chain:
+    type: tether
+    name: 'Xích Linh Hồn'
     color: '#30e1b9:#cbfee9'
     description:
-      - 'Phóng hồn lửa vào %targets% kẻ địch'
-      - 'quanh mục tiêu, mỗi viên %damage%'
-      - 'sát thương và đốt cháy %seconds% giây'
-    cooldown: 18
+      - 'Trói mục tiêu bằng xích linh hồn'
+      - '%seconds% giây: mỗi nửa giây gây %damage%'
+      - 'sát thương và làm chậm. Kẻ địch'
+      - 'chạy ra xa hoặc khuất tầm nhìn'
+      - 'thì xích đứt'
+    cooldown: 20
     pvp-multiplier: 0.7
-    range: 14
-    cast-delay-ticks: 18
-    targets: 3
+    range: 12
+    cast-delay-ticks: 16
     damage:
-      base: 4
-      per-level: 0.13
+      base: 1
+      per-level: 0.03
+    tether:
+      seconds: 4
+      interval-ticks: 10
     debuff:
-      type: burn
-      seconds: 3
-      amplifier: 0
+      type: slow
+      seconds: 1
+      amplifier: 1
     fx:
       animation: skill
       sounds:
         - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.4, delay: 4}
-        - {sound: particle.soul_escape, volume: 1.0, pitch: 1.0, delay: 18}
+        - {sound: block.chain.place, volume: 1.0, pitch: 0.7, delay: 16}
+        - {sound: particle.soul_escape, volume: 1.0, pitch: 0.8, delay: 16}
       particles:
-        - {particle: SOUL_FIRE_FLAME, count: 2, spread: 0.05, speed: 0.01, at: path}
-        - {particle: SOUL, count: 8, spread: 0.4, speed: 0.03, at: target}
+        - {particle: SOUL_FIRE_FLAME, count: 1, spread: 0.01, speed: 0.0, at: path}
+        - {particle: SOUL, count: 10, spread: 0.4, speed: 0.03, at: target}
       vfx:
-        model: vfx_soul_skull
+        model: vfx_soul_chain
         animation: idle
-        speed: 0.75
-        life-ticks: 50
+        life-ticks: 80
         scale: 1.0
+        y-offset: 0.0

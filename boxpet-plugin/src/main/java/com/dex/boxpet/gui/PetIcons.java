@@ -166,7 +166,7 @@ public final class PetIcons {
                 "seconds", num(m, "time", (a.type == Ability.Type.MARK ? a.markTicks : a.type == Ability.Type.SHIELD
                         || (a.type == Ability.Type.HEAL && a.shieldHearts.base() > 0) ? a.shieldTicks
                         : a.type == Ability.Type.BUFF ? a.buffTicks : a.type == Ability.Type.ORBIT ? a.orbitTicks
-                        : a.type == Ability.Type.ZONE ? a.zoneTicks
+                        : a.type == Ability.Type.ZONE ? a.zoneTicks : a.type == Ability.Type.TETHER ? a.tetherTicks
                         : a.debuffTicks) / 20.0),
                 "debuff_seconds", num(m, "time", a.debuffTicks / 20.0),
                 "level", paint(m, "effect", roman(a.potionAmplifier(r.index()) + 1)),

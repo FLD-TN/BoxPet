@@ -202,7 +202,7 @@ public final class AbilityService {
                 p.cooldown = a.cooldownTicks;
                 buff(p, a, target);
             }
-            case PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE -> {
+            case PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE, TETHER -> {
                 if (p.cooldown > 0 || !plugin.pets().combat().tagged(o.getUniqueId())) return;
                 LivingEntity target = plugin.pets().combat().target(o.getUniqueId(), 5000);
                 // cheap checks first, WorldGuard last; a failed try waits RETRY_TICKS instead of retrying every tick
@@ -266,6 +266,10 @@ public final class AbilityService {
             }
             if (a.type == Ability.Type.ZONE) {
                 zone(p, a, target);
+                return;
+            }
+            if (a.type == Ability.Type.TETHER) {
+                tether(p, a, target);
                 return;
             }
             // 0.8.0: some skills hit several times (Samurai, Cyborg)
@@ -548,6 +552,55 @@ public final class AbilityService {
                 }
             }, t);
         }
+    }
+
+    /**
+     * 0.9.8 tether (Xích Linh Hồn): a chain of soul fire from the pet to one target; every interval it hits (as damage over
+     * time) and applies the debuff. It breaks when the target gets out of range + 4 blocks, out of sight or invalid.
+     */
+    private void tether(ActivePet p, Ability a, LivingEntity target) {
+        double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
+        String part = a.particles.stream().filter(x -> x.at().equalsIgnoreCase("path")).map(Ability.ParticleFx::particle)
+                .findFirst().orElse("SOUL_FIRE_FLAME");
+        Vfx bound = null;
+        if (a.vfx != null) {
+            Location at = target.getLocation().add(0, a.vfx.yOffset(), 0);
+            PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
+                    plugin.getLogger());
+            if (visual != null) {
+                if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
+                bound = new Vfx(visual, at, target, 0, a.tetherTicks, false, a.vfx.yOffset());
+                vfx.add(bound);
+            }
+        }
+        final Vfx chainVfx = bound;
+        double maxRange = a.range + 4;
+        int[] t = {0};
+        BukkitTask[] task = new BukkitTask[1];
+        task[0] = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            boolean ok = plugin.pets().active(p.ownerId) == p && !p.abilityPaused() && target.isValid() && !target.isDead()
+                    && target.getWorld() == p.pos.getWorld() && validTarget(p.owner, target)
+                    && origin(p).distanceSquared(target.getLocation()) <= maxRange * maxRange && p.owner.hasLineOfSight(target);
+            if (!ok || ++t[0] > a.tetherTicks) {
+                if (chainVfx != null) chainVfx.life = 0;
+                task[0].cancel();
+                return;
+            }
+            if (t[0] % 2 == 0) {
+                Location from = origin(p);
+                Vector d = target.getLocation().add(0, target.getHeight() * 0.55, 0).toVector().subtract(from.toVector());
+                double len = d.length();
+                Vector step = d.clone().normalize().multiply(0.45);
+                Location cur = from.clone();
+                for (double s = 0; s < len; s += 0.45) {
+                    // a slight wave so it reads as a chain, not a laser
+                    double wave = Math.sin(s * 2.2 + t[0] * 0.4) * 0.12;
+                    Effects.particle(cur.clone().add(0, wave, 0), part, 1, 0.01, 0);
+                    cur.add(step);
+                }
+            }
+            if (t[0] % a.tetherInterval == 0 && damage(p, a, target, base, true)) applyDebuff(p, a, target, base);
+        }, 1L, 1L);
     }
 
     private static void ring(Location at, double radius, String particle) {

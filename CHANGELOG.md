@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.8 (2026-11-06)
+
+- Rồng Linh Hồn: kỹ năng 2 mới Xích Linh Hồn (kiểu tether): xích lửa linh hồn nối pet với mục tiêu 4 giây, mỗi nửa giây gây sát thương và làm chậm; mục tiêu chạy xa hoặc khuất tầm nhìn thì xích đứt. Thay Hồn Lửa Truy Kích (trùng kiểu bắn cầu lửa với kỹ năng 1).
+- Model mới vfx_soul_chain (vòng xích + linh hồn quấn quanh mục tiêu).
+- Cập nhật server: chép vfx/blueprints + /meg reload + /iazip, thay abilities.yml và pets/fire_dragon_soulfire.yml.
+
 ## 0.9.7 (2026-11-06)
 
 - Hoạt ảnh đứng yên (idle) chỉ chạy 1 lần mỗi khi pet dừng lại rồi giữ nguyên tư thế, không lặp (config follow.idle-loop: true để lặp như cũ).
