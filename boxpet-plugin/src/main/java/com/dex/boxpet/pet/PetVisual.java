@@ -59,6 +59,11 @@ public final class PetVisual {
      * @param idle / walk animation names for the automatic idle / walk states; {@code null} keeps ModelEngine's
      * @return {@code null} when the model does not exist or ModelEngine refused it
      */
+    /** 0.9.7: false = the idle animation plays once when the pet stops, then it holds that pose (config follow.idle-loop). */
+    public static boolean idleLoop = false;
+    /** No animation has this name: keeps ModelEngine from looping "idle" by itself. */
+    private static final String NO_IDLE = "boxpet_no_idle";
+
     public static @Nullable PetVisual create(Location at, String modelId, double scale, int renderRadius,
                                              @Nullable String idle, @Nullable String walk, boolean withHitbox,
                                              Logger log) {
@@ -79,7 +84,7 @@ public final class PetVisual {
             model.setHitboxScale(scale);
             AnimationHandler handler = model.getAnimationHandler();
             if (idle != null && !idle.isEmpty()) {
-                handler.setDefaultProperty(new AnimationHandler.DefaultProperty(ModelState.IDLE, idle, 0.2, 0.2, 1.0));
+                handler.setDefaultProperty(new AnimationHandler.DefaultProperty(ModelState.IDLE, idleLoop ? idle : NO_IDLE, 0.2, 0.2, 1.0));
             }
             if (walk != null && !walk.isEmpty()) {
                 handler.setDefaultProperty(new AnimationHandler.DefaultProperty(ModelState.WALK, walk, 0.2, 0.2, 1.0));
@@ -89,6 +94,10 @@ public final class PetVisual {
             modeled.setBaseEntityVisible(false);
             PetVisual v = new PetVisual(dummy, modeled, model, modelId, scale);
             if (!withHitbox) v.hitboxOn = false;
+            if (!idleLoop && idle != null && !idle.isEmpty()) {
+                v.idleOnce = idle;
+                v.playIdleOnce();
+            }
             return v;
         } catch (RuntimeException | LinkageError ex) {
             log.log(Level.WARNING, "ModelEngine could not create model " + modelId, ex);
@@ -125,7 +134,24 @@ public final class PetVisual {
     }
 
     public void walking(boolean walking) {
-        if (!removed && dummy.isWalking() != walking) dummy.setWalking(walking);
+        if (removed || dummy.isWalking() == walking) return;
+        dummy.setWalking(walking);
+        if (idleOnce == null) return;
+        // stopped: idle once and hold its last frame; moving again: drop it so the walk state shows
+        if (walking) stop(idleOnce);
+        else playIdleOnce();
+    }
+
+    /** Name of the idle animation when it is played once (null = ModelEngine loops it). */
+    private @Nullable String idleOnce;
+
+    private void playIdleOnce() {
+        try {
+            var prop = model.getAnimationHandler().playAnimation(idleOnce, 0.2, 0.2, 1.0, true);
+            if (prop != null) prop.setForceLoopMode(com.ticxo.modelengine.api.animation.BlueprintAnimation.LoopMode.HOLD);
+        } catch (RuntimeException ignored) {
+            // animation missing in this model
+        }
     }
 
     /** Plays a one-shot animation over the idle / walk state. Unknown names are ignored by ModelEngine. */

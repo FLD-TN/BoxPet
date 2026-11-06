@@ -47,7 +47,7 @@ public final class ChatService {
     }
 
     private void bubble(ActivePet pet, String text) {
-        if (!pet.shown()) return;
+        if (!pet.shown() || pet.showcase != null) return;
         removeBubble(pet);
         Location at = bubbleLocation(pet);
         TextDisplay td = at.getWorld().spawn(at, TextDisplay.class, d -> {
@@ -79,6 +79,54 @@ public final class ChatService {
         }
         Location at = bubbleLocation(pet);
         if (at.getWorld() == pet.bubble.getWorld() && at.distanceSquared(pet.bubble.getLocation()) > 0.0004) pet.bubble.teleport(at);
+    }
+
+    // ------------------------------------------------------------------ show-off (0.9.7)
+
+    private final java.util.Map<java.util.UUID, Long> showcaseReady = new java.util.HashMap<>();
+
+    /** @return message key */
+    public String showcase(ActivePet pet) {
+        if (!pet.shown()) return "showcase.hidden";
+        long now = System.currentTimeMillis();
+        Long ready = showcaseReady.get(pet.ownerId);
+        if (ready != null && now < ready) return "showcase.cooldown";
+        showcaseReady.put(pet.ownerId, now + plugin.settings().showcaseCooldownSeconds * 1000L);
+        removeBubble(pet);
+        removeShowcase(pet);
+        String text = String.join("\n<reset>", com.dex.boxpet.gui.PetIcons.showcaseLines(plugin, pet.data));
+        Location at = bubbleLocation(pet);
+        TextDisplay td = at.getWorld().spawn(at, TextDisplay.class, d -> {
+            d.setPersistent(false);
+            d.setBillboard(Display.Billboard.CENTER);
+            d.text(Text.parse(text, pet.owner));
+            d.setLineWidth(400);
+            d.setBackgroundColor(Color.fromARGB(170, 15, 15, 25));
+            d.setShadowed(false);
+            d.setTeleportDuration(2);
+            d.setTransformation(new org.bukkit.util.Transformation(new org.joml.Vector3f(), new org.joml.AxisAngle4f(),
+                    new org.joml.Vector3f(0.6f, 0.6f, 0.6f), new org.joml.AxisAngle4f()));
+        });
+        pet.showcase = td;
+        pet.showcaseTicks = plugin.settings().showcaseTicks;
+        return "showcase.done";
+    }
+
+    void tickShowcase(ActivePet pet) {
+        if (pet.showcase == null) return;
+        if (--pet.showcaseTicks <= 0 || !pet.shown()) {
+            removeShowcase(pet);
+            return;
+        }
+        Location at = bubbleLocation(pet);
+        if (at.getWorld() == pet.showcase.getWorld() && at.distanceSquared(pet.showcase.getLocation()) > 0.0004) pet.showcase.teleport(at);
+    }
+
+    void removeShowcase(ActivePet pet) {
+        if (pet.showcase != null) {
+            pet.showcase.remove();
+            pet.showcase = null;
+        }
     }
 
     void removeBubble(ActivePet pet) {

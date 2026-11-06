@@ -76,6 +76,7 @@ abilities:
       - 'gây %damage% sát thương và đốt'
       - 'cháy %seconds% giây'
     cooldown: 8
+    pvp-multiplier: 0.7
     area:
       radius: 3
     range: 14
@@ -112,6 +113,7 @@ abilities:
       - 'gây %damage% sát thương và làm'
       - 'suy yếu %seconds% giây'
     cooldown: 8
+    pvp-multiplier: 0.7
     area:
       radius: 3
     range: 14
@@ -1718,3 +1720,74 @@ abilities:
         - {sound: entity.player.splash.high_speed, volume: 0.6, pitch: 1.2, delay: 18}
       particles:
         - {particle: SPLASH, count: 30, spread: 1.0, speed: 0.1, at: target}
+  dragon_rift:
+    type: zone
+    name: 'Vết Nứt Hư Không'
+    color: '#5026d3:#f57fff'
+    description:
+      - 'Xé vết nứt %radius% ô dưới mục tiêu'
+      - 'trong %seconds% giây: kẻ địch đứng'
+      - 'trong mỗi giây nhận %damage% sát'
+      - 'thương và bị suy yếu'
+    cooldown: 20
+    pvp-multiplier: 0.7
+    range: 12
+    cast-delay-ticks: 18
+    damage:
+      base: 2.2
+      per-level: 0.07
+    area:
+      radius: 3
+    zone:
+      seconds: 4
+      interval-ticks: 20
+    debuff:
+      type: weakness
+      seconds: 2
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.growl, volume: 0.6, pitch: 0.7, delay: 4}
+        - {sound: block.end_portal.spawn, volume: 0.4, pitch: 1.6, delay: 18}
+      particles:
+        - {particle: WITCH, count: 20, spread: 1.0, speed: 0.05, at: target}
+      vfx:
+        model: vfx_shadow_rift
+        animation: idle
+        life-ticks: 80
+        scale: 1.0
+  dragon_soul_hunt:
+    type: projectile
+    name: 'Hồn Lửa Truy Kích'
+    color: '#30e1b9:#cbfee9'
+    description:
+      - 'Phóng hồn lửa vào %targets% kẻ địch'
+      - 'quanh mục tiêu, mỗi viên %damage%'
+      - 'sát thương và đốt cháy %seconds% giây'
+    cooldown: 18
+    pvp-multiplier: 0.7
+    range: 14
+    cast-delay-ticks: 18
+    targets: 3
+    damage:
+      base: 4
+      per-level: 0.13
+    debuff:
+      type: burn
+      seconds: 3
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.4, delay: 4}
+        - {sound: particle.soul_escape, volume: 1.0, pitch: 1.0, delay: 18}
+      particles:
+        - {particle: SOUL_FIRE_FLAME, count: 2, spread: 0.05, speed: 0.01, at: path}
+        - {particle: SOUL, count: 8, spread: 0.4, speed: 0.03, at: target}
+      vfx:
+        model: vfx_soul_skull
+        animation: idle
+        speed: 0.75
+        life-ticks: 50
+        scale: 1.0

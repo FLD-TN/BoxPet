@@ -459,6 +459,16 @@ manage:
       - '<#BFC7D5>hộp khi đói'
       - ''
       - '<gray>• Trạng thái: <#FF4D4D>✘ Chưa mở khoá'
+  showcase:
+    name: '<#FFD166>Khoe pet'
+    lore:
+      - '<#BFC7D5>Hiện thông tin pet trên đầu'
+      - '<#BFC7D5>pet cho mọi người xem trong'
+      - '<#BFC7D5>%seconds% giây'
+      - ''
+      - '<#BFC7D5>Cần thả pet ra để khoe'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để khoe<dark_gray>]'
   breakthrough:
     name: '<#FF9F5A>Đột phá'
     lore:

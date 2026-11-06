@@ -187,6 +187,7 @@ public final class BoxPetPlugin extends JavaPlugin {
         reloadConfig();
         YamlConfiguration config = ConfigFiles.load(this, "config.yml");
         settings = new Settings(config);
+        com.dex.boxpet.pet.PetVisual.idleLoop = settings.idleLoop;
         ConfigurationSection pal = config.getConfigurationSection("style.palette");
         if (pal != null) {
             Map<String, String> colours = new HashMap<>();

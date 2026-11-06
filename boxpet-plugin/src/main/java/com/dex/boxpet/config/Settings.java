@@ -127,6 +127,11 @@ public final class Settings {
     public final int idleChatMaxSeconds;
     public final boolean speechBubble;
     public final int speechBubbleTicks;
+    /** 0.9.7: idle animation loops (true) or plays once then holds (false). */
+    public final boolean idleLoop;
+    /** 0.9.7: show-off hologram time and cooldown. */
+    public final int showcaseTicks;
+    public final int showcaseCooldownSeconds;
     public final int hungryRepeatSeconds;
     public final int lowHpPercent;
     public final int lowHpCooldownSeconds;
@@ -234,6 +239,9 @@ public final class Settings {
         idleChatMaxSeconds = Math.max(idleChatMinSeconds, c.getInt("pet-chat.idle-max-seconds", 1200));
         speechBubble = c.getBoolean("pet-chat.speech-bubble", true);
         speechBubbleTicks = Math.max(10, c.getInt("pet-chat.speech-bubble-ticks", 60));
+        idleLoop = c.getBoolean("follow.idle-loop", false);
+        showcaseTicks = Math.max(40, c.getInt("showcase.seconds", 10) * 20);
+        showcaseCooldownSeconds = Math.max(0, c.getInt("showcase.cooldown-seconds", 30));
         hungryRepeatSeconds = Math.max(60, c.getInt("pet-chat.hungry-repeat-seconds", 600));
         lowHpPercent = Math.max(1, Math.min(99, c.getInt("pet-chat.owner-low-hp-percent", 30)));
         lowHpCooldownSeconds = Math.max(5, c.getInt("pet-chat.owner-low-hp-cooldown-seconds", 60));

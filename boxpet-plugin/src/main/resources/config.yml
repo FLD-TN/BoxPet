@@ -83,6 +83,8 @@ visibility:
 
 # Vị trí và cách đi theo (BOXPET_SPEC 4.1). Mỗi pet có thể ghi đè side / back / height / fly trong file pet.
 follow:
+  # false = hoạt ảnh đứng yên (idle) chỉ chạy 1 lần mỗi khi pet dừng lại, rồi giữ nguyên tư thế; true = lặp mãi
+  idle-loop: false
   # sau lưng bên phải: lệch phải side ô, lùi back ô (số âm = bên trái)
   side: 1.2
   back: 0.8
@@ -189,6 +191,11 @@ pet-chat:
   owner-low-hp-cooldown-seconds: 60
   # các ngày tuổi pet nói câu sinh nhật
   birthdays: [7, 30, 100, 365]
+
+# khoe pet (nút trong Quản lý pet): thông tin pet hiện trên đầu pet cho mọi người xem
+showcase:
+  seconds: 10
+  cooldown-seconds: 30
 
 release:
   # thả pet thì trả lại 1 kẹo (mã trong items.yml), '' = không trả

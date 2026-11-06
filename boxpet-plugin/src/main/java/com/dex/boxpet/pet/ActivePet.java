@@ -31,6 +31,9 @@ public final class ActivePet {
     public @Nullable TextDisplay nametag;
     public @Nullable TextDisplay bubble;
     public int bubbleTicks;
+    /** 0.9.7: the show-off hologram (everyone sees it) and its ticks left. */
+    public @Nullable TextDisplay showcase;
+    public int showcaseTicks;
 
     public Location pos;
     public float yaw;

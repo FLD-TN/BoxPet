@@ -129,10 +129,21 @@ public final class ManageMenu extends Menu {
                 open();
             }, this::open);
         });
+        // 0.9.7: show off: the card above the pet's head for everyone around
+        set(42, button("manage.showcase", Material.SPYGLASS, "seconds", String.valueOf(plugin.settings().showcaseTicks / 20)), click -> {
+            ActivePet o = out();
+            if (o == null) {
+                plugin.messages().send(player, "manage.need-out-showcase", "pet", name);
+                return;
+            }
+            plugin.messages().send(player, plugin.chat().showcase(o), "pet", name,
+                    "seconds", String.valueOf(plugin.settings().showcaseTicks / 20));
+            player.closeInventory();
+        });
         PetType.Stage next2 = plugin.actions().nextStage(pet);
         if (next2 != null) {
             String cost = costText(next2);
-            set(42, button(pet.level >= next2.minLevel() ? "manage.evolve" : "manage.evolve-locked", Material.EXPERIENCE_BOTTLE,
+            set(43, button(pet.level >= next2.minLevel() ? "manage.evolve" : "manage.evolve-locked", Material.EXPERIENCE_BOTTLE,
                     "level", String.valueOf(next2.minLevel()), "cost", cost), click -> {
                 if (pet.level < next2.minLevel()) {
                     plugin.messages().send(player, "evolve.level", "level", String.valueOf(next2.minLevel()));

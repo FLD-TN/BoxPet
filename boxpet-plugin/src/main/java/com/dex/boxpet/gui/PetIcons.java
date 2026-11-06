@@ -166,6 +166,7 @@ public final class PetIcons {
                 "seconds", num(m, "time", (a.type == Ability.Type.MARK ? a.markTicks : a.type == Ability.Type.SHIELD
                         || (a.type == Ability.Type.HEAL && a.shieldHearts.base() > 0) ? a.shieldTicks
                         : a.type == Ability.Type.BUFF ? a.buffTicks : a.type == Ability.Type.ORBIT ? a.orbitTicks
+                        : a.type == Ability.Type.ZONE ? a.zoneTicks
                         : a.debuffTicks) / 20.0),
                 "debuff_seconds", num(m, "time", a.debuffTicks / 20.0),
                 "level", paint(m, "effect", roman(a.potionAmplifier(r.index()) + 1)),
@@ -173,6 +174,7 @@ public final class PetIcons {
                 "range", num(m, "time", a.range),
                 "radius", num(m, "time", a.areaRadius > 0 ? a.areaRadius : a.enemyRadius > 0 ? a.enemyRadius : a.blastRadius),
                 "chain", num(m, "time", a.chainTargets),
+                "targets", num(m, "time", a.multiTargets),
                 "hits", num(m, "time", a.hits),
                 "count", num(m, "time", a.meteors),
                 "buff", num(m, "bonus", round1(a.buffAmount.at(level, mul))),
@@ -271,6 +273,23 @@ public final class PetIcons {
         String name = plugin.menus().name("pet-card", ph);
         if (active) name = name + plugin.menus().text("pet-card.name-active");
         return Menu.decorate(icon(plugin, type), name, withWarning(plugin, plugin.menus().lore("pet-card", blocks, ph)));
+    }
+
+    /** 0.9.7: the card as text lines (name first) for the show-off hologram: no hunger warning, no click lines. */
+    public static List<String> showcaseLines(BoxPetPlugin plugin, PetData d) {
+        PetType type = plugin.pets().type(d);
+        if (type == null) return List.of();
+        Map<String, List<String>> blocks = new HashMap<>();
+        blocks.put("stats", statLines(plugin, d, type));
+        blocks.put("ability", abilityLines(plugin, type, d.level));
+        blocks.put("status", List.of());
+        blocks.put("actions", List.of());
+        blocks.put("warning", List.of());
+        String[] ph = placeholders(plugin, d, type);
+        List<String> out = new ArrayList<>();
+        out.add(plugin.menus().name("pet-card", ph));
+        out.addAll(plugin.menus().lore("pet-card", blocks, ph));
+        return out;
     }
 
     /** Library card: what a pet type gives, at level 1 and at its max level. */

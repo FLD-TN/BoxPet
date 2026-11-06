@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.7 (2026-11-06)
+
+- Hoạt ảnh đứng yên (idle) chỉ chạy 1 lần mỗi khi pet dừng lại rồi giữ nguyên tư thế, không lặp (config follow.idle-loop: true để lặp như cũ).
+- Nút Khoe pet trong Quản lý pet (ô 43, dưới nút Đặt tên): thông tin pet (như lore, không có cảnh báo đói và dòng chuột) hiện trên đầu pet cho mọi người xem 10 giây, chờ 30 giây giữa 2 lần (config showcase). Nút Tiến hóa dời sang ô 44.
+- Cả 4 Rồng Lửa đều Huyền thoại: Rồng Bóng Tối thêm Vết Nứt Hư Không (vùng nứt 3 ô 4 giây, mỗi giây sát thương + suy yếu), Rồng Linh Hồn thêm Hồn Lửa Truy Kích (3 đầu lâu lửa vào 3 kẻ địch khác nhau + đốt). Kiểu kỹ năng mới: zone, targets (bắn nhiều mục tiêu).
+- Model hiệu ứng đợt 5: vết nứt hư không, đầu lâu lửa linh hồn.
+- Cập nhật server: chép vfx/blueprints + /meg reload + /iazip, thay abilities.yml và 2 file pet fire_dragon_shadowflame, fire_dragon_soulfire.
+
 ## 0.9.6 (2026-11-06)
 
 - Tinh Linh Thiên Hà và Bóng Tối xuống Sử thi, mỗi con 1 kỹ năng: Thiên Hà hạ mob, Bóng Tối đào mỏ (x2 từ đầu, x3 từ cấp 40). Đây là 2 pet kinh tế duy nhất ở Sử thi; kinh tế nhiệm vụ chỉ còn ở Thường / Hiếm.

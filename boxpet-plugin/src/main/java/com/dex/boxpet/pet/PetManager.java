@@ -454,6 +454,7 @@ public final class PetManager {
 
     void despawnVisual(ActivePet p, boolean puff) {
         plugin.chat().removeBubble(p);
+        plugin.chat().removeShowcase(p);
         if (p.visual != null) {
             if (puff && p.shown()) Effects.puff(p.pos);
             byBase.remove(p.visual.baseId());
@@ -515,6 +516,7 @@ public final class PetManager {
             else if (at.distanceSquared(p.nametag.getLocation()) > 0.0025) p.nametag.teleport(at);
         }
         plugin.chat().tickBubble(p);
+        plugin.chat().tickShowcase(p);
     }
 
     /** The server removed the name tag (its chunk unloaded, another plugin killed it): make a new one. */
@@ -596,6 +598,7 @@ public final class PetManager {
         }
         if (p.nametag != null) p.nametag.setVisibleByDefault(false);
         plugin.chat().removeBubble(p);
+        plugin.chat().removeShowcase(p);
         p.travelHidden = true;
         p.mode = ActivePet.Mode.TRAVEL;
         refreshBonus(p);

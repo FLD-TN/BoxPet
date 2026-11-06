@@ -202,7 +202,7 @@ public final class AbilityService {
                 p.cooldown = a.cooldownTicks;
                 buff(p, a, target);
             }
-            case PROJECTILE, STRIKE, MARK, METEOR, ORBIT -> {
+            case PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE -> {
                 if (p.cooldown > 0 || !plugin.pets().combat().tagged(o.getUniqueId())) return;
                 LivingEntity target = plugin.pets().combat().target(o.getUniqueId(), 5000);
                 // cheap checks first, WorldGuard last; a failed try waits RETRY_TICKS instead of retrying every tick
@@ -264,6 +264,10 @@ public final class AbilityService {
                 orbit(p, a);
                 return;
             }
+            if (a.type == Ability.Type.ZONE) {
+                zone(p, a, target);
+                return;
+            }
             // 0.8.0: some skills hit several times (Samurai, Cyborg)
             for (int i = 0; i < a.hits; i++) {
                 boolean first = i == 0;
@@ -291,7 +295,19 @@ public final class AbilityService {
 
     private void act(ActivePet p, Ability a, LivingEntity target, boolean first) {
         switch (a.type) {
-            case PROJECTILE -> launch(p, a, target);
+            case PROJECTILE -> {
+                launch(p, a, target);
+                // 0.9.7: one projectile each for more enemies around the target
+                if (a.multiTargets > 1) {
+                    int n = 1;
+                    for (LivingEntity e : around(p.owner, target.getLocation(), 8)) {
+                        if (n >= a.multiTargets) break;
+                        if (e.equals(target)) continue;
+                        launch(p, a, e);
+                        n++;
+                    }
+                }
+            }
             case STRIKE -> {
                 showAt(p, a, target, hitIndex(p, a, first));
                 strike(p, a, target);
@@ -506,6 +522,32 @@ public final class AbilityService {
         if (visual == null) return;
         visual.play("skill");
         vfx.add(new Vfx(visual, l, null, 0, 14, false, 0));
+    }
+
+    /** 0.9.7 zone: the skill's model lies at the target; every enemy inside is hit each interval (dodge by leaving). */
+    private void zone(ActivePet p, Ability a, LivingEntity target) {
+        Location c = target.getLocation();
+        double radius = a.areaRadius > 0 ? a.areaRadius : 3;
+        double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
+        if (a.vfx != null) {
+            Location l = c.clone();
+            l.setYaw(0);
+            PetVisual visual = PetVisual.create(l, a.vfx.model(), Math.max(0.3, radius * a.vfx.scale()), plugin.settings().viewDistance,
+                    null, null, false, plugin.getLogger());
+            if (visual != null) {
+                if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
+                vfx.add(new Vfx(visual, l, null, 0, a.zoneTicks, false, 0));
+            }
+        }
+        for (int t = a.zoneInterval / 2; t <= a.zoneTicks; t += a.zoneInterval) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
+                if (a.vfx == null) ring(c, radius, "WITCH");
+                for (LivingEntity e : around(p.owner, c, radius)) {
+                    if (damage(p, a, e, base, false)) applyDebuff(p, a, e, base);
+                }
+            }, t);
+        }
     }
 
     private static void ring(Location at, double radius, String particle) {

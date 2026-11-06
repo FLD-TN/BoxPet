@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public final class Ability {
 
     public enum Type {
-        PROJECTILE, STRIKE, MARK, METEOR, ORBIT, HEAL, SHIELD, BUFF, POTION, BOOST, NONE;
+        PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE, HEAL, SHIELD, BUFF, POTION, BOOST, NONE;
 
         public static Type of(String s) {
             if (s == null) return NONE;
@@ -25,7 +25,7 @@ public final class Ability {
         }
 
         public boolean combat() {
-            return this == PROJECTILE || this == STRIKE || this == MARK || this == METEOR;
+            return this == PROJECTILE || this == STRIKE || this == MARK || this == METEOR || this == ZONE;
         }
     }
 
@@ -122,6 +122,11 @@ public final class Ability {
     public final int meteorWarn;
     /** Orbit: how long the orbs circle the owner (count = meteor.count, radius = area.radius). */
     public final int orbitTicks;
+    /** 0.9.7 zone: a damaging area left at the target for zoneTicks, hitting every zoneInterval ticks. */
+    public final int zoneTicks;
+    public final int zoneInterval;
+    /** 0.9.7: a projectile is fired at this many different enemies around the target. */
+    public final int multiTargets;
     /** Buff: when it goes off (combat, hurt, low-hp) and the owner-only stat buff it gives. */
     public final String trigger;
     public final int buffBelowPercent;
@@ -202,6 +207,10 @@ public final class Ability {
                 : obc != null ? Math.max(1, Math.min(6, obc.getInt("count", 3))) : 1;
         meteorSpread = me == null ? 2 : Math.max(0, Math.min(6, me.getDouble("spread", 2.5)));
         meteorWarn = me == null ? 20 : Math.max(5, me.getInt("warn-ticks", 20));
+        ConfigurationSection zn = s.getConfigurationSection("zone");
+        zoneTicks = zn == null ? 80 : (int) Math.round(Math.max(1, zn.getDouble("seconds", 4)) * 20);
+        zoneInterval = zn == null ? 20 : Math.max(5, zn.getInt("interval-ticks", 20));
+        multiTargets = Math.max(1, Math.min(5, s.getInt("targets", 1)));
         ConfigurationSection ob = s.getConfigurationSection("orbit");
         orbitTicks = ob == null ? 120 : (int) Math.round(Math.max(1, ob.getDouble("seconds", 6)) * 20);
         trigger = s.getString("trigger", "combat").toLowerCase(Locale.ROOT);

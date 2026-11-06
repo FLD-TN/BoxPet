@@ -28,6 +28,7 @@ dismiss:
 
 manage:
   need-out-pet: '<error>✘ Hãy thả %pet% <error>ra trước rồi mới vuốt ve được'
+  need-out-showcase: '<error>✘ Hãy thả %pet% <error>ra trước rồi mới khoe được'
   need-out-sit: '<error>✘ Hãy thả %pet% <error>ra trước rồi mới bảo ngồi yên được'
 
 sit:
@@ -43,6 +44,11 @@ toggle:
   cast-on: '<success>✔ Đã bật thông báo kỹ năng của pet'
   cast-off: '<success>✔ Đã tắt thông báo kỹ năng của pet'
 
+
+showcase:
+  done: '<success>✔ Đang khoe %pet% <success>trong <text>%seconds% giây'
+  cooldown: '<error>✘ Vừa khoe xong, chờ một lát rồi khoe tiếp'
+  hidden: '<error>✘ Pet đang bị ẩn, không khoe được'
 
 autofeed:
   locked: '<error>✘ Bạn chưa mở khoá tính năng tự động cho ăn'
