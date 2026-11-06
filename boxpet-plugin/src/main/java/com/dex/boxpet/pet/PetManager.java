@@ -421,6 +421,7 @@ public final class PetManager {
             plugin.getLogger().warning("Model " + stage.model() + " of pet type " + p.type.id + " is not loaded in ModelEngine");
             return;
         }
+        if (!p.type.hideBones.isEmpty()) v.hideBones(p.type.hideBones);
         p.visual = v;
         p.pos = at.clone();
         p.yaw = at.getYaw();

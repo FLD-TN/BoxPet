@@ -164,6 +164,23 @@ public final class PetVisual {
         }
     }
 
+    /** Hides these bones and everything under them (a pack effect this pet must not show). */
+    public void hideBones(java.util.List<String> ids) {
+        if (removed) return;
+        for (String id : ids) {
+            try {
+                model.getBone(id).ifPresent(PetVisual::hideTree);
+            } catch (RuntimeException ignored) {
+                // no such bone in this model
+            }
+        }
+    }
+
+    private static void hideTree(com.ticxo.modelengine.api.model.bone.ModelBone bone) {
+        bone.setVisible(false);
+        for (var child : bone.getChildren().values()) hideTree(child);
+    }
+
     public void stop(String animation) {
         if (removed || animation == null || animation.isEmpty()) return;
         try {

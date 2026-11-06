@@ -88,11 +88,13 @@ public final class PetTypes {
         Material fallback = Material.matchMaterial(y.getString("icon-fallback", "EGG"));
         if (fallback == null || !fallback.isItem()) fallback = Material.EGG;
         String family = y.getString("family", id).toLowerCase(Locale.ROOT);
-        return new PetType(id, y.getString("name", id), y.getString("color", "#FFFFFF"), family,
+        PetType made = new PetType(id, y.getString("name", id), y.getString("color", "#FFFFFF"), family,
                 PetType.Role.of(y.getString("role", "support")), y.getString("icon", ""), fallback, rarity.id(),
                 Math.max(0, y.getInt("egg-weight", 1)), stages, anims, dbl(y, "follow.side"), dbl(y, "follow.back"),
                 dbl(y, "follow.height"), y.getBoolean("follow.fly", false), stats, y.getString("ability", ""),
                 y.getString("dialogue", family).toLowerCase(Locale.ROOT), bonus, y.getString("ability-2", ""));
+        made.hideBones = List.copyOf(y.getStringList("hide-bones"));
+        return made;
     }
 
     /** 0.9.1: stats a pet never gives (skill / magic damage, health regeneration). */

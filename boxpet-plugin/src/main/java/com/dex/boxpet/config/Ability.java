@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public final class Ability {
 
     public enum Type {
-        PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE, TETHER, HEAL, SHIELD, BUFF, POTION, BOOST, NONE;
+        PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE, TETHER, NOVA, HEAL, SHIELD, BUFF, POTION, BOOST, NONE;
 
         public static Type of(String s) {
             if (s == null) return NONE;
@@ -25,7 +25,8 @@ public final class Ability {
         }
 
         public boolean combat() {
-            return this == PROJECTILE || this == STRIKE || this == MARK || this == METEOR || this == ZONE || this == TETHER;
+            return this == PROJECTILE || this == STRIKE || this == MARK || this == METEOR || this == ZONE || this == TETHER
+                    || this == NOVA;
         }
     }
 
@@ -129,6 +130,11 @@ public final class Ability {
     public final int multiTargets;
     /** 0.9.8 tether: a chain from the pet to the target for tetherTicks, hitting every tetherInterval ticks. */
     public final int tetherTicks;
+    /**
+     * 0.11.0 nova: the skill's effect model plays at the target (following it) and every enemy around it is hit at
+     * each of these ticks after the effect starts (the explosion frames of the animation).
+     */
+    public final List<Integer> novaHits;
     public final int tetherInterval;
     /** Buff: when it goes off (combat, hurt, low-hp) and the owner-only stat buff it gives. */
     public final String trigger;
@@ -219,6 +225,10 @@ public final class Ability {
         ConfigurationSection te = s.getConfigurationSection("tether");
         tetherTicks = te == null ? 80 : (int) Math.round(Math.max(1, te.getDouble("seconds", 4)) * 20);
         tetherInterval = te == null ? 10 : Math.max(5, te.getInt("interval-ticks", 10));
+        List<Integer> nh = new java.util.ArrayList<>();
+        for (int t : s.getIntegerList("nova.hit-ticks")) if (t >= 0 && nh.size() < 6) nh.add(t);
+        if (nh.isEmpty()) nh.add(20);
+        novaHits = List.copyOf(nh);
         ConfigurationSection ob = s.getConfigurationSection("orbit");
         orbitTicks = ob == null ? 120 : (int) Math.round(Math.max(1, ob.getDouble("seconds", 6)) * 20);
         trigger = s.getString("trigger", "combat").toLowerCase(Locale.ROOT);

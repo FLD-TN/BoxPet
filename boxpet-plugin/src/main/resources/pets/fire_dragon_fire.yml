@@ -33,4 +33,4 @@ stats:
     base: 0.5
     per-level: 0.02
 # kỹ năng trong abilities.yml
-ability: fire_ball_fire
+ability: dragon_fire_nova

@@ -202,7 +202,7 @@ public final class AbilityService {
                 p.cooldown = a.cooldownTicks;
                 buff(p, a, target);
             }
-            case PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE, TETHER -> {
+            case PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE, TETHER, NOVA -> {
                 if (p.cooldown > 0 || !plugin.pets().combat().tagged(o.getUniqueId())) return;
                 LivingEntity target = plugin.pets().combat().target(o.getUniqueId(), 5000);
                 // cheap checks first, WorldGuard last; a failed try waits RETRY_TICKS instead of retrying every tick
@@ -270,6 +270,10 @@ public final class AbilityService {
             }
             if (a.type == Ability.Type.TETHER) {
                 tether(p, a, target);
+                return;
+            }
+            if (a.type == Ability.Type.NOVA) {
+                nova(p, a, target);
                 return;
             }
             // 0.8.0: some skills hit several times (Samurai, Cyborg)
@@ -601,6 +605,46 @@ public final class AbilityService {
             }
             if (t[0] % a.tetherInterval == 0 && damage(p, a, target, base, true)) applyDebuff(p, a, target, base);
         }, 1L, 1L);
+    }
+
+    /**
+     * 0.11.0 nova (Rồng Lửa, Rồng Bóng Tối, Tinh Linh Thiên Hà): the pack's own skill effect plays on the ground at
+     * the target and follows it; at each hit tick (the explosion frames) every enemy within the radius is hit.
+     */
+    private void nova(ActivePet p, Ability a, LivingEntity target) {
+        double radius = a.areaRadius > 0 ? a.areaRadius : 3;
+        double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
+        Location[] center = {target.getLocation()};
+        Vfx shown = null;
+        if (a.vfx != null) {
+            Location at = center[0].clone().add(0, a.vfx.yOffset(), 0);
+            at.setYaw(yawTo(p.pos, center[0]));
+            at.setPitch(0);
+            PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
+                    plugin.getLogger());
+            if (visual != null) {
+                if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
+                shown = new Vfx(visual, at, target, 0, a.vfx.life(), false, a.vfx.yOffset());
+                vfx.add(shown);
+            }
+        }
+        for (int t : a.novaHits) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
+                // follows the target while it lives, else the last place it was
+                if (target.isValid() && !target.isDead() && target.getWorld() == center[0].getWorld()) center[0] = target.getLocation();
+                Location c = center[0];
+                List<LivingEntity> victims = around(p.owner, c, radius);
+                if (!victims.contains(target) && validTarget(p.owner, target)
+                        && target.getLocation().distanceSquared(c) <= radius * radius + 1) victims.add(0, target);
+                for (LivingEntity e : victims) {
+                    if (damage(p, a, e, base, false)) {
+                        applyDebuff(p, a, e, base);
+                        particles(p, a, e, true);
+                    }
+                }
+            }, t);
+        }
     }
 
     private static void ring(Location at, double radius, String particle) {

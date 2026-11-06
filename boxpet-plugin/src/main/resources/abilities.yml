@@ -150,6 +150,95 @@ abilities:
         speed: 0.7
         life-ticks: 40
         scale: 1.0
+  # 0.11.0: Rồng Lửa, hiệu ứng chiêu gốc của Tinh Linh Lửa (pack Cubees) nổ tại mục tiêu
+  dragon_fire_nova:
+    type: nova
+    name: 'Hỏa Ngục Bùng Nổ'
+    color: '#FF7A45:#FFC15E'
+    description:
+      - 'Tụ cầu lửa trên đầu mục tiêu'
+      - 'rồi nổ tung trong %radius% ô,'
+      - 'gây %damage% sát thương và nung'
+      - 'chảy %enemy% Phòng thủ của kẻ'
+      - 'địch trong %enemy_seconds% giây'
+    cooldown: 9
+    pvp-multiplier: 0.7
+    range: 14
+    cast-delay-ticks: 8
+    area:
+      radius: 3
+    damage:
+      base: 4
+      per-level: 0.13
+    pve-multiplier: 1.0
+    # tick (sau khi hiệu ứng bắt đầu) gây sát thương: khung nổ của animation
+    nova:
+      hit-ticks: [34]
+    enemy-stat:
+      stat: DEFENSE
+      seconds: 4
+      amount:
+        base: 1.2
+        per-level: 0.05
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 2}
+        - {sound: item.firecharge.use, volume: 0.8, pitch: 0.8, delay: 10}
+        - {sound: entity.generic.explode, volume: 0.8, pitch: 1.1, delay: 42}
+      particles:
+        - {particle: FLAME, count: 20, spread: 0.8, speed: 0.08, at: target}
+      vfx:
+        model: vfx_nova_fire
+        animation: skill
+        life-ticks: 74
+        scale: 1.25
+        y-offset: 0.0
+
+  # 0.11.0: Rồng Lửa Bóng Tối, hiệu ứng chiêu gốc của Tinh Linh Bóng Tối (pack Cubees) nổ tại mục tiêu
+  dragon_dark_nova:
+    type: nova
+    name: 'Hố Đen Bùng Nổ'
+    color: '#9B6BFF:#E3B6FF'
+    description:
+      - 'Gom cầu bóng tối về mục tiêu'
+      - 'rồi nổ tung trong %radius% ô,'
+      - 'gây %damage% sát thương và giảm'
+      - '%enemy% Sát thương của kẻ địch'
+      - 'trong %enemy_seconds% giây'
+    cooldown: 9
+    pvp-multiplier: 0.7
+    range: 14
+    cast-delay-ticks: 8
+    area:
+      radius: 3.5
+    damage:
+      base: 3.3
+      per-level: 0.11
+    pve-multiplier: 1.0
+    nova:
+      hit-ticks: [33]
+    enemy-stat:
+      stat: ATTACK_DAMAGE
+      seconds: 3
+      amount:
+        base: 1
+        per-level: 0.04
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 2}
+        - {sound: entity.warden.sonic_charge, volume: 0.6, pitch: 1.6, delay: 12}
+        - {sound: entity.generic.explode, volume: 0.8, pitch: 0.8, delay: 41}
+      particles:
+        - {particle: PORTAL, count: 30, spread: 0.8, speed: 0.3, at: target}
+      vfx:
+        model: vfx_nova_darkness
+        animation: skill
+        life-ticks: 74
+        scale: 1.6
+        y-offset: 0.0
+
   frog_tongue:
     type: projectile
     name: 'Lưỡi Dính'
@@ -569,33 +658,21 @@ abilities:
         life-ticks: 120
         scale: 2.0
         y-offset: 0.0
+  # 0.11.0: Kỳ Lân Rừng Xanh thành pet kinh tế (nhiệm vụ)
   unicorn_nature:
-    type: buff
-    name: 'Giáp Lá Rừng Xanh'
+    type: boost
+    name: 'Phúc Lành Rừng Xanh'
     color: '#8EE07A:#D8F8C6'
     description:
-      - 'Khi chủ nhân bị đánh: +%buff%'
-      - '%buff_stat% trong %seconds% giây'
-    cooldown: 30
-    trigger: hurt
-    buff:
-      stat: DEFENSE
-      amount:
-        base: 2
-        per-level: 0.08
-      seconds: 5
-    fx:
-      animation: skill
-      sounds:
-        - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
-        - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
-      particles:
-        - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
-      vfx:
-        model: vfx_leaf_armor
-        animation: idle
-        life-ticks: 100
-        scale: 1
+      - 'Tăng %boost% phần thưởng khi'
+      - 'hoàn thành nhiệm vụ'
+    boost:
+      type: quest
+      tenths:
+        base: 1
+        per-level: 0.1
+      whole: false
+
   unicorn_rainbow:
     type: buff
     name: 'Bước Chân Cầu Vồng'
@@ -709,19 +786,30 @@ abilities:
         base: 1
         per-level: 0.1
       whole: false
+  # 0.11.0: Palcat Nhạc Sĩ thành pet hỗ trợ (giáp như Kỳ Lân Rừng Xanh), hiệu ứng nốt nhạc của chính model
   palcat_music:
-    type: boost
-    name: 'Giai Điệu Vui Vẻ'
+    type: buff
+    name: 'Giai Điệu Hộ Thân'
     color: '#A5B4FF:#DCE2FF'
     description:
-      - 'Nhân phần thưởng khi hạ mob,'
-      - 'boss lên %boost%'
-    boost:
-      type: mob
-      tenths:
-        base: 7
-        per-level: 0.12
-      whole: true
+      - 'Khi chủ nhân bị đánh: +%buff%'
+      - '%buff_stat% trong %seconds% giây'
+    cooldown: 30
+    trigger: hurt
+    buff:
+      stat: DEFENSE
+      amount:
+        base: 2
+        per-level: 0.08
+      seconds: 5
+    fx:
+      animation: skill
+      sounds:
+        - {sound: block.note_block.chime, volume: 0.8, pitch: 1.2}
+        - {sound: block.note_block.bell, volume: 0.6, pitch: 1.6, delay: 6}
+      particles:
+        - {particle: NOTE, count: 8, spread: 0.6, speed: 1.0, at: owner}
+
   frog_tongue_gold:
     type: projectile
     name: 'Lưỡi Quấn Đôi'
@@ -1148,32 +1236,45 @@ abilities:
         life-ticks: 30
         scale: 1.0
         y-offset: 0.0
-  cubee_galaxy_mob:
-    type: boost
-    name: 'Tinh Tú May Mắn'
+  # 0.11.0: Tinh Linh Thiên Hà thành pet chiến đấu, dùng hiệu ứng chiêu gốc của chính nó tại mục tiêu
+  cubee_galaxy_nova:
+    type: nova
+    name: 'Tinh Vân Xoáy'
     color: '#4CC9F0:#FFD6FF'
     description:
-      - 'Nhân phần thưởng khi hạ mob,'
-      - 'boss lên %boost%'
-    boost:
-      type: mob
-      tenths:
-        base: 6.5
-        per-level: 0.105
-      whole: true
-  cubee_dark_mining:
-    type: boost
-    name: 'Hắc Tinh Khai Khoáng'
-    color: '#7209B7:#F72585'
-    description:
-      - 'Nhân vật phẩm khi đào mỏ'
-      - 'lên %boost%'
-    boost:
-      type: mining
-      tenths:
-        base: 6.5
-        per-level: 0.105
-      whole: true
+      - 'Gọi tinh vân xoáy dưới chân'
+      - 'mục tiêu, nổ 4 đợt trong'
+      - '%radius% ô, mỗi đợt gây %damage%'
+      - 'sát thương'
+    cooldown: 10
+    pvp-multiplier: 0.6
+    range: 12
+    cast-delay-ticks: 10
+    area:
+      radius: 2.5
+    damage:
+      base: 1.2
+      per-level: 0.04
+    pve-multiplier: 1.0
+    # 4 đợt sóng sao của animation
+    nova:
+      hit-ticks: [13, 25, 38, 63]
+    fx:
+      animation: skill
+      sounds:
+        - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.4, delay: 23}
+        - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.6, delay: 35}
+        - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.8, delay: 48}
+        - {sound: block.beacon.power_select, volume: 0.5, pitch: 2.0, delay: 73}
+      particles:
+        - {particle: END_ROD, count: 6, spread: 0.6, speed: 0.02, at: target}
+      vfx:
+        model: vfx_nova_galaxy
+        animation: skill
+        life-ticks: 89
+        scale: 2.5
+        y-offset: 0.0
+
   cubee_earth_dig:
     type: boost
     name: 'Đất Lành Khai Khoáng'
@@ -1191,19 +1292,6 @@ abilities:
     type: boost
     name: 'Gió Săn Mồi'
     color: '#9BE7FF:#E6FBFF'
-    description:
-      - 'Nhân phần thưởng khi hạ mob,'
-      - 'boss lên %boost%'
-    boost:
-      type: mob
-      tenths:
-        base: 7
-        per-level: 0.12
-      whole: true
-  cubee_fire_hunt:
-    type: boost
-    name: 'Lửa Săn Mồi'
-    color: '#FF7A45:#FFD3B8'
     description:
       - 'Nhân phần thưởng khi hạ mob,'
       - 'boss lên %boost%'
