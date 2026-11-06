@@ -57,6 +57,13 @@ public final class PetActions {
 
     // ------------------------------------------------------------------ rename (spec 12)
 
+    /** Seconds before this player may rename again (at least 1 when waiting). */
+    public long renameWait(Player player) {
+        Long last = lastRename.get(player.getUniqueId());
+        if (last == null) return 0;
+        return Math.max(0, (last + s().renameCooldownSeconds * 1000L - System.currentTimeMillis() + 999) / 1000);
+    }
+
     /** @return the message key of the result */
     public String rename(Player player, PetData pet, String raw) {
         long now = System.currentTimeMillis();

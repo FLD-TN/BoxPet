@@ -53,7 +53,7 @@ public final class ChatService {
         TextDisplay td = at.getWorld().spawn(at, TextDisplay.class, d -> {
             d.setPersistent(false);
             d.setVisibleByDefault(false);
-            d.setBillboard(Display.Billboard.CENTER);
+            d.setBillboard(Display.Billboard.VERTICAL);
             d.text(Text.parse(text, pet.owner));
             d.setLineWidth(160);
             d.setBackgroundColor(Color.fromARGB(150, 20, 20, 30));
@@ -98,7 +98,8 @@ public final class ChatService {
         Location at = bubbleLocation(pet);
         TextDisplay td = at.getWorld().spawn(at, TextDisplay.class, d -> {
             d.setPersistent(false);
-            d.setBillboard(Display.Billboard.CENTER);
+            // VERTICAL: turns to face the viewer but never tilts (CENTER leaned back when looking up at it)
+            d.setBillboard(Display.Billboard.VERTICAL);
             d.text(Text.parse(text, pet.owner));
             d.setLineWidth(400);
             d.setBackgroundColor(Color.fromARGB(170, 15, 15, 25));
@@ -112,6 +113,12 @@ public final class ChatService {
         return "showcase.done";
     }
 
+    /** Seconds before this player may show off again (0 = now). */
+    public long showcaseWait(java.util.UUID player) {
+        Long ready = showcaseReady.get(player);
+        return ready == null ? 0 : Math.max(0, (ready - System.currentTimeMillis() + 999) / 1000);
+    }
+
     void tickShowcase(ActivePet pet) {
         if (pet.showcase == null) return;
         if (--pet.showcaseTicks <= 0 || !pet.shown()) {
@@ -119,7 +126,8 @@ public final class ChatService {
             return;
         }
         Location at = bubbleLocation(pet);
-        if (at.getWorld() == pet.showcase.getWorld() && at.distanceSquared(pet.showcase.getLocation()) > 0.0004) pet.showcase.teleport(at);
+        // stands still over the pet: ignores the small bobbing of a flying / walking pet, follows real moves only
+        if (at.getWorld() != pet.showcase.getWorld() || at.distanceSquared(pet.showcase.getLocation()) > 0.36) pet.showcase.teleport(at);
     }
 
     void removeShowcase(ActivePet pet) {

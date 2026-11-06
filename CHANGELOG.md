@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.1 (2026-11-06)
+
+- Giữ lại model vòng ấn Thiên Giới (Kỳ Lân Thiên Đường) và lông vũ Phượng Hoàng (Sư Điểu Phượng Hoàng).
+- Holo khoe pet (và bong bóng trò chuyện) đứng thẳng: chỉ xoay theo người nhìn, không ngả ra sau khi ngước lên; holo khoe không nhún theo pet, chỉ dời khi pet đi xa hơn 0,6 ô.
+- Thông báo có thời gian chờ: đang giao tranh (Thử lại sau X giây), khoe pet, đổi tên.
+- Cập nhật server: thay abilities.yml và messages.yml (hoặc sửa 3 dòng combat-locked, showcase.cooldown, rename.cooldown); chép lại vfx_heaven_ring, vfx_phoenix_feathers nếu đã xoá + /meg reload + /iazip.
+
 ## 0.10.0 (2026-11-06)
 
 - Bỏ kỹ năng thứ 2: mỗi pet còn đúng 1 kỹ năng (kể cả Huyền thoại). Xoá Vòng Lửa Rồng, Mưa Thiên Hỏa, Vết Nứt Hư Không, Xích Linh Hồn, Phán Xét, Lửa Phượng Hoàng, Thánh Quang Hộ Thể.

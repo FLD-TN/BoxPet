@@ -53,13 +53,18 @@ public final class InteractListener implements Listener {
         lastLockMessage.remove(player);
     }
 
+    /** Seconds left of the combat tag, at least 1. */
+    public long combatWait(Player p) {
+        return Math.max(1, (plugin.pets().combat().remaining(p.getUniqueId()) + 999) / 1000);
+    }
+
     /** Combat lock message at most once every 3 seconds (spec 11.1). */
     public void lockMessage(Player p) {
         long now = System.currentTimeMillis();
         Long last = lastLockMessage.get(p.getUniqueId());
         if (last != null && now - last < 3000) return;
         lastLockMessage.put(p.getUniqueId(), now);
-        plugin.messages().send(p, "combat-locked");
+        plugin.messages().send(p, "combat-locked", "seconds", String.valueOf(combatWait(p)));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

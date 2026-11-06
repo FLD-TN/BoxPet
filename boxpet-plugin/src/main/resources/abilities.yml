@@ -563,6 +563,12 @@ abilities:
         - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
         - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
+      vfx:
+        model: vfx_heaven_ring
+        animation: idle
+        life-ticks: 120
+        scale: 2.0
+        y-offset: 0.0
   unicorn_nature:
     type: buff
     name: 'Giáp Lá Rừng Xanh'
@@ -1136,6 +1142,12 @@ abilities:
       particles:
         - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
         - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+      vfx:
+        model: vfx_phoenix_feathers
+        animation: skill
+        life-ticks: 30
+        scale: 1.0
+        y-offset: 0.0
   cubee_galaxy_mob:
     type: boost
     name: 'Tinh Tú May Mắn'

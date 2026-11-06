@@ -62,7 +62,7 @@ public final class CombatListener implements Listener {
     private void closeMenu(Player p) {
         if (p.getOpenInventory().getTopInventory().getHolder(false) instanceof Menu) {
             p.closeInventory();
-            plugin.messages().send(p, "combat-locked");
+            plugin.messages().send(p, "combat-locked", "seconds", String.valueOf(plugin.interact().combatWait(p)));
         }
     }
 

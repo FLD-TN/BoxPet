@@ -8,7 +8,7 @@ prefix: '<dark_gray>(</dark_gray><bold><#FFB3C7>Thú Cưng</#FFB3C7></bold><dark
 loading: '<muted>Dữ liệu thú cưng đang tải, thử lại sau giây lát'
 only-players: '<error>✘ Chỉ người chơi dùng được lệnh này'
 no-permission: '<error>✘ Bạn không có quyền dùng lệnh này'
-combat-locked: '<error>✘ Đang giao tranh, chưa thể mở menu pet'
+combat-locked: '<error>✘ Đang giao tranh, chưa thể mở menu pet. Thử lại sau <text>%seconds% giây'
 
 nametag:
   hungry: ' <#FF8A8A>(Đói)'
@@ -47,7 +47,7 @@ toggle:
 
 showcase:
   done: '<success>✔ Đang khoe %pet% <success>trong <text>%seconds% giây'
-  cooldown: '<error>✘ Vừa khoe xong, chờ một lát rồi khoe tiếp'
+  cooldown: '<error>✘ Vừa khoe xong. Thử lại sau <text>%wait% giây'
   hidden: '<error>✘ Pet đang bị ẩn, không khoe được'
 
 autofeed:
@@ -119,7 +119,7 @@ rename:
   prompt: '<accent>(!) Nhập tên mới cho %pet% <accent>vào chat <muted>(nhập <text>-<muted> để bỏ tên, <text>huy<muted> để thôi)'
   done: '<success>✔ Đã đổi tên thành %pet%'
   reset: '<success>✔ Đã bỏ tên riêng, pet dùng lại tên gốc'
-  cooldown: '<error>✘ Chờ một lát rồi đổi tên tiếp'
+  cooldown: '<error>✘ Vừa đổi tên xong. Thử lại sau <text>%wait% giây'
   # được dùng màu & gradient; cấm % ; # chỉ dùng trong mã màu hex; cấm chữ nhấp nháy và thẻ khác màu
   invalid: '<error>✘ Tên có ký tự không được dùng <muted>(không dùng %, # chỉ dùng trong mã màu, không dùng chữ nhấp nháy)'
   length: '<error>✘ Tên phải dài từ <text>%min% <error>tới <text>%max% <error>ký tự'

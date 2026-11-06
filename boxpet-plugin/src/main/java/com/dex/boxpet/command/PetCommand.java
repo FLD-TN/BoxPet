@@ -96,7 +96,7 @@ public final class PetCommand implements TabExecutor {
                     return true;
                 }
                 String key = plugin.actions().rename(p, active, String.join(" ", java.util.Arrays.copyOfRange(args, 1, args.length)));
-                plugin.messages().send(p, key, "pet", plugin.pets().displayName(active),
+                plugin.messages().send(p, key, "wait", String.valueOf(plugin.actions().renameWait(p)), "pet", plugin.pets().displayName(active),
                         "min", String.valueOf(plugin.settings().renameMin), "max", String.valueOf(plugin.settings().renameMax));
             }
             default -> plugin.messages().send(p, "usage.pet");

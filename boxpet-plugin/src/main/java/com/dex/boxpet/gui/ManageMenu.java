@@ -124,7 +124,7 @@ public final class ManageMenu extends Menu {
             plugin.messages().send(player, "rename.prompt", "pet", plugin.pets().displayName(pet));
             plugin.input().ask(player, text -> {
                 String key = plugin.actions().rename(player, pet, text);
-                plugin.messages().send(player, key, "pet", plugin.pets().displayName(pet),
+                plugin.messages().send(player, key, "pet", plugin.pets().displayName(pet), "wait", String.valueOf(plugin.actions().renameWait(player)),
                         "min", String.valueOf(plugin.settings().renameMin), "max", String.valueOf(plugin.settings().renameMax));
                 open();
             }, this::open);
@@ -136,8 +136,9 @@ public final class ManageMenu extends Menu {
                 plugin.messages().send(player, "manage.need-out-showcase", "pet", name);
                 return;
             }
+            long waitBefore = plugin.chat().showcaseWait(player.getUniqueId());
             plugin.messages().send(player, plugin.chat().showcase(o), "pet", name,
-                    "seconds", String.valueOf(plugin.settings().showcaseTicks / 20));
+                    "seconds", String.valueOf(plugin.settings().showcaseTicks / 20), "wait", String.valueOf(Math.max(1, waitBefore)));
             player.closeInventory();
         });
         PetType.Stage next2 = plugin.actions().nextStage(pet);
