@@ -207,6 +207,12 @@ abilities:
       particles:
         - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
         - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_tongue_pink
+        animation: idle
+        speed: 0.8
+        life-ticks: 40
+        scale: 1.0
   necro_fireball:
     type: projectile
     name: 'Cầu Lửa Phép'
@@ -454,6 +460,11 @@ abilities:
       particles:
         - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
         - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+      vfx:
+        model: vfx_feathers_light
+        animation: skill
+        life-ticks: 28
+        scale: 1.0
   cacti_shield_desert:
     type: shield
     name: 'Khiên Gai Sa Mạc'
@@ -501,6 +512,7 @@ abilities:
         per-level: 0.05
       seconds: 6
     fx:
+      area-vfx: vfx_push_ice
       animation: skill
       sounds:
         - {sound: block.amethyst_block.chime, volume: 1.0, pitch: 0.8}
@@ -532,6 +544,7 @@ abilities:
         per-level: 0.05
       seconds: 6
     fx:
+      area-vfx: vfx_push_sculk
       animation: skill
       sounds:
         - {sound: block.amethyst_block.chime, volume: 1.0, pitch: 0.8}
@@ -763,6 +776,12 @@ abilities:
       particles:
         - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
         - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_tongue_gold
+        animation: idle
+        speed: 0.8
+        life-ticks: 40
+        scale: 1.0
   knight_ender:
     type: strike
     name: 'Mũi Giáo Hư Không'
@@ -925,6 +944,11 @@ abilities:
       particles:
         - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
         - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+      vfx:
+        model: vfx_sun_shield
+        animation: idle
+        life-ticks: 100
+        scale: 1.0
   griffon_phoenix:
     type: buff
     name: 'Lửa Phượng Hoàng'
@@ -983,6 +1007,12 @@ abilities:
       particles:
         - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
         - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_tongue_pink
+        animation: idle
+        speed: 0.8
+        life-ticks: 40
+        scale: 1.0
   shiba_slash_basic:
     type: strike
     name: 'Nhát Chém Tre'
@@ -1092,6 +1122,11 @@ abilities:
       particles:
         - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
         - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+      vfx:
+        model: vfx_feathers_light
+        animation: skill
+        life-ticks: 28
+        scale: 1.0
   shiba_lixi:
     type: boost
     name: 'Lì Xì Năm Mới'
@@ -1393,6 +1428,12 @@ abilities:
       particles:
         - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
         - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_tongue_lava
+        animation: idle
+        speed: 0.8
+        life-ticks: 40
+        scale: 1.0
   frog_spore:
     type: projectile
     name: 'Lưỡi Bào Tử'
@@ -1421,6 +1462,12 @@ abilities:
       particles:
         - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
         - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_tongue_spore
+        animation: idle
+        speed: 0.8
+        life-ticks: 40
+        scale: 1.0
   griffon_rock:
     type: heal
     name: 'Bản Nhạc Hồi Sức'

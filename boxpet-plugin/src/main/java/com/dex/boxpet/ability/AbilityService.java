@@ -767,6 +767,7 @@ public final class AbilityService {
             // 0.8.0: the shield comes up with a shockwave that pushes enemies away (Sculk)
             Location o = p.owner.getLocation();
             Effects.particle(o.clone().add(0, 1, 0), "SONIC_BOOM", 1, 0, 0);
+            burst(a, o, a.blastRadius);
             Effects.sound(o, "entity.warden.sonic_boom", 0.6f, 1.4f);
             for (LivingEntity e : around(p.owner, o, a.blastRadius)) {
                 Vector push = e.getLocation().toVector().subtract(o.toVector()).setY(0);

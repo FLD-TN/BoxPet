@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.5 (2026-11-06)
+
+- Model hiệu ứng đợt 3: lưỡi ếch 4 màu (đạn bay), tia mặt trời Thần Ra, lông vũ trắng vàng cho Sư Điểu, vòng đẩy lùi băng / sculk cho Xương Rồng.
+- Cập nhật server: chép vfx/blueprints vào ModelEngine/blueprints + /meg reload, thay abilities.yml.
+
 ## 0.9.4 (2026-11-06)
 
 - Model hiệu ứng đợt 2 (vfx/blueprints): 5 vòng nổ theo màu kỹ năng (fx.area-vfx, dùng cho nổ lan, thiên thạch, cầu lửa xoay), giáp lá, vòng cầu vồng, linh hồn Đoạt Lực, bánh răng, cục đá, nốt nhạc.
