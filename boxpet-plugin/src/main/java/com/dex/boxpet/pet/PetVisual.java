@@ -98,7 +98,18 @@ public final class PetVisual {
                 return null;
             }
             model.setScale(scale);
-            model.setHitboxScale(scale);
+            if (withHitbox) {
+                model.setHitboxScale(scale);
+            } else {
+                // 0.13.4: an effect model must never catch clicks: its invisible hitbox sat around whoever it followed
+                // (Thiên Giới ring on the owner, nova on the target), so melee hits landed on it and nobody inside
+                // could hit or be hit (arrows went through)
+                model.setHitboxVisible(false);
+                model.setMainHitbox(false);
+                model.setCanHurt(false);
+                model.setHitboxScale(0.01);
+                dummy.setHitbox(NO_HITBOX);
+            }
             AnimationHandler handler = model.getAnimationHandler();
             if (idle != null && !idle.isEmpty()) {
                 handler.setDefaultProperty(new AnimationHandler.DefaultProperty(ModelState.IDLE, idleLoop ? idle : NO_IDLE, 0.2, 0.2, 1.0));
