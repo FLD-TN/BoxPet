@@ -623,7 +623,13 @@ public final class AbilityService {
             PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
                     plugin.getLogger());
             if (visual != null) {
+                // the rest pose of a pack effect shows every piece at once: keep it hidden until the animation has
+                // taken over (else a purple / fire flash shows for a tick before the skill)
+                visual.visible(false);
                 if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    if (!visual.removed()) visual.visible(true);
+                }, REVEAL_TICKS);
                 shown = new Vfx(visual, at, target, 0, a.vfx.life(), false, a.vfx.yOffset());
                 vfx.add(shown);
             }
@@ -646,6 +652,9 @@ public final class AbilityService {
             }, t);
         }
     }
+
+    /** Ticks a pack effect model stays hidden after it spawns (its animation needs them to take over the rest pose). */
+    private static final long REVEAL_TICKS = 3L;
 
     private static void ring(Location at, double radius, String particle) {
         for (int k = 0; k < 16; k++) {
