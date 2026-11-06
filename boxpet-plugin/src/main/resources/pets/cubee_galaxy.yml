@@ -30,9 +30,9 @@ stats:
   MAX_HEALTH:
     base: 1
     per-level: 0.05
-  DEFENSE:
-    base: 0.3
-    per-level: 0.02
+  PVE_DAMAGE:
+    base: 1
+    per-level: 0.05
 # kỹ năng trong abilities.yml
 ability: cubee_luck
 # kỹ năng thứ 2 (pet huyền thoại), hồi chiêu riêng

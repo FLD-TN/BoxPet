@@ -26,11 +26,11 @@ follow:
   fly: false
 # chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
-  SKILL_DAMAGE:
-    base: 1
-    per-level: 0.05
   ATTACK_DAMAGE:
-    base: 0.6
-    per-level: 0.03
+    base: 0.8
+    per-level: 0.04
+  CRITICAL_STRIKE_POWER:
+    base: 2
+    per-level: 0.08
 # kỹ năng trong abilities.yml
 ability: necro_fireball

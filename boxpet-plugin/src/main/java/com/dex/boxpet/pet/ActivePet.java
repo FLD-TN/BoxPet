@@ -74,6 +74,9 @@ public final class ActivePet {
     public int cooldown2;
     public long shieldReadyAt2;
     public int potionRefresh2;
+    /** 0.9.1: which skill goes next (0 / 1) and when the last one went off (AbilityService ticks). */
+    public int skillTurn;
+    public int lastSkillTick = -10_000;
 
     /** Puts the second skill in the first slot and back (main thread only, always called in pairs). */
     public void swapSkills() {

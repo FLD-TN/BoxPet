@@ -74,6 +74,7 @@ public final class PetTypes {
         ConfigurationSection s = y.getConfigurationSection("stats");
         if (s != null) {
             for (String stat : s.getKeys(false)) {
+                if (BANNED.contains(stat.toUpperCase(Locale.ROOT))) continue;
                 ConfigurationSection def = s.getConfigurationSection(stat);
                 if (def == null) {
                     stats.add(new PetType.StatDef(stat.toUpperCase(Locale.ROOT), s.getDouble(stat), 0, false));
@@ -94,12 +95,16 @@ public final class PetTypes {
                 y.getString("dialogue", family).toLowerCase(Locale.ROOT), bonus, y.getString("ability-2", ""));
     }
 
+    /** 0.9.1: stats a pet never gives (skill / magic damage, health regeneration). */
+    private static final java.util.Set<String> BANNED = java.util.Set.of("SKILL_DAMAGE", "MAGIC_DAMAGE",
+            "SKILL_CRITICAL_STRIKE_CHANCE", "SKILL_CRITICAL_STRIKE_POWER", "HEALTH_REGENERATION", "SPELL_VAMPIRISM");
+
     /** 3rd stat per family when the pet file has no {@code bonus-stat} (MMOItems stat the pet does not have yet). */
     private static final Map<String, String> FAMILY_BONUS = Map.ofEntries(
             Map.entry("frog", "PVP_DAMAGE"), Map.entry("knight", "CRITICAL_STRIKE_POWER"),
             Map.entry("samurai_shiba", "CRITICAL_STRIKE_CHANCE"), Map.entry("fire_dragon", "CRITICAL_STRIKE_POWER"),
-            Map.entry("necromancer_cat", "SKILL_CRITICAL_STRIKE_CHANCE"), Map.entry("outlaw", "PVP_DAMAGE"),
-            Map.entry("griffon", "HEALTH_REGENERATION"), Map.entry("cacti", "PVP_DAMAGE_REDUCTION"),
+            Map.entry("necromancer_cat", "PVP_DAMAGE"), Map.entry("outlaw", "PVP_DAMAGE"),
+            Map.entry("griffon", "PVP_DAMAGE_REDUCTION"), Map.entry("cacti", "PVP_DAMAGE_REDUCTION"),
             Map.entry("unicorn", "DAMAGE_REDUCTION"), Map.entry("shark", "PVE_DAMAGE_REDUCTION"),
             Map.entry("palcat", "PVE_DAMAGE"), Map.entry("cubee_dragon", "PVE_DAMAGE"));
     /** Default {base, per level} of a 3rd stat (before rarity and the other multipliers). */
@@ -118,7 +123,7 @@ public final class PetTypes {
         ConfigurationSection b = y.getConfigurationSection("bonus-stat");
         if (b != null) {
             stat = b.getString("stat", "").toUpperCase(Locale.ROOT);
-            if (stat.isEmpty()) return null;
+            if (stat.isEmpty() || BANNED.contains(stat)) return null;
             base = b.getDouble("base", 0);
             per = b.getDouble("per-level", 0);
         } else {

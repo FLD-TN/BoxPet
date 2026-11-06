@@ -26,11 +26,11 @@ follow:
   fly: false
 # chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
-  PVE_DAMAGE:
-    base: 1
-    per-level: 0.05
   MAX_HEALTH:
     base: 1
-    per-level: 0.04
+    per-level: 0.05
+  DEFENSE:
+    base: 0.5
+    per-level: 0.03
 # kỹ năng trong abilities.yml
-ability: shark_treasure
+ability: shark_chef_feast

@@ -201,7 +201,6 @@ public final class Settings {
         var us = c.getConfigurationSection("breakthrough.bonus-stat-unlock");
         if (us != null) for (String k : us.getKeys(false)) unlock.put(k.toLowerCase(Locale.ROOT), Math.max(0, us.getInt(k)));
         else {
-            unlock.put("rare", 30);
             unlock.put("epic", 20);
             unlock.put("legendary", 10);
         }

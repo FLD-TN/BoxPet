@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.1 (2026-11-06)
+
+- Dòng chỉ số thứ 3 chỉ cho Sử thi (đột phá cấp 20) và Huyền thoại (cấp 10). Trước khi mở hiện mã hoá: 「?」 + chữ nhiễu.
+- Pet không bao giờ cho Sát thương kỹ năng / phép, chí mạng kỹ năng, Hồi máu (bị lọc kể cả khi file pet cũ còn ghi). Họ Mèo Phép đổi sang Sát thương + Tỉ lệ chí mạng / Phòng thủ / Sát thương chí mạng; dòng thứ 3 Mèo Phép = Sát thương PvP, Sư Điểu = Giảm sát thương PvP.
+- Pet 2 kỹ năng dùng lần lượt: cách nhau ít nhất 2 giây, khi cả 2 sẵn sàng thì tới lượt kỹ năng nào dùng kỹ năng đó.
+- Thông báo kỹ năng giống câu trò chuyện của pet (định dạng dialogues.yml), không có tiền tố.
+- Rồng Lửa: kỹ năng 2 mới Vòng Lửa Rồng (3 cầu lửa model gốc xoay quanh chủ 6 giây, chạm kẻ địch thì nổ + đốt), thay Hơi Thở Rồng. Mưa Thiên Hỏa có model cầu lửa thánh rơi xuống.
+- Sửa nút bật / tắt trong GUI tự động cho ăn hiện "autofeed.on.name" (YAML đọc on / off thành true / false; đổi thành enabled / disabled).
+- Pet cùng độ hiếm không còn giống nhau: Tinh Linh Đất (đào mỏ), Gió (hạ mob), Thiên Nhiên (nhiệm vụ); Ếch Đá (Lưỡi Đá, đòn nặng chậm) / Ếch Xanh (nhanh, nhẹ); Mèo Nhạc Sĩ hạ mob; Cá Mập Đầu Bếp nhiệm vụ; Ếch Địa Ngục đốt / Ếch Nấm suy yếu; Sư Điểu Rockstar hồi % máu; Thợ Máy Đạn Bánh Răng; Tinh Linh Lửa hạ mob; Rồng Bóng Tối suy yếu / Linh Hồn đốt; Tinh Linh Bóng Tối hạ mob + đào mỏ. Mỗi pet một cặp chỉ số riêng.
+- Cập nhật server: thay abilities.yml và thư mục pets/.
+
 ## 0.9.0 (2026-11-06)
 
 - Pet huyền thoại có 2 kỹ năng (ability-2 trong file pet, hồi chiêu riêng, lore hiện 2 khối Kỹ năng).

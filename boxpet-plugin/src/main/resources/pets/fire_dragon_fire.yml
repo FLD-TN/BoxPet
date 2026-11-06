@@ -35,4 +35,4 @@ stats:
 # kỹ năng trong abilities.yml
 ability: fire_ball_fire
 # kỹ năng thứ 2 (pet huyền thoại), hồi chiêu riêng
-ability-2: dragon_breath
+ability-2: dragon_orbit

@@ -105,15 +105,43 @@ public final class AbilityService {
     // ------------------------------------------------------------------ per pet tick
 
     public void tick(ActivePet p) {
+        slotNow = 0;
         tickSkill(p);
         if (p.ability2 == null) return;
         // 0.9.0: the second skill runs with its own cooldowns
         p.swapSkills();
+        slotNow = 1;
         try {
             tickSkill(p);
         } finally {
             p.swapSkills();
+            slotNow = 0;
         }
+    }
+
+    /** 0.9.1: ticks between two skills of the same pet. */
+    private static final int SKILL_GAP_TICKS = 40;
+    /** Slot of the skill being run (0 or 1); its fields are in the first slot while it runs. */
+    private int slotNow;
+
+    /**
+     * A pet with two skills uses them in turn, never both at once: at least SKILL_GAP_TICKS between them, and when both
+     * cast skills are ready the one whose turn it is goes first.
+     */
+    private boolean myTurn(ActivePet p) {
+        if (p.ability2 == null) return true;
+        if (ticks - p.lastSkillTick < SKILL_GAP_TICKS) return false;
+        if (p.skillTurn == slotNow) return true;
+        // the other skill (now in the second slot) only waits for its turn when it is a ready cast skill
+        Ability other = p.ability2;
+        boolean otherCast = other != null && (other.type.combat() || other.type == Ability.Type.ORBIT
+                || other.type == Ability.Type.HEAL || other.type == Ability.Type.BUFF && other.trigger.equals("combat"));
+        return !otherCast || p.cooldown2 > 0;
+    }
+
+    private void used(ActivePet p) {
+        p.lastSkillTick = ticks;
+        p.skillTurn = 1 - slotNow;
     }
 
     private void tickSkill(ActivePet p) {
@@ -128,7 +156,8 @@ public final class AbilityService {
                 AttributeInstance max = o.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (max == null || o.isDead()) return;
                 double pct = o.getHealth() / max.getValue() * 100;
-                if (o.getHealth() >= max.getValue() || pct > a.healBelowPercent) return;
+                if (o.getHealth() >= max.getValue() || pct > a.healBelowPercent || !myTurn(p)) return;
+                used(p);
                 double amount = a.heal.at(p.data.level, p.rarity.statMultiplier());
                 if (a.healPercent) amount = max.getValue() * amount / 100.0;
                 o.setHealth(Math.min(max.getValue(), o.getHealth() + amount));
@@ -166,10 +195,12 @@ public final class AbilityService {
                     p.cooldown = RETRY_TICKS;
                     return;
                 }
+                if (!myTurn(p)) return;
+                used(p);
                 p.cooldown = a.cooldownTicks;
                 buff(p, a, target);
             }
-            case PROJECTILE, STRIKE, MARK, METEOR -> {
+            case PROJECTILE, STRIKE, MARK, METEOR, ORBIT -> {
                 if (p.cooldown > 0 || !plugin.pets().combat().tagged(o.getUniqueId())) return;
                 LivingEntity target = plugin.pets().combat().target(o.getUniqueId(), 5000);
                 // cheap checks first, WorldGuard last; a failed try waits RETRY_TICKS instead of retrying every tick
@@ -183,6 +214,8 @@ public final class AbilityService {
                     p.cooldown = RETRY_TICKS;
                     return;
                 }
+                if (!myTurn(p)) return;
+                used(p);
                 p.cooldown = a.cooldownTicks;
                 announce(p, a);
                 cast(p, a, target);
@@ -195,8 +228,9 @@ public final class AbilityService {
     /** Tells the owner which skill just went off (toggle: /pet thongbao). */
     private void announce(ActivePet p, Ability a) {
         if (!p.player.castChat) return;
-        plugin.messages().send(p.owner, "ability.cast", "pet", plugin.pets().displayName(p.data),
-                "ability", com.dex.boxpet.config.PetType.paint(a.color, a.name + "!"));
+        // same look as the pet's chat lines (dialogues.yml format), no plugin prefix
+        plugin.messages().sendPlain(p.owner, com.dex.boxpet.config.Messages.apply(plugin.dialogues().format,
+                "pet", plugin.pets().displayName(p.data), "line", com.dex.boxpet.config.PetType.paint(a.color, a.name + "!")));
     }
 
     private static @Nullable PotionEffectType potion(String name) {
@@ -222,6 +256,10 @@ public final class AbilityService {
             if (!stillOn(p, target)) return;
             if (a.type == Ability.Type.METEOR) {
                 meteor(p, a, target);
+                return;
+            }
+            if (a.type == Ability.Type.ORBIT) {
+                orbit(p, a);
                 return;
             }
             // 0.8.0: some skills hit several times (Samurai, Cyborg)
@@ -375,6 +413,10 @@ public final class AbilityService {
             for (long w = 0; w < a.meteorWarn; w += 5) {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> ring(at, radius, "FLAME"), start + w);
             }
+            // 0.9.1: the meteor itself, the skill's vfx model falling from the sky onto the ring
+            if (a.vfx != null) {
+                Bukkit.getScheduler().runTaskLater(plugin, () -> fall(a, at, a.meteorWarn), start);
+            }
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
                 Effects.particle(at.clone().add(0, 0.5, 0), "EXPLOSION", 2, 0.5, 0);
@@ -386,6 +428,68 @@ public final class AbilityService {
                 }
             }, start + a.meteorWarn);
         }
+    }
+
+    private void fall(Ability a, Location at, int ticks) {
+        Location top = at.clone().add(0, 12, 0);
+        top.setPitch(90);
+        PetVisual visual = PetVisual.create(top, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null,
+                false, plugin.getLogger());
+        if (visual == null) return;
+        if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
+        Vfx v = new Vfx(visual, top, null, 0, ticks, false, 0);
+        double step = 12.0 / Math.max(1, ticks);
+        v.mover = loc -> loc.add(0, -step, 0);
+        vfx.add(v);
+    }
+
+    /**
+     * 0.9.1 orbit (Vòng Lửa Rồng): the skill's vfx model circles the owner {@code meteors} times over; an orb that
+     * touches an enemy bursts on it (damage + debuff) and is gone.
+     */
+    private void orbit(ActivePet p, Ability a) {
+        int count = a.meteors;
+        double radius = a.areaRadius > 0 ? a.areaRadius : 2;
+        double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
+        List<PetVisual> orbs = new ArrayList<>();
+        boolean[] gone = new boolean[count];
+        for (int i = 0; i < count; i++) {
+            PetVisual visual = a.vfx == null ? null : PetVisual.create(p.owner.getLocation(), a.vfx.model(), a.vfx.scale(),
+                    plugin.settings().viewDistance, null, null, false, plugin.getLogger());
+            if (visual != null && !a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
+            orbs.add(visual);
+        }
+        String trail = a.particles.stream().filter(x -> x.at().equalsIgnoreCase("path")).map(Ability.ParticleFx::particle)
+                .findFirst().orElse("FLAME");
+        int[] t = {0};
+        BukkitTask[] task = new BukkitTask[1];
+        task[0] = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            boolean alive = plugin.pets().active(p.ownerId) == p && !p.abilityPaused() && p.owner.isOnline();
+            if (!alive || ++t[0] > a.orbitTicks) {
+                for (PetVisual v : orbs) if (v != null) v.remove();
+                task[0].cancel();
+                return;
+            }
+            Location c = p.owner.getLocation().add(0, 1.1, 0);
+            for (int i = 0; i < count; i++) {
+                if (gone[i]) continue;
+                double ang = t[0] * 0.18 + Math.PI * 2 * i / count;
+                Location at = c.clone().add(Math.cos(ang) * radius, 0, Math.sin(ang) * radius);
+                float yaw = (float) Math.toDegrees(ang) + 180;
+                at.setYaw(yaw);
+                if (orbs.get(i) != null) orbs.get(i).move(at, yaw, yaw);
+                Effects.particle(at, trail, 1, 0.05, 0);
+                for (LivingEntity e : at.getWorld().getNearbyLivingEntities(at, 1.3)) {
+                    if (!validTarget(p.owner, e)) continue;
+                    gone[i] = true;
+                    if (orbs.get(i) != null) orbs.get(i).remove();
+                    Effects.particle(at, "EXPLOSION", 1, 0, 0);
+                    Effects.sound(at, "entity.generic.explode", 0.5f, 1.4f);
+                    if (damage(p, a, e, base, false)) applyDebuff(p, a, e, base);
+                    break;
+                }
+            }
+        }, 1L, 1L);
     }
 
     private static void ring(Location at, double radius, String particle) {
@@ -587,13 +691,16 @@ public final class AbilityService {
 
     /** {@code attacker}: whoever hit the owner, when known (buffs may burn / weaken them). */
     public void onOwnerDamaged(ActivePet p, double healthAfter, @Nullable LivingEntity attacker) {
+        slotNow = 0;
         ownerDamaged(p, healthAfter, attacker);
         if (p.ability2 == null) return;
         p.swapSkills();
+        slotNow = 1;
         try {
             ownerDamaged(p, healthAfter, attacker);
         } finally {
             p.swapSkills();
+            slotNow = 0;
         }
     }
 
@@ -607,6 +714,8 @@ public final class AbilityService {
                 AttributeInstance mx = p.owner.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (mx == null || healthAfter / mx.getValue() * 100 > a.buffBelowPercent) return;
             }
+            if (!myTurn(p)) return;
+            used(p);
             p.shieldReadyAt = now + a.cooldownTicks * 50L;
             buff(p, a, attacker);
             return;
@@ -615,6 +724,8 @@ public final class AbilityService {
         if (now < p.shieldReadyAt) return;
         AttributeInstance max = p.owner.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (max == null || healthAfter <= 0 || healthAfter / max.getValue() * 100 > a.shieldBelowPercent) return;
+        if (!myTurn(p)) return;
+        used(p);
         double hearts = a.shieldHearts.at(p.data.level, p.rarity.statMultiplier());
         int amp = Math.max(0, (int) Math.ceil(hearts / 2.0) - 1);
         p.owner.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, a.shieldTicks, amp, true, false, true));
@@ -730,6 +841,8 @@ public final class AbilityService {
         final double yOffset;
         Runnable onHit;
         List<Ability.ParticleFx> trail = List.of();
+        /** Moves a free (not following) vfx each tick: the falling meteor. */
+        java.util.function.UnaryOperator<Location> mover;
 
         Vfx(@Nullable PetVisual visual, Location loc, @Nullable LivingEntity follow, double speed, int life,
             boolean projectile, double yOffset) {
@@ -764,6 +877,11 @@ public final class AbilityService {
                 loc = next;
                 if (visual != null) visual.move(loc, yaw, yaw);
                 for (Ability.ParticleFx f : trail) Effects.particle(loc, f.particle(), f.count(), f.spread(), f.speed());
+                return true;
+            }
+            if (mover != null) {
+                loc = mover.apply(loc);
+                if (visual != null) visual.move(loc, loc.getYaw(), loc.getYaw());
                 return true;
             }
             if (follow != null) {

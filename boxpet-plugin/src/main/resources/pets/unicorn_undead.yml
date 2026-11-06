@@ -29,8 +29,8 @@ stats:
   MAX_HEALTH:
     base: 1.5
     per-level: 0.06
-  DEFENSE:
-    base: 0.5
-    per-level: 0.03
+  ATTACK_DAMAGE:
+    base: 0.8
+    per-level: 0.04
 # kỹ năng trong abilities.yml
 ability: unicorn_undead

@@ -29,8 +29,8 @@ stats:
   CRITICAL_STRIKE_CHANCE:
     base: 0.8
     per-level: 0.03
-  CRITICAL_STRIKE_POWER:
-    base: 2
-    per-level: 0.08
+  ATTACK_DAMAGE:
+    base: 1
+    per-level: 0.05
 # kỹ năng trong abilities.yml
-ability: outlaw_mark
+ability: steam_gear

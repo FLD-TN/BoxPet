@@ -27,11 +27,11 @@ follow:
   fly: false
 # chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
+  PVE_DAMAGE:
+    base: 1
+    per-level: 0.05
   MAX_HEALTH:
     base: 1
     per-level: 0.05
-  DEFENSE:
-    base: 0.3
-    per-level: 0.02
 # kỹ năng trong abilities.yml
-ability: cubee_luck
+ability: cubee_wind_hunt

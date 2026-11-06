@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public final class Ability {
 
     public enum Type {
-        PROJECTILE, STRIKE, MARK, METEOR, HEAL, SHIELD, BUFF, POTION, BOOST, NONE;
+        PROJECTILE, STRIKE, MARK, METEOR, ORBIT, HEAL, SHIELD, BUFF, POTION, BOOST, NONE;
 
         public static Type of(String s) {
             if (s == null) return NONE;
@@ -120,6 +120,8 @@ public final class Ability {
     public final int meteors;
     public final double meteorSpread;
     public final int meteorWarn;
+    /** Orbit: how long the orbs circle the owner (count = meteor.count, radius = area.radius). */
+    public final int orbitTicks;
     /** Buff: when it goes off (combat, hurt, low-hp) and the owner-only stat buff it gives. */
     public final String trigger;
     public final int buffBelowPercent;
@@ -193,9 +195,13 @@ public final class Ability {
         hits = hs == null ? 1 : Math.max(1, Math.min(6, hs.getInt("count", 1)));
         hitInterval = hs == null ? 6 : Math.max(1, hs.getInt("interval-ticks", 6));
         ConfigurationSection me = s.getConfigurationSection("meteor");
-        meteors = me == null ? 1 : Math.max(1, Math.min(6, me.getInt("count", 3)));
+        ConfigurationSection obc = s.getConfigurationSection("orbit");
+        meteors = me != null ? Math.max(1, Math.min(6, me.getInt("count", 3)))
+                : obc != null ? Math.max(1, Math.min(6, obc.getInt("count", 3))) : 1;
         meteorSpread = me == null ? 2 : Math.max(0, Math.min(6, me.getDouble("spread", 2.5)));
         meteorWarn = me == null ? 20 : Math.max(5, me.getInt("warn-ticks", 20));
+        ConfigurationSection ob = s.getConfigurationSection("orbit");
+        orbitTicks = ob == null ? 120 : (int) Math.round(Math.max(1, ob.getDouble("seconds", 6)) * 20);
         trigger = s.getString("trigger", "combat").toLowerCase(Locale.ROOT);
         ConfigurationSection bu = s.getConfigurationSection("buff");
         buffStat = bu == null ? "" : bu.getString("stat", "").toUpperCase(Locale.ROOT);

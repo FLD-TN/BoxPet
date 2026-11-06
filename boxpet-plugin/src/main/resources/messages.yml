@@ -43,9 +43,6 @@ toggle:
   cast-on: '<success>✔ Đã bật thông báo kỹ năng của pet'
   cast-off: '<success>✔ Đã tắt thông báo kỹ năng của pet'
 
-# pet vừa dùng kỹ năng (tắt/bật: /pet thongbao)
-ability:
-  cast: '%pet%<dark_gray>: %ability%'
 
 autofeed:
   locked: '<error>✘ Bạn chưa mở khoá tính năng tự động cho ăn'

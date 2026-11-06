@@ -33,4 +33,4 @@ stats:
     base: 1
     per-level: 0.05
 # kỹ năng trong abilities.yml
-ability: frog_tongue
+ability: frog_spore

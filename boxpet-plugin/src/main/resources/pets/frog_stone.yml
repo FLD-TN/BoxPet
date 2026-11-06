@@ -27,10 +27,10 @@ follow:
 # chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
   ATTACK_DAMAGE:
-    base: 0.8
-    per-level: 0.04
-  MAX_HEALTH:
     base: 1
     per-level: 0.05
+  DEFENSE:
+    base: 0.5
+    per-level: 0.03
 # kỹ năng trong abilities.yml
-ability: frog_tongue_basic
+ability: frog_stone_slam

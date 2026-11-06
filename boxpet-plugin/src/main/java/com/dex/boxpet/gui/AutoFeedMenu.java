@@ -64,7 +64,7 @@ public final class AutoFeedMenu extends Menu {
             set(SLOTS[i], withLore(icon, List.of("", plugin.menus().text("autofeed.take"))), click -> take(index));
         }
         set(45, button("common.back", Material.ARROW), click -> new ManageMenu(plugin, player, owner, pet, false).open());
-        set(47, button(owner.autoFeed ? "autofeed.on" : "autofeed.off", owner.autoFeed ? Material.LIME_DYE : Material.GRAY_DYE),
+        set(47, button(owner.autoFeed ? "autofeed.enabled" : "autofeed.disabled", owner.autoFeed ? Material.LIME_DYE : Material.GRAY_DYE),
                 click -> {
                     owner.autoFeed = !owner.autoFeed;
                     owner.autoFeedWarned = false;

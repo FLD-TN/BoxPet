@@ -29,8 +29,8 @@ stats:
   ATTACK_DAMAGE:
     base: 0.8
     per-level: 0.04
-  MAX_HEALTH:
-    base: 1
-    per-level: 0.05
+  CRITICAL_STRIKE_CHANCE:
+    base: 0.8
+    per-level: 0.03
 # kỹ năng trong abilities.yml
-ability: frog_tongue
+ability: frog_nether_tongue

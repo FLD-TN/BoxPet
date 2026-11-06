@@ -183,7 +183,7 @@ pet-card:
   stat-row: '<gray>• %stat%: <white>%value%'
   no-stats: '<gray>• Không có'
   # dòng chỉ số thứ 3 khi chưa đột phá tới cấp mở
-  bonus-locked: '<dark_gray>✘ %stat% <dark_gray>(mở khoá khi đột phá cấp %level%)'
+  bonus-locked: '<dark_gray>「?」<obfuscated>%stat%'
   # dòng đầu của kỹ năng: Kỹ năng: <tên kỹ năng>
   ability-header: '<#FFD166>Kỹ năng: %ability%'
   # dòng mô tả đầu có dấu •, các dòng sau thụt vào 1 khoảng trắng
@@ -603,13 +603,14 @@ autofeed:
       - '<#BFC7D5>này mới sang ô sau'
       - ''
       - '<gray>Hộp dùng chung cho mọi pet'
-  on:
+  # (không dùng on / off làm tên mục: YAML đọc thành true / false)
+  enabled:
     name: '<#7CFC9A>Tự động cho ăn'
     lore:
       - '<gray>• Trạng thái: <#7CFC9A>✔ Đang bật'
       - ''
       - '<dark_gray>[<#FF8A8A>Chuột trái để tắt<dark_gray>]'
-  off:
+  disabled:
     name: '<#FF8A8A>Tự động cho ăn'
     lore:
       - '<gray>• Trạng thái: <#FF4D4D>✘ Đang tắt'

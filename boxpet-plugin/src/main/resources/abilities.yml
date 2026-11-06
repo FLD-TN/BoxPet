@@ -19,6 +19,8 @@
 #   Hạ mob và đào mỏ chỉ nhận hệ số chẵn (x2, x3).
 #   %radius% %chain% %hits% %count% %buff% %buff_stat% %enemy% %enemy_stat% %debuff_seconds%
 # Thêm (0.9.0): fx.vfx.animations (mỗi nhát một hoạt ảnh), debuff.vfx (model trên mục tiêu khi chảy máu).
+#   orbit (0.9.1): orbit.count cầu (model fx.vfx) xoay quanh chủ orbit.seconds giây, bán kính area.radius, chạm kẻ
+#   địch thì nổ (damage + debuff). meteor có fx.vfx: model rơi từ trên trời xuống vòng báo.
 #   Pet huyền thoại có kỹ năng thứ 2: "ability-2" trong file pet, hồi chiêu riêng.
 # Kỹ năng chiến đấu chỉ dùng khi chủ đang giao tranh, chỉ đánh người chủ vừa đánh hoặc người vừa đánh chủ.
 # Sát thương tính là đòn kỹ năng của chủ (MythicLib SKILL + MAGIC). pvp-multiplier: sát thương lên người chơi
@@ -105,8 +107,8 @@ abilities:
     color: '#9B6BFF:#E3B6FF'
     description:
       - 'Phun cầu lửa nổ trong %radius% ô,'
-      - 'gây %damage% sát thương và đốt'
-      - 'cháy %seconds% giây'
+      - 'gây %damage% sát thương và làm'
+      - 'suy yếu %seconds% giây'
     cooldown: 8
     area:
       radius: 3
@@ -117,7 +119,7 @@ abilities:
       per-level: 0.1
     pve-multiplier: 1.0
     debuff:
-      type: burn
+      type: weakness
       seconds: 3
       amplifier: 0
     fx:
@@ -168,6 +170,11 @@ abilities:
         - {sound: entity.blaze.shoot, volume: 0.8, pitch: 0.8, delay: 18}
       particles:
         - {particle: END_ROD, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_flame_shot_holyfire
+        animation: idle
+        life-ticks: 40
+        scale: 1.6
   frog_tongue:
     type: projectile
     name: 'Lưỡi Dính'
@@ -692,14 +699,14 @@ abilities:
     name: 'Giai Điệu Vui Vẻ'
     color: '#A5B4FF:#DCE2FF'
     description:
-      - 'Tăng %boost% phần thưởng khi'
-      - 'hoàn thành nhiệm vụ'
+      - 'Nhân phần thưởng khi hạ mob,'
+      - 'boss lên %boost%'
     boost:
-      type: quest
+      type: mob
       tenths:
-        base: 1
-        per-level: 0.1
-      whole: false
+        base: 7
+        per-level: 0.12
+      whole: true
   frog_tongue_gold:
     type: projectile
     name: 'Lưỡi Quấn Đôi'
@@ -928,13 +935,13 @@ abilities:
     description:
       - 'Phóng lưỡi vào mục tiêu,'
       - 'gây %damage% sát thương'
-    cooldown: 10
+    cooldown: 8
     pvp-multiplier: 0.4
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 2.5
-      per-level: 0.1
+      base: 2.2
+      per-level: 0.09
     pve-multiplier: 1.0
     fx:
       animation: skill
@@ -1229,6 +1236,236 @@ abilities:
       - 'lên %boost%'
     boost:
       type: mining
+      tenths:
+        base: 4
+        per-level: 0.105
+      whole: true
+  cubee_earth_dig:
+    type: boost
+    name: 'Đất Lành Khai Khoáng'
+    color: '#B08D57:#E8D3A2'
+    description:
+      - 'Nhân vật phẩm khi đào mỏ'
+      - 'lên %boost%'
+    boost:
+      type: mining
+      tenths:
+        base: 6
+        per-level: 0.15
+      whole: true
+  cubee_wind_hunt:
+    type: boost
+    name: 'Gió Săn Mồi'
+    color: '#9BE7FF:#E6FBFF'
+    description:
+      - 'Nhân phần thưởng khi hạ mob,'
+      - 'boss lên %boost%'
+    boost:
+      type: mob
+      tenths:
+        base: 7
+        per-level: 0.12
+      whole: true
+  cubee_fire_hunt:
+    type: boost
+    name: 'Lửa Săn Mồi'
+    color: '#FF7A45:#FFD3B8'
+    description:
+      - 'Nhân phần thưởng khi hạ mob,'
+      - 'boss lên %boost%'
+    boost:
+      type: mob
+      tenths:
+        base: 7
+        per-level: 0.12
+      whole: true
+  shark_chef_feast:
+    type: boost
+    name: 'Tiệc Hải Sản'
+    color: '#FFB4A2:#FFE5D9'
+    description:
+      - 'Tăng %boost% phần thưởng khi'
+      - 'hoàn thành nhiệm vụ'
+    boost:
+      type: quest
+      tenths:
+        base: 1
+        per-level: 0.1
+      whole: false
+  frog_stone_slam:
+    type: projectile
+    name: 'Lưỡi Đá'
+    color: '#9AA5B1:#E1E5EA'
+    description:
+      - 'Phóng lưỡi đá nặng vào mục tiêu,'
+      - 'gây %damage% sát thương'
+    cooldown: 12
+    pvp-multiplier: 0.4
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 3.5
+      per-level: 0.12
+    pve-multiplier: 1.0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.frog.tongue, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+  frog_nether_tongue:
+    type: projectile
+    name: 'Lưỡi Dung Nham'
+    color: '#FF5E3A:#FFB199'
+    description:
+      - 'Phóng lưỡi dung nham, gây %damage%'
+      - 'sát thương và đốt cháy %seconds% giây'
+    cooldown: 8
+    pvp-multiplier: 0.5
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 2.5
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: burn
+      seconds: 2
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.frog.tongue, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+  frog_spore:
+    type: projectile
+    name: 'Lưỡi Bào Tử'
+    color: '#C77DFF:#F3D9FF'
+    description:
+      - 'Phóng lưỡi bào tử, gây %damage%'
+      - 'sát thương và làm suy yếu'
+      - '%seconds% giây'
+    cooldown: 8
+    pvp-multiplier: 0.5
+    range: 14
+    cast-delay-ticks: 18
+    damage:
+      base: 2.5
+      per-level: 0.1
+    pve-multiplier: 1.0
+    debuff:
+      type: weakness
+      seconds: 2
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: entity.frog.tongue, volume: 0.8, pitch: 1.3, delay: 18}
+      particles:
+        - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+  griffon_rock:
+    type: heal
+    name: 'Bản Nhạc Hồi Sức'
+    color: '#FF4FD8:#FFC2F1'
+    description:
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'hồi %heal%% máu tối đa'
+    cooldown: 16
+    heal:
+      amount:
+        base: 6
+        per-level: 0.08
+      percent: true
+      below-percent: 50
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.allay.item_taken, volume: 1.0, pitch: 1.3}
+      particles:
+        - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
+        - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+  steam_gear:
+    type: projectile
+    name: 'Đạn Bánh Răng'
+    color: '#C9A227:#F5E6B8'
+    description:
+      - 'Bắn bánh răng vào mục tiêu,'
+      - 'gây %damage% sát thương và làm'
+      - 'chậm %seconds% giây'
+    cooldown: 9
+    pvp-multiplier: 0.5
+    range: 16
+    cast-delay-ticks: 16
+    damage:
+      base: 3
+      per-level: 0.1
+    debuff:
+      type: slow
+      seconds: 2
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: block.piston.extend, volume: 0.7, pitch: 1.6, delay: 12}
+        - {sound: entity.iron_golem.hurt, volume: 0.5, pitch: 1.8, delay: 16}
+      particles:
+        - {particle: CRIT, count: 3, spread: 0.05, speed: 0.01, at: path}
+        - {particle: SMOKE, count: 2, spread: 0.05, speed: 0.01, at: path}
+        - {particle: CRIT, count: 14, spread: 0.4, speed: 0.1, at: target}
+  dragon_orbit:
+    type: orbit
+    name: 'Vòng Lửa Rồng'
+    color: '#FF4D00:#FFD166'
+    description:
+      - 'Triệu hồi %count% cầu lửa xoay quanh'
+      - 'chủ nhân %seconds% giây, chạm kẻ địch'
+      - 'thì nổ gây %damage% sát thương và'
+      - 'đốt cháy %debuff_seconds% giây'
+    cooldown: 20
+    pvp-multiplier: 0.7
+    range: 10
+    cast-delay-ticks: 16
+    damage:
+      base: 4
+      per-level: 0.13
+    area:
+      radius: 2.2
+    orbit:
+      count: 3
+      seconds: 6
+    debuff:
+      type: burn
+      seconds: 4
+      amplifier: 0
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.growl, volume: 0.6, pitch: 1.5, delay: 4}
+        - {sound: item.firecharge.use, volume: 0.9, pitch: 0.9, delay: 16}
+      particles:
+        - {particle: FLAME, count: 1, spread: 0.05, speed: 0.01, at: path}
+        - {particle: FLAME, count: 20, spread: 0.8, speed: 0.05, at: owner}
+      vfx:
+        model: vfx_flame_shot_fire
+        animation: idle
+        life-ticks: 120
+        scale: 1.0
+  cubee_dark_hunt:
+    type: boost
+    name: 'Bóng Tối Săn Đêm'
+    color: '#3A0CA3:#B5179E'
+    description:
+      - 'Nhân phần thưởng khi hạ mob,'
+      - 'boss lên %boost%'
+    boost:
+      type: mob
       tenths:
         base: 4
         per-level: 0.105
