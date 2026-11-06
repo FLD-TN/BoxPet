@@ -77,7 +77,7 @@ public final class Ability {
      * @param life  ticks before it disappears (projectile max flight time)
      */
     public record VfxFx(String model, String animation, double speed, int life, double scale, double yOffset,
-                        List<String> frames, List<String> parts, @Nullable String tint, boolean glow, String from) {
+                        List<String> frames, List<String> parts, @Nullable String tint, boolean glow, double center) {
         /** 0.12.0: a flipbook effect of the pack (frame models swapped into {@code parts}, one per tick). */
         public boolean flipbook() {
             return !frames.isEmpty() && !parts.isEmpty();
@@ -282,7 +282,7 @@ public final class Ability {
                 v = new VfxFx(vs.getString("model"), vs.getString("animation", ""), Math.max(0.05, vs.getDouble("speed", 0.8)),
                         Math.max(5, vs.getInt("life-ticks", 40)), Math.max(0.1, vs.getDouble("scale", 1.0)),
                         vs.getDouble("y-offset", 0.0), vs.getStringList("frames"), vs.getStringList("frame-parts"),
-                        vs.getString("tint", null), vs.getBoolean("glow", false), vs.getString("from", "target").toLowerCase(Locale.ROOT));
+                        vs.getString("tint", null), vs.getBoolean("glow", false), vs.getDouble("center", 0));
             }
         }
         vfx = v;

@@ -440,11 +440,11 @@ abilities:
         frame-parts: [bone, bone2]
         tint: 'FFFFFF'
         glow: true
-        # đâm ra từ trước mặt pet về phía mục tiêu
-        from: pet
+        # khúc sáng giữa nhát đâm nằm ngay trên người địch (ô tính ở scale 1)
+        center: 1.75
         life-ticks: 9
         scale: 1.0
-        y-offset: -0.3
+        y-offset: 0.2
   shiba_slash:
     type: strike
     name: 'Nhát Chém Ánh Sáng'
@@ -478,6 +478,8 @@ abilities:
         animation: left-right-horiz
         frames: [vfx_light_slash_2, vfx_light_slash_3, vfx_light_slash_4, vfx_light_slash_5, vfx_light_slash_6, vfx_light_slash_7, vfx_light_slash_8, vfx_light_slash_9]
         frame-parts: [body]
+        # cung chém đi qua người địch (bán kính cung, ô tính ở scale 1)
+        center: 1.86
         tint: '2E89FF'
         glow: true
         life-ticks: 10
@@ -888,11 +890,11 @@ abilities:
         frame-parts: [bone, bone2]
         tint: '6E42FE'
         glow: true
-        # đâm ra từ trước mặt pet về phía mục tiêu
-        from: pet
+        # khúc sáng giữa nhát đâm nằm ngay trên người địch (ô tính ở scale 1)
+        center: 1.75
         life-ticks: 9
         scale: 1.0
-        y-offset: -0.3
+        y-offset: 0.2
   knight_holy:
     type: mark
     name: 'Thánh Thương'
@@ -930,11 +932,11 @@ abilities:
         frame-parts: [bone, bone2]
         tint: 'FEF79D'
         glow: true
-        # đâm ra từ trước mặt pet về phía mục tiêu
-        from: pet
+        # khúc sáng giữa nhát đâm nằm ngay trên người địch (ô tính ở scale 1)
+        center: 1.75
         life-ticks: 9
         scale: 1.0
-        y-offset: -0.3
+        y-offset: 0.2
   shiba_samurai:
     type: strike
     name: 'Song Kiếm Ánh Sáng'
@@ -971,6 +973,8 @@ abilities:
         animations: [left-right-horiz, right-left-diag]
         frames: [vfx_light_slash_2, vfx_light_slash_3, vfx_light_slash_4, vfx_light_slash_5, vfx_light_slash_6, vfx_light_slash_7, vfx_light_slash_8, vfx_light_slash_9]
         frame-parts: [body]
+        # cung chém đi qua người địch (bán kính cung, ô tính ở scale 1)
+        center: 1.86
         tint: 'FFFFFF'
         glow: true
         life-ticks: 10
@@ -1099,6 +1103,8 @@ abilities:
         animation: left-right-horiz
         frames: [vfx_light_slash_2, vfx_light_slash_3, vfx_light_slash_4, vfx_light_slash_5, vfx_light_slash_6, vfx_light_slash_7, vfx_light_slash_8, vfx_light_slash_9]
         frame-parts: [body]
+        # cung chém đi qua người địch (bán kính cung, ô tính ở scale 1)
+        center: 1.86
         tint: '5EFF61'
         glow: true
         life-ticks: 10
@@ -1168,11 +1174,11 @@ abilities:
         frame-parts: [bone, bone2]
         tint: 'A1FCFF'
         glow: true
-        # đâm ra từ trước mặt pet về phía mục tiêu
-        from: pet
+        # khúc sáng giữa nhát đâm nằm ngay trên người địch (ô tính ở scale 1)
+        center: 1.75
         life-ticks: 9
         scale: 1.0
-        y-offset: -0.3
+        y-offset: 0.2
   griffon_heal_basic:
     type: heal
     name: 'Lông Vũ Nhỏ'

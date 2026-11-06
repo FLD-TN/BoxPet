@@ -736,7 +736,7 @@ public final class AbilityService {
         if (a.vfx == null) return;
         Location at = target.getLocation().add(0, a.vfx.yOffset(), 0);
         at.setYaw(yawTo(p.pos, target.getLocation()));
-        if (a.vfx.from().equals("pet")) at = thrustStart(p, target, a.vfx.yOffset());
+        if (a.vfx.center() > 0) at = centeredOn(p, target, a.vfx);
         PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
                 plugin.getLogger());
         if (visual == null) return;
@@ -753,18 +753,16 @@ public final class AbilityService {
     }
 
     /**
-     * 0.12.0: where a thrust starts (pack: 1 block in front of the pet, facing the target). The pack's pet lunges at its
-     * target first; ours stays by its owner, so a far target gets the thrust from 4 blocks before it (it reaches ~5).
+     * 0.12.3: the model's visible middle lands on the target: its origin goes {@code center × scale} blocks back towards
+     * the pet, facing the target (the thrust's glow is ~1.75 blocks ahead of its origin, the slash's arc ~1.86).
      */
-    private Location thrustStart(ActivePet p, LivingEntity target, double yOffset) {
+    private Location centeredOn(ActivePet p, LivingEntity target, Ability.VfxFx fx) {
         Location to = target.getLocation();
         Vector d = to.toVector().subtract(p.pos.toVector()).setY(0);
         double len = d.length();
-        Vector dir = len < 0.01 ? new Vector(0, 0, 1) : d.clone().multiply(1 / len);
-        double back = len > 5 ? 4 : Math.max(0, len - 1);
-        Location at = to.clone().subtract(dir.clone().multiply(back));
-        at.setY(len > 5 ? to.getY() : p.pos.getY());
-        at.add(0, yOffset, 0);
+        Vector dir = len < 0.01 ? new Vector(0, 0, 1) : d.multiply(1 / len);
+        Location at = to.clone().subtract(dir.clone().multiply(fx.center() * fx.scale()));
+        at.add(0, fx.yOffset(), 0);
         at.setYaw(yawTo(at, to));
         at.setPitch(0);
         return at;
