@@ -28,7 +28,8 @@
 # Kỹ năng chiến đấu chỉ dùng khi chủ đang giao tranh, chỉ đánh người chủ vừa đánh hoặc người vừa đánh chủ.
 # Sát thương tính là đòn kỹ năng của chủ (MythicLib SKILL + MAGIC). pvp-multiplier: sát thương lên người chơi
 # (thiếu thì dùng abilities.pvp-multiplier trong config.yml), pve-multiplier: lên mob.
-# debuff.type: burn, slow, bleed (damage-ratio × sát thương mỗi giây), weakness
+# debuff.type: slow, bleed (damage-ratio × sát thương mỗi giây). Không dùng burn / weakness (trùng CE: kháng lửa, suy yếu);
+#   thay bằng enemy-stat (giảm chỉ số MMOItems của người chơi trúng đòn, enemy-stat.seconds).
 # fx: animation (tên hoạt ảnh của pet, mặc định skill), sounds (delay tính bằng tick), particles (at: pet, target, owner, path),
 #     vfx: model ModelEngine (model, animation, speed ô/tick, life-ticks, scale, y-offset)
 # name / color: tên kỹ năng và màu (hex hoặc gradient '#A:#B').
@@ -41,8 +42,9 @@ abilities:
     color: '#FF7A45:#FFC15E'
     description:
       - 'Phun cầu lửa lớn vào 1 mục tiêu,'
-      - 'gây %damage% sát thương và đốt'
-      - 'cháy %seconds% giây'
+      - 'gây %damage% sát thương và nung'
+      - 'chảy %enemy% Phòng thủ của nó'
+      - 'trong %enemy_seconds% giây'
     cooldown: 8
     pvp-multiplier: 0.7
     range: 14
@@ -51,10 +53,12 @@ abilities:
       base: 4.5
       per-level: 0.15
     pve-multiplier: 1.0
-    debuff:
-      type: burn
+    enemy-stat:
+      stat: DEFENSE
       seconds: 4
-      amplifier: 0
+      amount:
+        base: 1.2
+        per-level: 0.05
     fx:
       animation: skill
       sounds:
@@ -75,8 +79,9 @@ abilities:
     color: '#5FE1E8:#B8FFF9'
     description:
       - 'Phun cầu lửa nổ trong %radius% ô,'
-      - 'gây %damage% sát thương và đốt'
-      - 'cháy %seconds% giây'
+      - 'gây %damage% sát thương và rút'
+      - '%enemy% Máu tối đa của kẻ địch'
+      - 'trong %enemy_seconds% giây'
     cooldown: 8
     pvp-multiplier: 0.7
     area:
@@ -87,10 +92,12 @@ abilities:
       base: 3
       per-level: 0.1
     pve-multiplier: 1.0
-    debuff:
-      type: burn
+    enemy-stat:
+      stat: MAX_HEALTH
       seconds: 3
-      amplifier: 0
+      amount:
+        base: 1
+        per-level: 0.05
     fx:
       area-vfx: vfx_burst_soul
       animation: skill
@@ -153,8 +160,8 @@ abilities:
     description:
       - 'Gọi %count% thiên thạch rơi quanh'
       - 'mục tiêu sau 1 giây, mỗi viên'
-      - 'gây %damage% sát thương trong'
-      - '%radius% ô và đốt cháy %seconds% giây'
+      - 'gây %damage% sát thương trong %radius% ô'
+      - 'và giảm %enemy% Phòng thủ %enemy_seconds% giây'
     cooldown: 20
     pvp-multiplier: 0.7
     range: 14
@@ -169,10 +176,12 @@ abilities:
       count: 3
       spread: 2.5
       warn-ticks: 20
-    debuff:
-      type: burn
+    enemy-stat:
+      stat: DEFENSE
       seconds: 3
-      amplifier: 0
+      amount:
+        base: 1.2
+        per-level: 0.05
     fx:
       area-vfx: vfx_burst_holy
       animation: skill
@@ -225,9 +234,9 @@ abilities:
     name: 'Cầu Lửa Phép'
     color: '#FF9A3C:#FFD27A'
     description:
-      - 'Ném cầu lửa vào mục tiêu,'
-      - 'gây %damage% sát thương và đốt'
-      - 'cháy %seconds% giây'
+      - 'Ném cầu lửa vào mục tiêu, gây'
+      - '%damage% sát thương và giảm %enemy%'
+      - 'Phòng thủ của nó %enemy_seconds% giây'
     cooldown: 8
     pvp-multiplier: 0.5
     range: 14
@@ -236,10 +245,12 @@ abilities:
       base: 3
       per-level: 0.1
     pve-multiplier: 1.0
-    debuff:
-      type: burn
+    enemy-stat:
+      stat: DEFENSE
       seconds: 3
-      amplifier: 0
+      amount:
+        base: 1
+        per-level: 0.04
     fx:
       animation: skill
       sounds:
@@ -965,9 +976,9 @@ abilities:
     color: '#FF5E3A:#FFD24D'
     description:
       - 'Khi máu chủ nhân dưới %percent%%:'
-      - '+%buff% %buff_stat% trong %seconds% giây'
-      - 'và đốt kẻ vừa đánh chủ nhân'
-      - '%debuff_seconds% giây'
+      - '+%buff% %buff_stat% trong %seconds% giây,'
+      - 'kẻ vừa đánh chủ nhân bị giảm'
+      - '%enemy% Sát thương cùng lúc'
     cooldown: 60
     trigger: low-hp
     buff:
@@ -977,10 +988,11 @@ abilities:
         per-level: 0.12
       seconds: 8
       below-percent: 40
-    debuff:
-      type: burn
-      seconds: 4
-      amplifier: 0
+    enemy-stat:
+      stat: ATTACK_DAMAGE
+      amount:
+        base: 1
+        per-level: 0.04
     fx:
       animation: skill
       sounds:
@@ -1156,35 +1168,6 @@ abilities:
         - {sound: entity.experience_orb.pickup, volume: 0.8, pitch: 1.3}
       particles:
         - {particle: HAPPY_VILLAGER, count: 8, spread: 0.5, speed: 0.02, at: owner}
-  dragon_breath:
-    type: strike
-    name: 'Hơi Thở Rồng'
-    color: '#FF4D00:#FFB347'
-    description:
-      - 'Phun lửa xuyên cả hàng kẻ địch'
-      - 'giữa pet và mục tiêu, gây'
-      - '%damage% sát thương và đốt cháy'
-      - '%seconds% giây'
-    cooldown: 18
-    pvp-multiplier: 0.7
-    range: 10
-    cast-delay-ticks: 20
-    damage:
-      base: 4.5
-      per-level: 0.14
-    pierce: true
-    debuff:
-      type: burn
-      seconds: 4
-      amplifier: 0
-    fx:
-      animation: skill
-      sounds:
-        - {sound: entity.ender_dragon.growl, volume: 0.6, pitch: 1.6, delay: 4}
-        - {sound: item.firecharge.use, volume: 0.9, pitch: 0.8, delay: 20}
-      particles:
-        - {particle: FLAME, count: 2, spread: 0.1, speed: 0.02, at: path}
-        - {particle: LAVA, count: 6, spread: 0.4, speed: 0.05, at: target}
   holy_orb:
     type: projectile
     name: 'Cầu Thánh Quang'
@@ -1417,7 +1400,8 @@ abilities:
     color: '#FF5E3A:#FFB199'
     description:
       - 'Phóng lưỡi dung nham, gây %damage%'
-      - 'sát thương và đốt cháy %seconds% giây'
+      - 'sát thương và giảm %enemy%% Tỉ lệ'
+      - 'chí mạng của mục tiêu %enemy_seconds% giây'
     cooldown: 8
     pvp-multiplier: 0.5
     range: 14
@@ -1426,10 +1410,12 @@ abilities:
       base: 2.5
       per-level: 0.1
     pve-multiplier: 1.0
-    debuff:
-      type: burn
-      seconds: 2
-      amplifier: 0
+    enemy-stat:
+      stat: CRITICAL_STRIKE_CHANCE
+      seconds: 3
+      amount:
+        base: 2
+        per-level: 0.08
     fx:
       animation: skill
       sounds:
@@ -1548,7 +1534,7 @@ abilities:
       - 'Triệu hồi %count% cầu lửa xoay quanh'
       - 'chủ nhân %seconds% giây, chạm kẻ địch'
       - 'thì nổ gây %damage% sát thương và'
-      - 'đốt cháy %debuff_seconds% giây'
+      - 'giảm %enemy% Phòng thủ %enemy_seconds% giây'
     cooldown: 20
     pvp-multiplier: 0.7
     range: 10
@@ -1561,10 +1547,12 @@ abilities:
     orbit:
       count: 3
       seconds: 6
-    debuff:
-      type: burn
-      seconds: 4
-      amplifier: 0
+    enemy-stat:
+      stat: DEFENSE
+      seconds: 3
+      amount:
+        base: 1
+        per-level: 0.04
     fx:
       area-vfx: vfx_burst_fire
       animation: skill

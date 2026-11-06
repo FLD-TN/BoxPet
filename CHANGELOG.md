@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.10 (2026-11-06)
+
+- Bỏ hết hiệu ứng đốt (CE có kháng lửa). Thay bằng giảm chỉ số MMOItems của người chơi trúng đòn: Rồng Lửa nung chảy Phòng thủ, Rồng Linh Hồn rút Máu tối đa, Mưa Thiên Hỏa / Vòng Lửa Rồng / Mèo Pháp Sư Lửa giảm Phòng thủ, Ếch Địa Ngục giảm Tỉ lệ chí mạng, Lửa Phượng Hoàng làm kẻ vừa đánh chủ bị giảm Sát thương.
+- Xoá kỹ năng Hơi Thở Rồng (không còn pet nào dùng từ 0.9.1).
+- Cập nhật server: thay abilities.yml.
+
 ## 0.9.9 (2026-11-06)
 
 - Bỏ hết hiệu ứng suy yếu (weakness, trùng CE): Cầu Lửa Bóng Tối, Đầu Lâu Ma, Lưỡi Bào Tử, Vết Nứt Hư Không giờ giảm chỉ số Sát thương (MMOItems) của người chơi trúng đòn trong vài giây (enemy-stat trên kỹ năng chiến đấu, enemy-stat.seconds).
