@@ -24,7 +24,6 @@
 #   đứt khi mục tiêu ra xa range + 4 ô hoặc khuất tầm nhìn.
 #   orbit (0.9.1): orbit.count cầu (model fx.vfx) xoay quanh chủ orbit.seconds giây, bán kính area.radius, chạm kẻ
 #   địch thì nổ (damage + debuff). meteor có fx.vfx: model rơi từ trên trời xuống vòng báo.
-#   Pet huyền thoại có kỹ năng thứ 2: "ability-2" trong file pet, hồi chiêu riêng.
 # Kỹ năng chiến đấu chỉ dùng khi chủ đang giao tranh, chỉ đánh người chủ vừa đánh hoặc người vừa đánh chủ.
 # Sát thương tính là đòn kỹ năng của chủ (MythicLib SKILL + MAGIC). pvp-multiplier: sát thương lên người chơi
 # (thiếu thì dùng abilities.pvp-multiplier trong config.yml), pve-multiplier: lên mob.
@@ -99,7 +98,6 @@ abilities:
         base: 1
         per-level: 0.05
     fx:
-      area-vfx: vfx_burst_soul
       animation: skill
       sounds:
         - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
@@ -139,7 +137,6 @@ abilities:
         base: 1
         per-level: 0.04
     fx:
-      area-vfx: vfx_burst_shadow
       animation: skill
       sounds:
         - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
@@ -153,48 +150,6 @@ abilities:
         speed: 0.7
         life-ticks: 40
         scale: 1.0
-  fire_ball_holyfire:
-    type: meteor
-    name: 'Mưa Thiên Hỏa'
-    color: '#FFF1A8:#FFB347'
-    description:
-      - 'Gọi %count% thiên thạch rơi quanh'
-      - 'mục tiêu sau 1 giây, mỗi viên'
-      - 'gây %damage% sát thương trong %radius% ô'
-      - 'và giảm %enemy% Phòng thủ %enemy_seconds% giây'
-    cooldown: 20
-    pvp-multiplier: 0.7
-    range: 14
-    cast-delay-ticks: 18
-    damage:
-      base: 4.5
-      per-level: 0.15
-    pve-multiplier: 1.0
-    area:
-      radius: 2.5
-    meteor:
-      count: 3
-      spread: 2.5
-      warn-ticks: 20
-    enemy-stat:
-      stat: DEFENSE
-      seconds: 3
-      amount:
-        base: 1.2
-        per-level: 0.05
-    fx:
-      area-vfx: vfx_burst_holy
-      animation: skill
-      sounds:
-        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
-        - {sound: entity.blaze.shoot, volume: 0.8, pitch: 0.8, delay: 18}
-      particles:
-        - {particle: END_ROD, count: 15, spread: 0.4, speed: 0.05, at: target}
-      vfx:
-        model: vfx_flame_shot_holyfire
-        animation: idle
-        life-ticks: 40
-        scale: 1.6
   frog_tongue:
     type: projectile
     name: 'Lưỡi Dính'
@@ -608,12 +563,6 @@ abilities:
         - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
         - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
-      vfx:
-        model: vfx_heaven_ring
-        animation: idle
-        life-ticks: 120
-        scale: 2
-        y-offset: 0
   unicorn_nature:
     type: buff
     name: 'Giáp Lá Rừng Xanh'
@@ -970,42 +919,6 @@ abilities:
         animation: idle
         life-ticks: 100
         scale: 1.0
-  griffon_phoenix:
-    type: buff
-    name: 'Lửa Phượng Hoàng'
-    color: '#FF5E3A:#FFD24D'
-    description:
-      - 'Khi máu chủ nhân dưới %percent%%:'
-      - '+%buff% %buff_stat% trong %seconds% giây,'
-      - 'kẻ vừa đánh chủ nhân bị giảm'
-      - '%enemy% Sát thương cùng lúc'
-    cooldown: 60
-    trigger: low-hp
-    buff:
-      stat: DEFENSE
-      amount:
-        base: 3
-        per-level: 0.12
-      seconds: 8
-      below-percent: 40
-    enemy-stat:
-      stat: ATTACK_DAMAGE
-      amount:
-        base: 1
-        per-level: 0.04
-    fx:
-      animation: skill
-      sounds:
-        - {sound: entity.blaze.shoot, volume: 0.9, pitch: 1.2}
-        - {sound: item.firecharge.use, volume: 0.8, pitch: 1.0}
-      particles:
-        - {particle: FLAME, count: 25, spread: 0.6, speed: 0.05, at: owner}
-      vfx:
-        model: vfx_phoenix_wings
-        animation: idle
-        life-ticks: 160
-        scale: 1.1
-        y-offset: 0
   frog_tongue_basic:
     type: projectile
     name: 'Lưỡi Dính'
@@ -1202,37 +1115,6 @@ abilities:
         speed: 0.7
         life-ticks: 40
         scale: 1.0
-  knight_judgement:
-    type: strike
-    name: 'Phán Xét'
-    color: '#FFE066:#FFFFFF'
-    description:
-      - 'Chém phán xét nổ trong %radius% ô'
-      - 'quanh mục tiêu, gây %damage% sát'
-      - 'thương mỗi kẻ'
-    cooldown: 22
-    pvp-multiplier: 0.7
-    range: 10
-    cast-delay-ticks: 22
-    damage:
-      base: 5
-      per-level: 0.15
-    area:
-      radius: 4
-    fx:
-      area-vfx: vfx_burst_holy
-      animation: skill
-      sounds:
-        - {sound: entity.player.attack.sweep, volume: 1.0, pitch: 0.7, delay: 20}
-        - {sound: block.anvil.land, volume: 0.5, pitch: 1.6, delay: 22}
-      particles:
-        - {particle: END_ROD, count: 20, spread: 0.8, speed: 0.05, at: target}
-      vfx:
-        model: vfx_light_slash_4
-        animation: up-down-vert
-        life-ticks: 14
-        scale: 2.0
-        y-offset: 1.0
   griffon_phoenix_heal:
     type: heal
     name: 'Lông Vũ Phượng Hoàng'
@@ -1254,39 +1136,6 @@ abilities:
       particles:
         - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
         - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
-      vfx:
-        model: vfx_phoenix_feathers
-        animation: skill
-        life-ticks: 30
-        scale: 1
-        y-offset: 0
-  unicorn_heavenly_guard:
-    type: buff
-    name: 'Thánh Quang Hộ Thể'
-    color: '#B8E6FF:#FFFFFF'
-    description:
-      - 'Khi chủ nhân bị đánh: +%buff%%'
-      - '%buff_stat% trong %seconds% giây'
-    cooldown: 30
-    trigger: hurt
-    buff:
-      stat: PVP_DAMAGE_REDUCTION
-      amount:
-        base: 2
-        per-level: 0.08
-      seconds: 5
-    fx:
-      animation: skill
-      sounds:
-        - {sound: block.beacon.power_select, volume: 0.6, pitch: 1.6}
-      particles:
-        - {particle: END_ROD, count: 14, spread: 0.6, speed: 0.03, at: owner}
-      vfx:
-        model: vfx_heaven_guard
-        animation: idle
-        life-ticks: 100
-        scale: 1
-        y-offset: 0
   cubee_galaxy_mob:
     type: boost
     name: 'Tinh Tú May Mắn'
@@ -1526,47 +1375,6 @@ abilities:
         speed: 0.8
         life-ticks: 40
         scale: 1
-  dragon_orbit:
-    type: orbit
-    name: 'Vòng Lửa Rồng'
-    color: '#FF4D00:#FFD166'
-    description:
-      - 'Triệu hồi %count% cầu lửa xoay quanh'
-      - 'chủ nhân %seconds% giây, chạm kẻ địch'
-      - 'thì nổ gây %damage% sát thương và'
-      - 'giảm %enemy% Phòng thủ %enemy_seconds% giây'
-    cooldown: 20
-    pvp-multiplier: 0.7
-    range: 10
-    cast-delay-ticks: 16
-    damage:
-      base: 4
-      per-level: 0.13
-    area:
-      radius: 2.2
-    orbit:
-      count: 3
-      seconds: 6
-    enemy-stat:
-      stat: DEFENSE
-      seconds: 3
-      amount:
-        base: 1
-        per-level: 0.04
-    fx:
-      area-vfx: vfx_burst_fire
-      animation: skill
-      sounds:
-        - {sound: entity.ender_dragon.growl, volume: 0.6, pitch: 1.5, delay: 4}
-        - {sound: item.firecharge.use, volume: 0.9, pitch: 0.9, delay: 16}
-      particles:
-        - {particle: FLAME, count: 1, spread: 0.05, speed: 0.01, at: path}
-        - {particle: FLAME, count: 20, spread: 0.8, speed: 0.05, at: owner}
-      vfx:
-        model: vfx_flame_shot_fire
-        animation: idle
-        life-ticks: 120
-        scale: 1.0
   cubee_dark_hunt:
     type: boost
     name: 'Bóng Tối Săn Đêm'
@@ -1718,81 +1526,3 @@ abilities:
         - {sound: entity.player.splash.high_speed, volume: 0.6, pitch: 1.2, delay: 18}
       particles:
         - {particle: SPLASH, count: 30, spread: 1.0, speed: 0.1, at: target}
-  dragon_rift:
-    type: zone
-    name: 'Vết Nứt Hư Không'
-    color: '#5026d3:#f57fff'
-    description:
-      - 'Xé vết nứt %radius% ô dưới mục tiêu'
-      - 'trong %seconds% giây: kẻ địch đứng'
-      - 'trong mỗi giây nhận %damage% sát'
-      - 'thương và bị giảm %enemy% Sát thương'
-    cooldown: 20
-    pvp-multiplier: 0.7
-    range: 12
-    cast-delay-ticks: 18
-    damage:
-      base: 2.2
-      per-level: 0.07
-    area:
-      radius: 3
-    zone:
-      seconds: 4
-      interval-ticks: 20
-    enemy-stat:
-      stat: ATTACK_DAMAGE
-      seconds: 2
-      amount:
-        base: 0.8
-        per-level: 0.035
-    fx:
-      animation: skill
-      sounds:
-        - {sound: entity.ender_dragon.growl, volume: 0.6, pitch: 0.7, delay: 4}
-        - {sound: block.end_portal.spawn, volume: 0.4, pitch: 1.6, delay: 18}
-      particles:
-        - {particle: WITCH, count: 20, spread: 1.0, speed: 0.05, at: target}
-      vfx:
-        model: vfx_shadow_rift
-        animation: idle
-        life-ticks: 80
-        scale: 1.0
-  dragon_soul_chain:
-    type: tether
-    name: 'Xích Linh Hồn'
-    color: '#30e1b9:#cbfee9'
-    description:
-      - 'Trói mục tiêu bằng xích linh hồn'
-      - '%seconds% giây: mỗi nửa giây gây %damage%'
-      - 'sát thương và làm chậm. Kẻ địch'
-      - 'chạy ra xa hoặc khuất tầm nhìn'
-      - 'thì xích đứt'
-    cooldown: 20
-    pvp-multiplier: 0.7
-    range: 12
-    cast-delay-ticks: 16
-    damage:
-      base: 1
-      per-level: 0.03
-    tether:
-      seconds: 4
-      interval-ticks: 10
-    debuff:
-      type: slow
-      seconds: 1
-      amplifier: 1
-    fx:
-      animation: skill
-      sounds:
-        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.4, delay: 4}
-        - {sound: block.chain.place, volume: 1.0, pitch: 0.7, delay: 16}
-        - {sound: particle.soul_escape, volume: 1.0, pitch: 0.8, delay: 16}
-      particles:
-        - {particle: SOUL_FIRE_FLAME, count: 1, spread: 0.01, speed: 0.0, at: path}
-        - {particle: SOUL, count: 10, spread: 0.4, speed: 0.03, at: target}
-      vfx:
-        model: vfx_soul_chain
-        animation: idle
-        life-ticks: 80
-        scale: 1.0
-        y-offset: 0.0

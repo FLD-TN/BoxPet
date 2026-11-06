@@ -53,10 +53,8 @@ class ResourcesTest {
             boolean high = y.getString("rarity").equals("epic") || y.getString("rarity").equals("legendary");
             assertEquals(high, gradient, f.getName() + " colour style");
             assertTrue(abilities.contains("abilities." + y.getString("ability")), f.getName() + " ability");
-            // 0.9.0: legendary pets have a second skill, the others none
-            String second = y.getString("ability-2", "");
-            assertEquals(y.getString("rarity").equals("legendary"), !second.isEmpty(), f.getName() + " ability-2");
-            if (!second.isEmpty()) assertTrue(abilities.contains("abilities." + second), f.getName() + " ability-2 exists");
+            // 0.10.0: one skill per pet (no second skills any more)
+            assertTrue(y.getString("ability-2", "").isEmpty(), f.getName() + " ability-2");
         }
     }
 

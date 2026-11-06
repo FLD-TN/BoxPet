@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.0 (2026-11-06)
+
+- Bỏ kỹ năng thứ 2: mỗi pet còn đúng 1 kỹ năng (kể cả Huyền thoại). Xoá Vòng Lửa Rồng, Mưa Thiên Hỏa, Vết Nứt Hư Không, Xích Linh Hồn, Phán Xét, Lửa Phượng Hoàng, Thánh Quang Hộ Thể.
+- Kỹ năng Huyền thoại chỉ còn model đạn / đòn của pack: bỏ vòng nổ dưới chân của Cầu Lửa Bóng Tối / Linh Hồn, bỏ model lông vũ Phượng Hoàng và vòng ấn Thiên Giới.
+- Xoá 11 model hiệu ứng riêng phục vụ các kỹ năng trên (còn 20 trong vfx/blueprints), xoá bản nháp model Phượng Hoàng.
+- Cập nhật server: thay abilities.yml và 7 file pet Huyền thoại; xoá khỏi ModelEngine/blueprints/boxpet các file vfx_phoenix_wings, vfx_phoenix_feathers, vfx_heaven_ring, vfx_heaven_guard, vfx_burst_shadow, vfx_burst_soul, vfx_burst_holy, vfx_burst_fire, vfx_shadow_rift, vfx_soul_skull, vfx_soul_chain rồi /meg reload + /iazip.
+
 ## 0.9.10 (2026-11-06)
 
 - Bỏ hết hiệu ứng đốt (CE có kháng lửa). Thay bằng giảm chỉ số MMOItems của người chơi trúng đòn: Rồng Lửa nung chảy Phòng thủ, Rồng Linh Hồn rút Máu tối đa, Mưa Thiên Hỏa / Vòng Lửa Rồng / Mèo Pháp Sư Lửa giảm Phòng thủ, Ếch Địa Ngục giảm Tỉ lệ chí mạng, Lửa Phượng Hoàng làm kẻ vừa đánh chủ bị giảm Sát thương.

@@ -34,5 +34,3 @@ stats:
     per-level: 0.03
 # kỹ năng trong abilities.yml
 ability: griffon_phoenix_heal
-# kỹ năng thứ 2 (pet huyền thoại), hồi chiêu riêng
-ability-2: griffon_phoenix
