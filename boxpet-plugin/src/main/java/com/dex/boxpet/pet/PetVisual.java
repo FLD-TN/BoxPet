@@ -31,6 +31,8 @@ public final class PetVisual {
     private Hitbox hitbox;
     private boolean hitboxOn = true;
     private boolean removed;
+    /** An effect model (no hitbox): its rotation is locked (see lockRotation). */
+    private boolean effect;
 
     private PetVisual(Dummy<Object> dummy, ModeledEntity modeled, ActiveModel model, String modelId, double scale) {
         this.dummy = dummy;
@@ -85,6 +87,10 @@ public final class PetVisual {
             dummy.setRenderRadius(renderRadius);
             dummy.setYBodyRot(at.getYaw());
             dummy.setYHeadRot(at.getYaw());
+            // 0.12.2: effect models (no hitbox) turn at once and keep their pitch flat, like the pack's
+            // BodyRotation{stable=0;rdelay=0;rduration=0} + lockpitch: else ModelEngine eases the body round and clamps
+            // the head bones (h_*), and a thrust points somewhere else than its target
+            if (!withHitbox) lockRotation(dummy, at.getYaw());
             ModeledEntity modeled = ModelEngineAPI.createModeledEntity(dummy);
             ActiveModel model = ModelEngineAPI.createActiveModel(modelId);
             if (model == null) {
@@ -104,7 +110,10 @@ public final class PetVisual {
             if (!withHitbox) dummy.setHitbox(NO_HITBOX);
             modeled.setBaseEntityVisible(false);
             PetVisual v = new PetVisual(dummy, modeled, model, modelId, scale);
-            if (!withHitbox) v.hitboxOn = false;
+            if (!withHitbox) {
+                v.hitboxOn = false;
+                v.effect = true;
+            }
             if (!idleLoop && idle != null && !idle.isEmpty()) {
                 v.idleOnce = idle;
                 v.playIdleOnce();
@@ -113,6 +122,22 @@ public final class PetVisual {
         } catch (RuntimeException | LinkageError ex) {
             log.log(Level.WARNING, "ModelEngine could not create model " + modelId, ex);
             return null;
+        }
+    }
+
+    private static void lockRotation(Dummy<Object> dummy, float yaw) {
+        try {
+            var c = dummy.getBodyRotationController();
+            c.setPlayerMode(false);
+            c.setStableAngle(0);
+            c.setRotationDelay(0);
+            c.setRotationDuration(0);
+            c.setYBodyRot(yaw);
+            c.setYHeadRot(yaw);
+            c.setXHeadRot(0);
+            dummy.setXHeadRot(0);
+        } catch (RuntimeException | LinkageError ignored) {
+            // other ModelEngine build
         }
     }
 
@@ -142,6 +167,7 @@ public final class PetVisual {
         dummy.setLocation(at);
         dummy.setYBodyRot(bodyYaw);
         dummy.setYHeadRot(headYaw);
+        if (effect) lockRotation(dummy, bodyYaw);
     }
 
     public void walking(boolean walking) {
