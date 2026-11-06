@@ -620,15 +620,11 @@ public final class AbilityService {
             Location at = center[0].clone().add(0, a.vfx.yOffset(), 0);
             at.setYaw(yawTo(p.pos, center[0]));
             at.setPitch(0);
-            // the rest pose of a pack effect shows every piece at once: the model is created hidden and only shows
-            // once its animation has taken over (else a purple / fire flash shows before the skill)
+            // 0.11.5: no flash of the rest pose: the nova models keep it far under the ground (vfx/tools/extract.js)
             PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
-                    true, plugin.getLogger());
+                    plugin.getLogger());
             if (visual != null) {
                 if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    if (!visual.removed()) visual.visible(true);
-                }, Math.max(1, plugin.settings().effectRevealTicks));
                 shown = new Vfx(visual, at, target, 0, a.vfx.life(), false, a.vfx.yOffset());
                 vfx.add(shown);
             }

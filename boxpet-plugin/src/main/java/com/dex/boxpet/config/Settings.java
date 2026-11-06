@@ -77,8 +77,6 @@ public final class Settings {
     public final boolean activityXp;
     /** 0.8.0: every skill's damage / heal + shield, on top of abilities.yml. */
     public final double abilityDamageMultiplier;
-    /** 0.11.4: ticks a pack effect model (nova) stays hidden after it spawns, so its rest pose never flashes. */
-    public final int effectRevealTicks;
     /** 0.8.0: every pet stat × this (pets/*.yml values stay as written). */
     public final double statMultiplier;
     /** 0.8.0: % more stats for each breakthrough passed. */
@@ -204,7 +202,6 @@ public final class Settings {
         bondPetGain = Math.max(0, c.getInt("bond.pet-gain", 1));
         activityXp = c.getBoolean("xp.from-activities", false);
         abilityDamageMultiplier = Math.max(0, c.getDouble("abilities.damage-multiplier", 1.4));
-        effectRevealTicks = Math.max(1, Math.min(20, c.getInt("abilities.effect-reveal-ticks", 5)));
         statMultiplier = Math.max(0, c.getDouble("stats.multiplier", 1.7));
         breakthroughStatBonus = Math.max(0, c.getDouble("breakthrough.stat-bonus-percent", 5));
         java.util.Map<String, Integer> unlock = new java.util.HashMap<>();
