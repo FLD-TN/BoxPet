@@ -175,6 +175,50 @@ public final class PetVisual {
         }
     }
 
+    /** 0.12.0: tints every bone (pack effects are white and get their colour from a tint, like MythicMobs tint{}). */
+    public void tint(org.bukkit.Color color) {
+        if (removed || color == null) return;
+        try {
+            for (var bone : model.getBones().values()) bone.setDefaultTint(color);
+        } catch (RuntimeException ignored) {
+            // old ModelEngine
+        }
+    }
+
+    /** 0.12.0: full light on every bone, so the effect glows at night too (MythicMobs brightness{b=15;s=15}). */
+    public void fullBright() {
+        if (removed) return;
+        try {
+            for (var bone : model.getBones().values()) {
+                bone.setBlockLight(15);
+                bone.setSkyLight(15);
+            }
+        } catch (RuntimeException ignored) {
+            // old ModelEngine
+        }
+    }
+
+    /**
+     * 0.12.0: puts the geometry of bone {@code newPart} of model {@code newModel} into bone {@code part} (what
+     * MythicMobs changepart{} does): the next frame of a flipbook effect while the animation keeps running.
+     */
+    public void swapPart(String part, String newModel, String newPart) {
+        if (removed) return;
+        try {
+            var blueprint = ModelEngineAPI.getBlueprint(newModel);
+            if (blueprint == null) return;
+            var nb = blueprint.getFlatMap().get(newPart);
+            if (nb == null || !nb.isRenderer()) return;
+            model.getBone(part).ifPresent(bone -> {
+                if (!bone.isRenderer()) return;
+                bone.setModelScale(nb.getScale());
+                bone.setModel(nb);
+            });
+        } catch (RuntimeException ignored) {
+            // part or model missing
+        }
+    }
+
     /** Hides these bones and everything under them (a pack effect this pet must not show). */
     public void hideBones(java.util.List<String> ids) {
         if (removed) return;

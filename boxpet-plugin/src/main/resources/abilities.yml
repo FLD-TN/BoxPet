@@ -433,11 +433,18 @@ abilities:
       particles:
         - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
       vfx:
+        # 0.12.0: nhát đâm của pack: khung 1 -> 8 mỗi tick, nhuộm màu + sáng tối đa (như MythicMobs của pack)
         model: vfx_pet_pierce_1
         animation: skill
-        life-ticks: 20
+        frames: [vfx_pet_pierce_2, vfx_pet_pierce_3, vfx_pet_pierce_4, vfx_pet_pierce_5, vfx_pet_pierce_6, vfx_pet_pierce_7, vfx_pet_pierce_8]
+        frame-parts: [bone, bone2]
+        tint: 'FFFFFF'
+        glow: true
+        # đâm ra từ trước mặt pet về phía mục tiêu
+        from: pet
+        life-ticks: 9
         scale: 1.0
-        y-offset: 0.3
+        y-offset: -0.3
   shiba_slash:
     type: strike
     name: 'Nhát Chém Ánh Sáng'
@@ -466,11 +473,16 @@ abilities:
       particles:
         - {particle: SWEEP_ATTACK, count: 2, spread: 0.2, speed: 0, at: target}
       vfx:
+        # 0.12.0: vệt chém của pack: khung 1 -> 9 mỗi tick, nhuộm màu + sáng tối đa (như MythicMobs của pack)
         model: vfx_light_slash_1
         animation: left-right-horiz
-        life-ticks: 14
+        frames: [vfx_light_slash_2, vfx_light_slash_3, vfx_light_slash_4, vfx_light_slash_5, vfx_light_slash_6, vfx_light_slash_7, vfx_light_slash_8, vfx_light_slash_9]
+        frame-parts: [body]
+        tint: '2E89FF'
+        glow: true
+        life-ticks: 10
         scale: 1.2
-        y-offset: 1.0
+        y-offset: 0.0
   outlaw_mark:
     type: mark
     name: 'Đánh Dấu Mục Tiêu'
@@ -869,11 +881,18 @@ abilities:
       particles:
         - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
       vfx:
-        model: vfx_pet_pierce_3
+        # 0.12.0: nhát đâm của pack: khung 1 -> 8 mỗi tick, nhuộm màu + sáng tối đa (như MythicMobs của pack)
+        model: vfx_pet_pierce_1
         animation: skill
-        life-ticks: 20
+        frames: [vfx_pet_pierce_2, vfx_pet_pierce_3, vfx_pet_pierce_4, vfx_pet_pierce_5, vfx_pet_pierce_6, vfx_pet_pierce_7, vfx_pet_pierce_8]
+        frame-parts: [bone, bone2]
+        tint: '6E42FE'
+        glow: true
+        # đâm ra từ trước mặt pet về phía mục tiêu
+        from: pet
+        life-ticks: 9
         scale: 1.0
-        y-offset: 0.3
+        y-offset: -0.3
   knight_holy:
     type: mark
     name: 'Thánh Thương'
@@ -904,11 +923,18 @@ abilities:
       particles:
         - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
       vfx:
-        model: vfx_pet_pierce_4
+        # 0.12.0: nhát đâm của pack: khung 1 -> 8 mỗi tick, nhuộm màu + sáng tối đa (như MythicMobs của pack)
+        model: vfx_pet_pierce_1
         animation: skill
-        life-ticks: 20
+        frames: [vfx_pet_pierce_2, vfx_pet_pierce_3, vfx_pet_pierce_4, vfx_pet_pierce_5, vfx_pet_pierce_6, vfx_pet_pierce_7, vfx_pet_pierce_8]
+        frame-parts: [bone, bone2]
+        tint: 'FEF79D'
+        glow: true
+        # đâm ra từ trước mặt pet về phía mục tiêu
+        from: pet
+        life-ticks: 9
         scale: 1.0
-        y-offset: 0.3
+        y-offset: -0.3
   shiba_samurai:
     type: strike
     name: 'Song Kiếm Ánh Sáng'
@@ -939,12 +965,17 @@ abilities:
       particles:
         - {particle: SWEEP_ATTACK, count: 2, spread: 0.2, speed: 0, at: target}
       vfx:
-        model: vfx_light_slash_3
+        # 0.12.0: vệt chém của pack: khung 1 -> 9 mỗi tick, nhuộm màu + sáng tối đa (như MythicMobs của pack)
+        model: vfx_light_slash_1
         animation: left-right-horiz
         animations: [left-right-horiz, right-left-diag]
-        life-ticks: 14
+        frames: [vfx_light_slash_2, vfx_light_slash_3, vfx_light_slash_4, vfx_light_slash_5, vfx_light_slash_6, vfx_light_slash_7, vfx_light_slash_8, vfx_light_slash_9]
+        frame-parts: [body]
+        tint: 'FFFFFF'
+        glow: true
+        life-ticks: 10
         scale: 1.2
-        y-offset: 1.0
+        y-offset: 0.0
   outlaw_cyborg:
     type: mark
     name: 'Loạt Đạn Đánh Dấu'
@@ -1063,11 +1094,16 @@ abilities:
       particles:
         - {particle: SWEEP_ATTACK, count: 2, spread: 0.2, speed: 0, at: target}
       vfx:
-        model: vfx_light_slash_2
+        # 0.12.0: vệt chém của pack: khung 1 -> 9 mỗi tick, nhuộm màu + sáng tối đa (như MythicMobs của pack)
+        model: vfx_light_slash_1
         animation: left-right-horiz
-        life-ticks: 14
+        frames: [vfx_light_slash_2, vfx_light_slash_3, vfx_light_slash_4, vfx_light_slash_5, vfx_light_slash_6, vfx_light_slash_7, vfx_light_slash_8, vfx_light_slash_9]
+        frame-parts: [body]
+        tint: '5EFF61'
+        glow: true
+        life-ticks: 10
         scale: 1.2
-        y-offset: 1.0
+        y-offset: 0.0
   outlaw_mark_basic:
     type: mark
     name: 'Đánh Dấu Mục Tiêu'
@@ -1125,11 +1161,18 @@ abilities:
       particles:
         - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
       vfx:
-        model: vfx_pet_pierce_2
+        # 0.12.0: nhát đâm của pack: khung 1 -> 8 mỗi tick, nhuộm màu + sáng tối đa (như MythicMobs của pack)
+        model: vfx_pet_pierce_1
         animation: skill
-        life-ticks: 20
+        frames: [vfx_pet_pierce_2, vfx_pet_pierce_3, vfx_pet_pierce_4, vfx_pet_pierce_5, vfx_pet_pierce_6, vfx_pet_pierce_7, vfx_pet_pierce_8]
+        frame-parts: [bone, bone2]
+        tint: 'A1FCFF'
+        glow: true
+        # đâm ra từ trước mặt pet về phía mục tiêu
+        from: pet
+        life-ticks: 9
         scale: 1.0
-        y-offset: 0.3
+        y-offset: -0.3
   griffon_heal_basic:
     type: heal
     name: 'Lông Vũ Nhỏ'

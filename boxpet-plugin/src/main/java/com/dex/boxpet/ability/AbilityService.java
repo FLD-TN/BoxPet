@@ -736,14 +736,57 @@ public final class AbilityService {
         if (a.vfx == null) return;
         Location at = target.getLocation().add(0, a.vfx.yOffset(), 0);
         at.setYaw(yawTo(p.pos, target.getLocation()));
+        if (a.vfx.from().equals("pet")) at = thrustStart(p, target, a.vfx.yOffset());
         PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
                 plugin.getLogger());
         if (visual == null) return;
+        if (a.vfx.tint() != null) visual.tint(color(a.vfx.tint()));
+        if (a.vfx.glow()) visual.fullBright();
+        if (a.vfx.flipbook()) flipbook(visual, a.vfx);
         String anim = a.vfxAnimations.isEmpty() ? a.vfx.animation() : a.vfxAnimations.get(hit % a.vfxAnimations.size());
         if (!anim.isEmpty()) visual.play(anim);
-        int life = a.type == Ability.Type.MARK ? a.markTicks : a.vfx.life();
-        Vfx v = new Vfx(visual, at, a.type == Ability.Type.MARK ? target : null, 0, life, false, a.vfx.yOffset());
+        // a mark keeps its model on the target; a flipbook (thrust / slash) plays once where it started
+        boolean stick = a.type == Ability.Type.MARK && !a.vfx.flipbook();
+        int life = stick ? a.markTicks : a.vfx.life();
+        Vfx v = new Vfx(visual, at, stick ? target : null, 0, life, false, a.vfx.yOffset());
         vfx.add(v);
+    }
+
+    /**
+     * 0.12.0: where a thrust starts (pack: 1 block in front of the pet, facing the target). The pack's pet lunges at its
+     * target first; ours stays by its owner, so a far target gets the thrust from 4 blocks before it (it reaches ~5).
+     */
+    private Location thrustStart(ActivePet p, LivingEntity target, double yOffset) {
+        Location to = target.getLocation();
+        Vector d = to.toVector().subtract(p.pos.toVector()).setY(0);
+        double len = d.length();
+        Vector dir = len < 0.01 ? new Vector(0, 0, 1) : d.clone().multiply(1 / len);
+        double back = len > 5 ? 4 : Math.max(0, len - 1);
+        Location at = to.clone().subtract(dir.clone().multiply(back));
+        at.setY(len > 5 ? to.getY() : p.pos.getY());
+        at.add(0, yOffset, 0);
+        at.setYaw(yawTo(at, to));
+        at.setPitch(0);
+        return at;
+    }
+
+    /** Frame models swapped into the effect's parts, one per tick from tick 2 (pack MythicMobs changepart delays). */
+    private void flipbook(PetVisual visual, Ability.VfxFx fx) {
+        for (int i = 0; i < fx.frames().size(); i++) {
+            String frame = fx.frames().get(i);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (visual.removed()) return;
+                for (String part : fx.parts()) visual.swapPart(part, frame, part);
+            }, i + 2L);
+        }
+    }
+
+    private static @Nullable org.bukkit.Color color(String hex) {
+        try {
+            return org.bukkit.Color.fromRGB(Integer.parseInt(hex.replace("#", ""), 16));
+        } catch (RuntimeException ex) {
+            return null;
+        }
     }
 
     /** Deals the ability damage once, plus its debuff. */
