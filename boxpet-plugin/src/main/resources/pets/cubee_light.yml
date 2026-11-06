@@ -5,7 +5,7 @@ color: '#FFFFFF:#FFF3B0:#FFD166'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: cubee_dragon
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
-role: support
+role: combat
 # độ hiếm của pet này (một model = một pet = một độ hiếm). Độ hiếm cao hơn thì chỉ số gốc cao hơn
 rarity: epic
 # icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
@@ -34,7 +34,7 @@ stats:
     base: 0.5
     per-level: 0.03
 # kỹ năng trong abilities.yml
-ability: cubee_light_guard
+ability: holy_orb
 # 0.13.0: ẩn hiệu ứng chiêu gốc trong model (đã chuyển cho pet huyền thoại)
 hide-bones:
   - allef

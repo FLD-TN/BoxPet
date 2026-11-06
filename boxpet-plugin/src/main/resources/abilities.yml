@@ -1262,15 +1262,44 @@ abilities:
         life-ticks: 40
         scale: 1.0
   # 0.13.0: Rồng Hoa Thánh, hiệu ứng chiêu gốc của Tinh Linh Thiên Nhiên (pack Cubees): hoa nở dưới chân mục tiêu
+  # 0.13.1: Tinh Linh Thiên Nhiên, giáp lá như Kỳ Lân Rừng Xanh trước đây
+  cubee_leaf_armor:
+    type: buff
+    name: 'Giáp Lá Rừng Xanh'
+    color: '#8EE07A:#D8F8C6'
+    description:
+      - 'Khi chủ nhân bị đánh: +%buff%'
+      - '%buff_stat% trong %seconds% giây'
+    cooldown: 30
+    trigger: hurt
+    buff:
+      stat: DEFENSE
+      amount:
+        base: 2
+        per-level: 0.08
+      seconds: 5
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
+        - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
+      particles:
+        - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
+      vfx:
+        model: vfx_leaf_armor
+        animation: idle
+        life-ticks: 100
+        scale: 1
+
   dragon_holy_bloom:
     type: nova
     name: 'Hoa Thánh Khai Quang'
     color: '#FFF1A8:#B8F5A0'
     description:
-      - 'Gọi hoa thánh nở dưới chân mục'
-      - 'tiêu, nhuỵ hoa phóng cột sáng lên'
-      - 'trời: 3 đợt trong %radius% ô, mỗi'
-      - 'đợt gây %damage% sát thương'
+      - 'Triệu gọi hoa thánh giáng trần,'
+      - 'phóng cột sáng từ nhuỵ hoa vào'
+      - 'đối thủ 3 đợt, mỗi đợt gây %damage%'
+      - 'sát thương trong %radius% ô'
     cooldown: 9
     pvp-multiplier: 0.7
     range: 14
@@ -1284,6 +1313,12 @@ abilities:
     # cột sáng bắn từ giây 1,5 tới 3,6
     nova:
       hit-ticks: [32, 48, 64]
+      # hoa đứng sau lưng rồng (không che đối thủ), tia sáng từ nhuỵ hoa tới từng kẻ trúng
+      at: pet
+      beam:
+        particle: END_ROD
+        back: 2.75
+        up: 4.9
     fx:
       animation: skill
       sounds:
@@ -1297,7 +1332,7 @@ abilities:
         model: vfx_nova_bloom
         animation: skill
         life-ticks: 84
-        scale: 0.5
+        scale: 0.6
         y-offset: 0.0
 
   griffon_phoenix_heal:

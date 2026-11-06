@@ -141,6 +141,9 @@ ability-numbers:
   percent: '<#FFB86B>'
   bonus: '<#7CFC9A>'
   boost: '<#FFC857>'
+  # cách ghi mức tăng kinh tế trong lore kỹ năng (%value% = con số)
+  boost-multiplier: 'x%value%'
+  boost-percent: '%value%%'
   time: '<#7FDBFF>'
   effect: '<#C9A7FF>'
   reset: '<#BFC7D5>'

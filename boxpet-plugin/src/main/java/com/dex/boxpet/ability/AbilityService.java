@@ -616,20 +616,29 @@ public final class AbilityService {
         double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
         Location[] center = {target.getLocation()};
         Vfx shown = null;
+        boolean atPet = a.novaAt.equals("pet");
+        Location beamFrom = null;
         if (a.vfx != null) {
-            Location at = center[0].clone().add(0, a.vfx.yOffset(), 0);
-            at.setYaw(yawTo(p.pos, center[0]));
+            Location at = atPet ? p.pos.clone().add(0, a.vfx.yOffset(), 0) : center[0].clone().add(0, a.vfx.yOffset(), 0);
+            at.setYaw(yawTo(atPet ? at : p.pos, center[0]));
             at.setPitch(0);
+            if (atPet && !a.beamParticle.isEmpty()) {
+                // 0.13.1: the model faces the target, so "back" is away from it (the flower stands behind the pet)
+                Vector away = at.toVector().subtract(center[0].toVector()).setY(0);
+                if (away.lengthSquared() < 0.01) away = new Vector(0, 0, 1);
+                beamFrom = at.clone().add(away.normalize().multiply(a.beamBack * a.vfx.scale())).add(0, a.beamUp * a.vfx.scale(), 0);
+            }
             // 0.11.5: no flash of the rest pose: the nova models keep it far under the ground (vfx/tools/extract.js)
             PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
                     plugin.getLogger());
             if (visual != null) {
                 if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
-                shown = new Vfx(visual, at, target, 0, a.vfx.life(), false, a.vfx.yOffset());
+                shown = new Vfx(visual, at, atPet ? null : target, 0, a.vfx.life(), false, a.vfx.yOffset());
                 vfx.add(shown);
             }
         }
         int firstHit = a.novaHits.get(0);
+        final Location beam = beamFrom;
         for (int t : a.novaHits) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
@@ -640,6 +649,7 @@ public final class AbilityService {
                 if (!victims.contains(target) && validTarget(p.owner, target)
                         && target.getLocation().distanceSquared(c) <= radius * radius + 1) victims.add(0, target);
                 for (LivingEntity e : victims) {
+                    if (beam != null && beam.getWorld() == e.getWorld()) line(beam, e.getLocation().add(0, e.getHeight() * 0.55, 0), a.beamParticle);
                     if (damage(p, a, e, base, false)) {
                         applyDebuff(p, a, e, base);
                         particles(p, a, e, true);
@@ -651,6 +661,19 @@ public final class AbilityService {
                     }
                 }
             }, t);
+        }
+    }
+
+    /** A straight particle line (the light beam from the flower to an enemy). */
+    private static void line(Location from, Location to, String particle) {
+        Vector d = to.toVector().subtract(from.toVector());
+        double len = d.length();
+        if (len < 0.1 || len > 40) return;
+        Vector step = d.multiply(0.35 / len);
+        Location cur = from.clone();
+        for (double s = 0; s < len; s += 0.35) {
+            Effects.particle(cur, particle, 1, 0.02, 0);
+            cur.add(step);
         }
     }
 

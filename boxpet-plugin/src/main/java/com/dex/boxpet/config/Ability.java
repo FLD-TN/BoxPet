@@ -140,6 +140,13 @@ public final class Ability {
      * each of these ticks after the effect starts (the explosion frames of the animation).
      */
     public final List<Integer> novaHits;
+    /** 0.13.1: where the nova model stands: "target" (follows it) or "pet" (behind / around the pet, facing the target). */
+    public final String novaAt;
+    /** 0.13.1: particle line from the model's beam point to every enemy hit; empty = none. */
+    public final String beamParticle;
+    /** Beam point: blocks behind the model origin and above it, at vfx scale 1 (the nature flower's pistil: 2.75 / 4.9). */
+    public final double beamBack;
+    public final double beamUp;
     public final int tetherInterval;
     /** Buff: when it goes off (combat, hurt, low-hp) and the owner-only stat buff it gives. */
     public final String trigger;
@@ -234,6 +241,10 @@ public final class Ability {
         for (int t : s.getIntegerList("nova.hit-ticks")) if (t >= 0 && nh.size() < 6) nh.add(t);
         if (nh.isEmpty()) nh.add(20);
         novaHits = List.copyOf(nh);
+        novaAt = s.getString("nova.at", "target").toLowerCase(Locale.ROOT);
+        beamParticle = s.getString("nova.beam.particle", "");
+        beamBack = s.getDouble("nova.beam.back", 0);
+        beamUp = s.getDouble("nova.beam.up", 0);
         ConfigurationSection ob = s.getConfigurationSection("orbit");
         orbitTicks = ob == null ? 120 : (int) Math.round(Math.max(1, ob.getDouble("seconds", 6)) * 20);
         trigger = s.getString("trigger", "combat").toLowerCase(Locale.ROOT);

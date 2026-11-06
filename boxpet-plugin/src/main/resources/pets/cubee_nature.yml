@@ -34,7 +34,7 @@ stats:
     base: 0.5
     per-level: 0.03
 # kỹ năng trong abilities.yml
-ability: cubee_sprout
+ability: cubee_leaf_armor
 # 0.13.0: ẩn hiệu ứng chiêu gốc trong model (đã chuyển cho pet huyền thoại)
 hide-bones:
   - allef

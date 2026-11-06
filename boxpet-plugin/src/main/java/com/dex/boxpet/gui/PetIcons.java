@@ -64,6 +64,15 @@ public final class PetIcons {
     }
 
     /** Quest: "30%" more reward (like the rank perks). Mining / mob: the multiplier it brings, "x2", "x1,3". */
+    /** 0.13.1: the boost number in the menus.yml format (x2 / 10%). */
+    public static String boostText(MenuTexts m, String type, int tenths) {
+        String raw = boostText(type, tenths);
+        boolean quest = type.equals("quest");
+        String value = quest ? raw.substring(0, raw.length() - 1) : raw.substring(1);
+        return quest ? m.textOr("ability-numbers.boost-percent", "%value%%", "value", value)
+                : m.textOr("ability-numbers.boost-multiplier", "x%value%", "value", value);
+    }
+
     public static String boostText(String type, int tenths) {
         if (tenths <= 0) return type.equals("quest") ? "0%" : "x1";
         if (type.equals("quest")) return (tenths * 10) + "%";
@@ -161,7 +170,7 @@ public final class PetIcons {
                 "percent", num(m, "percent", a.type == Ability.Type.SHIELD ? a.shieldBelowPercent
                         : a.type == Ability.Type.BUFF ? a.buffBelowPercent : a.healBelowPercent),
                 "bonus", num(m, "bonus", round1(a.markBonus.at(level, mul))),
-                "boost", paint(m, "boost", boostText(a.boostType, tenths)),
+                "boost", paint(m, "boost", boostText(m, a.boostType, tenths)),
                 "boost_type", m.text("boost-types." + a.boostType),
                 "seconds", num(m, "time", (a.type == Ability.Type.MARK || a.type == Ability.Type.NOVA && a.markBonus.base() > 0 ? a.markTicks : a.type == Ability.Type.SHIELD
                         || (a.type == Ability.Type.HEAL && a.shieldHearts.base() > 0) ? a.shieldTicks

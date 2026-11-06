@@ -31,6 +31,11 @@ public final class MenuTexts {
         return Messages.apply(yml.getString(path, path), placeholders);
     }
 
+    /** {@code text} with a default for keys an older menus.yml does not have yet. */
+    public String textOr(String path, String def, String... placeholders) {
+        return Messages.apply(yml.getString(path, def), placeholders);
+    }
+
     public String name(String path, String... placeholders) {
         return text(path + ".name", placeholders);
     }
