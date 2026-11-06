@@ -332,8 +332,9 @@ public final class PetManager {
         PlayerData pd = players.get(player.getUniqueId());
         if (pd == null) return SummonResult.NOT_LOADED;
         if (pet.id.equals(pd.activePet) && active.containsKey(player.getUniqueId())) return SummonResult.ALREADY;
-        if (!force && combat.tagged(player.getUniqueId())) return SummonResult.COMBAT;
-        if (!force && swapCooldownLeft(player.getUniqueId()) > 0) return SummonResult.COOLDOWN;
+        boolean staff = com.dex.boxpet.listener.InteractListener.bypass(player);
+        if (!force && !staff && combat.tagged(player.getUniqueId())) return SummonResult.COMBAT;
+        if (!force && !staff && swapCooldownLeft(player.getUniqueId()) > 0) return SummonResult.COOLDOWN;
         PetType type = type(pet);
         if (type == null) return SummonResult.UNKNOWN_TYPE;
         if (!PetVisual.exists(type.stage(pet.stage).model())) return SummonResult.NO_MODEL;

@@ -68,7 +68,8 @@ public final class PetActions {
     public String rename(Player player, PetData pet, String raw) {
         long now = System.currentTimeMillis();
         Long last = lastRename.get(player.getUniqueId());
-        if (last != null && now - last < s().renameCooldownSeconds * 1000L) return "rename.cooldown";
+        if (last != null && now - last < s().renameCooldownSeconds * 1000L
+                && !com.dex.boxpet.listener.InteractListener.bypass(player)) return "rename.cooldown";
         String name = raw.trim();
         if (name.equals("-") || name.equalsIgnoreCase("xoa") || name.equalsIgnoreCase("xoá")) {
             pet.customName = "";

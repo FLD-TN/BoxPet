@@ -58,7 +58,7 @@ public final class PetCommand implements TabExecutor {
                     plugin.messages().send(p, "dismiss.none");
                     return true;
                 }
-                if (plugin.pets().combat().tagged(p.getUniqueId())) {
+                if (plugin.interact().combatLocked(p)) {
                     plugin.interact().lockMessage(p);
                     return true;
                 }

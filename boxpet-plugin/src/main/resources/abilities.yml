@@ -1286,10 +1286,14 @@ abilities:
       particles:
         - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
       vfx:
-        model: vfx_leaf_armor
-        animation: idle
-        life-ticks: 100
-        scale: 1
+        # 0.13.2: chỉ vòng phép dưới chân (tách từ chiêu gốc Tinh Linh Ánh Sáng), nhuộm xanh lá
+        model: vfx_magic_circle
+        animation: skill
+        tint: '8EE07A'
+        glow: true
+        life-ticks: 99
+        scale: 0.5
+        y-offset: 0.05
 
   dragon_holy_bloom:
     type: nova

@@ -53,6 +53,16 @@ public final class InteractListener implements Listener {
         lastLockMessage.remove(player);
     }
 
+    /** 0.13.2: staff with boxpet.bypass skip combat locks and cooldowns (menus, pet clicks, summon, rename, show-off). */
+    public static boolean bypass(Player p) {
+        return p != null && p.hasPermission("boxpet.bypass");
+    }
+
+    /** Combat-tagged and not allowed to bypass it. */
+    public boolean combatLocked(Player p) {
+        return !bypass(p) && plugin.pets().combat().tagged(p.getUniqueId());
+    }
+
     /** Seconds left of the combat tag, at least 1. */
     public long combatWait(Player p) {
         return Math.max(1, (plugin.pets().combat().remaining(p.getUniqueId()) + 999) / 1000);
@@ -83,7 +93,7 @@ public final class InteractListener implements Listener {
 
     private void clickPet(Player p, ActivePet pet, ItemStack hand) {
         if (!p.isOnline() || plugin.pets().active(p.getUniqueId()) != pet || debounce(p)) return;
-        if (plugin.pets().combat().tagged(p.getUniqueId())) {
+        if (combatLocked(p)) {
             lockMessage(p);
             return;
         }

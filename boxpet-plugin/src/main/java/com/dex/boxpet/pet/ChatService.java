@@ -94,7 +94,7 @@ public final class ChatService {
         if (!pet.shown()) return "showcase.hidden";
         long now = System.currentTimeMillis();
         Long ready = showcaseReady.get(pet.ownerId);
-        if (ready != null && now < ready) return "showcase.cooldown";
+        if (ready != null && now < ready && !com.dex.boxpet.listener.InteractListener.bypass(pet.owner)) return "showcase.cooldown";
         showcaseReady.put(pet.ownerId, now + plugin.settings().showcaseCooldownSeconds * 1000L);
         removeBubble(pet);
         removeShowcase(pet);

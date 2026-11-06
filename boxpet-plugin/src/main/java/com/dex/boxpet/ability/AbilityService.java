@@ -725,6 +725,8 @@ public final class AbilityService {
         PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
                 plugin.getLogger());
         if (visual == null) return;
+        if (a.vfx.tint() != null) visual.tint(color(a.vfx.tint()));
+        if (a.vfx.glow()) visual.fullBright();
         if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
         Vfx v = new Vfx(visual, at, p.owner, 0, ticks, false, a.vfx.yOffset());
         v.turn = true;

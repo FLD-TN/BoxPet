@@ -51,7 +51,7 @@ public abstract class Menu implements InventoryHolder {
     }
 
     public void open() {
-        if (combatLocked() && plugin.pets().combat().tagged(player.getUniqueId())) {
+        if (combatLocked() && plugin.interact().combatLocked(player)) {
             player.closeInventory();
             plugin.interact().lockMessage(player);
             return;

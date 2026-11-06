@@ -27,3 +27,8 @@ permissions:
   boxpet.admin:
     description: Lệnh /boxpet
     default: op
+    children:
+      boxpet.bypass: true
+  boxpet.bypass:
+    description: Bỏ qua khoá giao tranh (mở menu, bấm pet, gọi / cất / đổi pet) và thời gian chờ đổi pet, đổi tên, khoe
+    default: op
