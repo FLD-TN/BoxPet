@@ -1387,7 +1387,11 @@ abilities:
     name: 'Lãnh Địa Phượng Hoàng'
     color: '#FF7B00:#FFD000'
     description:
-      - 'Hồi %heal% máu, địch trong lãnh địa -%enemy% %enemy_stat%'
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'triển khai lãnh địa lửa, hồi'
+      - '%heal% máu cho chủ nhân. Kẻ địch'
+      - 'đứng trong %radius% ô bị giảm %enemy%'
+      - '%enemy_stat% khi còn ở trong vùng'
     cooldown: 14
     heal:
       amount:
