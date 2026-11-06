@@ -165,6 +165,8 @@ public final class PetIcons {
         if (potion.startsWith("potions.")) potion = a.potion;
         String[] ph = {
                 "damage", num(m, "damage", round1(a.damage.at(level, mul))),
+                "damage_final", num(m, "damage", round1(a.damage.at(level, mul) * a.novaWeight(a.novaHits.size() - 1))),
+                "hit_count", num(m, "time", a.novaHits.size()),
                 "heal", num(m, "heal", round1(a.heal.at(level, mul))),
                 "hearts", num(m, "shield", round1(a.shieldHearts.at(level, mul))),
                 "percent", num(m, "percent", a.type == Ability.Type.SHIELD ? a.shieldBelowPercent

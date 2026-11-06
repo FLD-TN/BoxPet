@@ -35,3 +35,6 @@ stats:
     per-level: 0.02
 # kỹ năng trong abilities.yml
 ability: cubee_ice_spike
+# 0.14.0: ẩn hiệu ứng chiêu gốc trong model (đã chuyển cho pet huyền thoại)
+hide-bones:
+  - allef

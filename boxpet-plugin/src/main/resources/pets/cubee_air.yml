@@ -35,3 +35,6 @@ stats:
     per-level: 0.03
 # kỹ năng trong abilities.yml
 ability: cubee_wind_blade
+# 0.14.0: ẩn hiệu ứng chiêu gốc trong model (đã chuyển cho pet huyền thoại)
+hide-bones:
+  - allef

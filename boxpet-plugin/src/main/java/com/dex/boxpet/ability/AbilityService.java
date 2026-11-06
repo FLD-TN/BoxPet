@@ -172,6 +172,7 @@ public final class AbilityService {
                 if (a.vfx != null) onOwner(p, a, a.vfx.life());
                 announce(p, a);
                 p.cooldown = a.cooldownTicks;
+                if (a.areaRadius > 0 && a.damage.base() > 0) domain(p, a);
             }
             case POTION -> {
                 if (--p.potionRefresh > 0) return;
@@ -619,8 +620,9 @@ public final class AbilityService {
         boolean atPet = a.novaAt.equals("pet");
         Location beamFrom = null;
         if (a.vfx != null) {
-            Location at = atPet ? p.pos.clone().add(0, a.vfx.yOffset(), 0) : center[0].clone().add(0, a.vfx.yOffset(), 0);
-            at.setYaw(yawTo(atPet ? at : p.pos, center[0]));
+            boolean travel = !atPet && a.novaTravel > 0;
+            Location at = atPet || travel ? p.pos.clone().add(0, a.vfx.yOffset(), 0) : center[0].clone().add(0, a.vfx.yOffset(), 0);
+            at.setYaw(yawTo(atPet || travel ? at : p.pos, center[0]));
             at.setPitch(0);
             if (atPet && !a.beamParticle.isEmpty()) {
                 // 0.13.1: the model faces the target, so "back" is away from it (the flower stands behind the pet)
@@ -634,12 +636,19 @@ public final class AbilityService {
             if (visual != null) {
                 if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
                 shown = new Vfx(visual, at, atPet ? null : target, 0, a.vfx.life(), false, a.vfx.yOffset());
+                if (travel) {
+                    // 0.14.0: blown from the pet to the target, then it stays on the target
+                    shown.travelFrom = at.clone();
+                    shown.travelTicks = a.novaTravel;
+                }
                 vfx.add(shown);
             }
         }
         int firstHit = a.novaHits.get(0);
         final Location beam = beamFrom;
-        for (int t : a.novaHits) {
+        for (int hit = 0; hit < a.novaHits.size(); hit++) {
+            int t = a.novaHits.get(hit);
+            double dmg = base * a.novaWeight(hit);
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
                 // follows the target while it lives, else the last place it was
@@ -650,8 +659,8 @@ public final class AbilityService {
                         && target.getLocation().distanceSquared(c) <= radius * radius + 1) victims.add(0, target);
                 for (LivingEntity e : victims) {
                     if (beam != null && beam.getWorld() == e.getWorld()) line(beam, e.getLocation().add(0, e.getHeight() * 0.55, 0), a.beamParticle);
-                    if (damage(p, a, e, base, false)) {
-                        applyDebuff(p, a, e, base);
+                    if (damage(p, a, e, dmg, false)) {
+                        applyDebuff(p, a, e, dmg);
                         particles(p, a, e, true);
                         // 0.13.0: a nova with a mark section marks whoever its first hit catches (Hiệp Sĩ Thánh)
                         if (t == firstHit && a.markBonus.base() > 0) {
@@ -661,6 +670,23 @@ public final class AbilityService {
                     }
                 }
             }, t);
+        }
+    }
+
+    /**
+     * 0.14.0 domain: after a heal, enemies inside the radius around the owner are hit at each nova hit tick (the
+     * pillars of Lãnh Địa Phượng Hoàng). The area moves with the owner.
+     */
+    private void domain(ActivePet p, Ability a) {
+        double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
+        for (int hit = 0; hit < a.novaHits.size(); hit++) {
+            double dmg = base * a.novaWeight(hit);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (plugin.pets().active(p.ownerId) != p || p.abilityPaused() || !p.owner.isOnline()) return;
+                for (LivingEntity e : around(p.owner, p.owner.getLocation(), a.areaRadius)) {
+                    if (damage(p, a, e, dmg, false)) particles(p, a, e, true);
+                }
+            }, a.novaHits.get(hit));
         }
     }
 
@@ -729,7 +755,7 @@ public final class AbilityService {
         if (a.vfx.glow()) visual.fullBright();
         if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
         Vfx v = new Vfx(visual, at, p.owner, 0, ticks, false, a.vfx.yOffset());
-        v.turn = true;
+        v.turn = a.vfx.turn();
         vfx.add(v);
     }
 
@@ -1092,6 +1118,10 @@ public final class AbilityService {
         List<Ability.ParticleFx> trail = List.of();
         /** Follows the target's body rotation (wings stay behind the owner). */
         boolean turn;
+        /** 0.14.0: starts here and slides to the followed entity over travelTicks. */
+        Location travelFrom;
+        int travelTicks;
+        int age;
         /** Moves a free (not following) vfx each tick: the falling meteor. */
         java.util.function.UnaryOperator<Location> mover;
 
@@ -1138,6 +1168,10 @@ public final class AbilityService {
             if (follow != null) {
                 if (!follow.isValid() || follow.isDead()) return false;
                 Location at = follow.getLocation().add(0, yOffset, 0);
+                if (travelFrom != null && age < travelTicks && travelFrom.getWorld() == at.getWorld()) {
+                    double k = (double) ++age / travelTicks;
+                    at = travelFrom.clone().add(at.toVector().subtract(travelFrom.toVector()).multiply(k));
+                }
                 at.setYaw(turn ? follow.getBodyYaw() : loc.getYaw());
                 loc = at;
                 if (visual != null) visual.move(loc, loc.getYaw(), loc.getYaw());

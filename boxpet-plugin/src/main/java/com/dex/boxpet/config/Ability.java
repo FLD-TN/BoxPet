@@ -77,7 +77,8 @@ public final class Ability {
      * @param life  ticks before it disappears (projectile max flight time)
      */
     public record VfxFx(String model, String animation, double speed, int life, double scale, double yOffset,
-                        List<String> frames, List<String> parts, @Nullable String tint, boolean glow, double center) {
+                        List<String> frames, List<String> parts, @Nullable String tint, boolean glow, double center,
+                        boolean turn) {
         /** 0.12.0: a flipbook effect of the pack (frame models swapped into {@code parts}, one per tick). */
         public boolean flipbook() {
             return !frames.isEmpty() && !parts.isEmpty();
@@ -147,6 +148,14 @@ public final class Ability {
     /** Beam point: blocks behind the model origin and above it, at vfx scale 1 (the nature flower's pistil: 2.75 / 4.9). */
     public final double beamBack;
     public final double beamUp;
+    /** 0.14.0: damage multiplier of each hit (same order as hit-ticks; missing = 1), e.g. a stronger last hit. */
+    public final List<Double> novaWeights;
+    /** 0.14.0: the effect starts at the pet and reaches the target in this many ticks (Lốc Linh Hồn), 0 = at the target. */
+    public final int novaTravel;
+
+    public double novaWeight(int hit) {
+        return hit < novaWeights.size() ? novaWeights.get(hit) : 1.0;
+    }
     public final int tetherInterval;
     /** Buff: when it goes off (combat, hurt, low-hp) and the owner-only stat buff it gives. */
     public final String trigger;
@@ -238,13 +247,17 @@ public final class Ability {
         tetherTicks = te == null ? 80 : (int) Math.round(Math.max(1, te.getDouble("seconds", 4)) * 20);
         tetherInterval = te == null ? 10 : Math.max(5, te.getInt("interval-ticks", 10));
         List<Integer> nh = new java.util.ArrayList<>();
-        for (int t : s.getIntegerList("nova.hit-ticks")) if (t >= 0 && nh.size() < 6) nh.add(t);
+        for (int t : s.getIntegerList("nova.hit-ticks")) if (t >= 0 && nh.size() < 16) nh.add(t);
         if (nh.isEmpty()) nh.add(20);
         novaHits = List.copyOf(nh);
         novaAt = s.getString("nova.at", "target").toLowerCase(Locale.ROOT);
         beamParticle = s.getString("nova.beam.particle", "");
         beamBack = s.getDouble("nova.beam.back", 0);
         beamUp = s.getDouble("nova.beam.up", 0);
+        List<Double> w = new java.util.ArrayList<>();
+        for (Double wv : s.getDoubleList("nova.weights")) w.add(Math.max(0, wv));
+        novaWeights = List.copyOf(w);
+        novaTravel = Math.max(0, s.getInt("nova.travel-ticks", 0));
         ConfigurationSection ob = s.getConfigurationSection("orbit");
         orbitTicks = ob == null ? 120 : (int) Math.round(Math.max(1, ob.getDouble("seconds", 6)) * 20);
         trigger = s.getString("trigger", "combat").toLowerCase(Locale.ROOT);
@@ -293,7 +306,7 @@ public final class Ability {
                 v = new VfxFx(vs.getString("model"), vs.getString("animation", ""), Math.max(0.05, vs.getDouble("speed", 0.8)),
                         Math.max(5, vs.getInt("life-ticks", 40)), Math.max(0.1, vs.getDouble("scale", 1.0)),
                         vs.getDouble("y-offset", 0.0), vs.getStringList("frames"), vs.getStringList("frame-parts"),
-                        vs.getString("tint", null), vs.getBoolean("glow", false), vs.getDouble("center", 0));
+                        vs.getString("tint", null), vs.getBoolean("glow", false), vs.getDouble("center", 0), vs.getBoolean("turn", true));
             }
         }
         vfx = v;
