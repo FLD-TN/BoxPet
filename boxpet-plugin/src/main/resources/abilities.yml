@@ -655,7 +655,8 @@ abilities:
     cooldown: 45
     blast:
       radius: 4
-      power: 1.2
+      # 0.15.0: lực đẩy ~ 2 ô
+      power: 0.32
     shield:
       below-percent: 40
       hearts:
@@ -733,7 +734,8 @@ abilities:
     color: '#FF8FB1:#8FD3FF'
     description:
       - 'Khi chủ nhân bị đánh: +%buff%%'
-      - '%buff_stat% trong %seconds% giây'
+      - '%buff_stat% và +%buff2% %buff2_stat%'
+      - 'trong %seconds% giây'
     cooldown: 25
     trigger: hurt
     buff:
@@ -742,6 +744,12 @@ abilities:
         base: 3
         per-level: 0.12
       seconds: 5
+      # 0.15.0: thêm một chút Phòng thủ
+      also:
+        stat: DEFENSE
+        amount:
+          base: 1
+          per-level: 0.04
     fx:
       animation: skill
       sounds:
@@ -768,13 +776,13 @@ abilities:
     buff:
       stat: ATTACK_DAMAGE
       amount:
-        base: 1
+        base: 2.9
         per-level: 0.05
       seconds: 6
     enemy-stat:
       stat: ATTACK_DAMAGE
       amount:
-        base: 1
+        base: 2.9
         per-level: 0.05
     fx:
       animation: skill
@@ -784,10 +792,17 @@ abilities:
       particles:
         - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
       vfx:
-        model: vfx_soul_drain
-        animation: idle
-        life-ticks: 120
-        scale: 1
+        # 0.15.0: vòng phép tím dưới chân chủ nhân và dưới chân kẻ bị cướp sức mạnh
+        model: vfx_magic_circle
+        animation: skill
+        tint: '9B5CFF'
+        glow: true
+        on-enemy: true
+        life-ticks: 99
+        scale: 0.5
+        y-offset: 0.05
+        turn: false
+
   shark_treasure:
     type: boost
     name: 'Mũi Săn Mồi'
@@ -988,8 +1003,8 @@ abilities:
     color: '#FF4D6D:#FFC2CF'
     description:
       - 'Chém mục tiêu %hits% nhát, mỗi nhát'
-      - '%damage% sát thương và chảy máu'
-      - '%seconds% giây'
+      - '%damage% sát thương, chủ nhân được'
+      - '+%buff% %buff_stat% trong %buff_seconds% giây'
     cooldown: 9
     range: 10
     cast-delay-ticks: 20
@@ -999,12 +1014,13 @@ abilities:
     hits:
       count: 2
       interval-ticks: 8
-    debuff:
-      type: bleed
-      seconds: 3
-      damage-ratio: 0.3
-      # dấu máu trên mục tiêu khi chảy máu
-      vfx: vfx_blood_mark
+    # 0.15.0: thay chảy máu: chủ nhân +2 Sát thương (chỉ số gốc) trong 4 giây khi tung chiêu
+    buff:
+      stat: ATTACK_DAMAGE
+      amount:
+        base: 1.053
+        per-level: 0
+      seconds: 4
     fx:
       animation: skill
       sounds:
@@ -1058,6 +1074,9 @@ abilities:
       vfx:
         model: vfx_red_target
         animation: skill
+        # 0.15.0: tâm ngắm đỏ, sáng tối đa
+        tint: 'FF2B2B'
+        glow: true
         life-ticks: 120
         scale: 1.0
         y-offset: 2.3
@@ -1075,7 +1094,7 @@ abilities:
         base: 2
         per-level: 0.05
       percent: false
-      below-percent: 60
+      below-percent: 40
     shield:
       hearts:
         base: 1
@@ -1089,10 +1108,16 @@ abilities:
         - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
         - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
       vfx:
-        model: vfx_sun_shield
-        animation: idle
-        life-ticks: 100
-        scale: 1.0
+        # 0.15.0: vòng phép vàng dưới chân thay cho khiên bay quanh người
+        model: vfx_magic_circle
+        animation: skill
+        tint: 'FFC94D'
+        glow: true
+        life-ticks: 99
+        scale: 0.5
+        y-offset: 0.05
+        turn: false
+
   frog_tongue_basic:
     type: projectile
     name: 'Lưỡi Dính'
@@ -1795,7 +1820,6 @@ abilities:
     description:
       - 'Gọi sóng nổ trong %radius% ô quanh'
       - 'mục tiêu, gây %damage% sát thương'
-      - 'và làm chậm %seconds% giây'
     cooldown: 9
     range: 12
     cast-delay-ticks: 18
@@ -1804,10 +1828,6 @@ abilities:
       per-level: 0.13
     area:
       radius: 3
-    debuff:
-      type: slow
-      seconds: 2
-      amplifier: 0
     fx:
       animation: skill
       area-vfx: vfx_burst_water

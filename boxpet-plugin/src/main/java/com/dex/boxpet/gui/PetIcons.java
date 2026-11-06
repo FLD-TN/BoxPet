@@ -191,6 +191,9 @@ public final class PetIcons {
                 "count", num(m, "time", a.meteors),
                 "buff", num(m, "bonus", round1(a.buffAmount.at(level, mul))),
                 "buff_stat", statName(plugin, a.buffStat),
+                "buff2", num(m, "bonus", round1(a.buff2Amount.at(level, mul))),
+                "buff2_stat", statName(plugin, a.buff2Stat),
+                "buff_seconds", num(m, "time", a.buffTicks / 20.0),
                 "enemy", num(m, "damage", round1(a.enemyAmount.at(level, mul))),
                 "enemy_stat", statName(plugin, a.enemyStat),
                 "pvp", num(m, "percent", Math.round(a.pvp(plugin.settings().defaultPvpMultiplier) * 100))

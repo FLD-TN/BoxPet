@@ -92,7 +92,7 @@ public final class PetTypes {
                 PetType.Role.of(y.getString("role", "support")), y.getString("icon", ""), fallback, rarity.id(),
                 Math.max(0, y.getInt("egg-weight", 1)), stages, anims, dbl(y, "follow.side"), dbl(y, "follow.back"),
                 dbl(y, "follow.height"), y.getBoolean("follow.fly", false), stats, y.getString("ability", ""),
-                y.getString("dialogue", family).toLowerCase(Locale.ROOT), bonus, y.getString("ability-2", ""));
+                y.getString("dialogue", family).toLowerCase(Locale.ROOT), bonus, "");
         made.hideBones = List.copyOf(y.getStringList("hide-bones"));
         return made;
     }

@@ -250,6 +250,11 @@ public final class AbilityService {
     // ------------------------------------------------------------------ combat
 
     private void cast(ActivePet p, Ability a, LivingEntity target) {
+        // 0.15.0: an attack skill with a buff section also gives the owner that stat for buff.seconds
+        if (!a.buffStat.isEmpty()) {
+            plugin.stats().tempStat(plugin, p.owner, BUFF_KEY, a.buffStat, a.buffAmount.at(p.data.level, p.rarity.statMultiplier()),
+                    a.buffRelative, a.buffTicks);
+        }
         p.faceYaw = yawTo(p.pos, target.getLocation());
         p.faceTicks = a.castDelay + 20;
         plugin.pets().playAnimation(p, a.animation);
@@ -732,6 +737,9 @@ public final class AbilityService {
         if (!a.buffStat.isEmpty()) {
             plugin.stats().tempStat(plugin, p.owner, BUFF_KEY, a.buffStat, a.buffAmount.at(lvl, mul), a.buffRelative, a.buffTicks);
         }
+        if (!a.buff2Stat.isEmpty()) {
+            plugin.stats().tempStat(plugin, p.owner, BUFF_KEY, a.buff2Stat, a.buff2Amount.at(lvl, mul), false, a.buffTicks);
+        }
         if (!a.enemyStat.isEmpty()) {
             double v = -a.enemyAmount.at(lvl, mul);
             if (a.enemyRadius > 0) {
@@ -747,8 +755,25 @@ public final class AbilityService {
             applyDebuff(p, a, enemy, a.damage.at(lvl, mul));
         }
         fx(p, a, p.owner);
-        if (a.vfx != null) onOwner(p, a, a.buffTicks);
+        if (a.vfx != null) {
+            onOwner(p, a, a.buffTicks);
+            // 0.15.0: the same model under the robbed enemy too (Kỳ Lân U Minh)
+            if (a.vfx.onEnemy() && enemy != null && validTarget(p.owner, enemy)) onEntity(a, enemy, a.buffTicks);
+        }
         announce(p, a);
+    }
+
+    /** The skill's model under {@code e} for {@code ticks}, tinted like on the owner, not turning with it. */
+    private void onEntity(Ability a, LivingEntity e, int ticks) {
+        Location at = e.getLocation().add(0, a.vfx.yOffset(), 0);
+        at.setPitch(0);
+        PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
+                plugin.getLogger());
+        if (visual == null) return;
+        if (a.vfx.tint() != null) visual.tint(color(a.vfx.tint()));
+        if (a.vfx.glow()) visual.fullBright();
+        if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
+        vfx.add(new Vfx(visual, at, e, 0, ticks, false, a.vfx.yOffset()));
     }
 
     /** 0.9.3: the skill's model stays on the owner for {@code ticks}, turning with them (wings, halo, rune ring). */

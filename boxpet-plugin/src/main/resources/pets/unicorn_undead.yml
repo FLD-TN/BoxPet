@@ -1,5 +1,5 @@
-# Kỳ Lân Bất Tử (unicorn) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
-name: 'Kỳ Lân Bất Tử'
+# Kỳ Lân U Minh (unicorn) — file mẫu, chỉnh tự do. Xoá file = xoá loại pet khỏi server (pet đã có vẫn ở trong DB).
+name: 'Kỳ Lân U Minh'
 # màu tên mặc định: một mã hex ('#FF7A45') hoặc gradient ('#FFF1A8:#FFB347')
 color: '#6B8F3A:#D9ED92'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)

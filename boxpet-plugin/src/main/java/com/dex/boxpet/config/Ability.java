@@ -78,7 +78,7 @@ public final class Ability {
      */
     public record VfxFx(String model, String animation, double speed, int life, double scale, double yOffset,
                         List<String> frames, List<String> parts, @Nullable String tint, boolean glow, double center,
-                        boolean turn) {
+                        boolean turn, boolean onEnemy) {
         /** 0.12.0: a flipbook effect of the pack (frame models swapped into {@code parts}, one per tick). */
         public boolean flipbook() {
             return !frames.isEmpty() && !parts.isEmpty();
@@ -164,6 +164,9 @@ public final class Ability {
     public final Scaled buffAmount;
     public final int buffTicks;
     public final boolean buffRelative;
+    /** 0.15.0: a second stat given with the buff (buff.also), e.g. a little Phòng thủ with Né đòn. */
+    public final String buff2Stat;
+    public final Scaled buff2Amount;
     /** Buff: a stat taken from enemy players (the target / attacker, or every enemy within {@code enemyRadius}). */
     public final String enemyStat;
     public final Scaled enemyAmount;
@@ -266,6 +269,9 @@ public final class Ability {
         buffAmount = bu == null ? Scaled.ZERO : Scaled.read(bu, "amount", 0);
         buffTicks = bu == null ? 100 : (int) Math.round(bu.getDouble("seconds", 5) * 20);
         buffRelative = bu != null && "relative".equalsIgnoreCase(bu.getString("type", "flat"));
+        ConfigurationSection b2 = bu == null ? null : bu.getConfigurationSection("also");
+        buff2Stat = b2 == null ? "" : b2.getString("stat", "").toUpperCase(Locale.ROOT);
+        buff2Amount = b2 == null ? Scaled.ZERO : Scaled.read(b2, "amount", 0);
         buffBelowPercent = bu == null ? 40 : Math.max(1, Math.min(100, bu.getInt("below-percent", 40)));
         ConfigurationSection en = s.getConfigurationSection("enemy-stat");
         enemyStat = en == null ? "" : en.getString("stat", "").toUpperCase(Locale.ROOT);
@@ -306,7 +312,8 @@ public final class Ability {
                 v = new VfxFx(vs.getString("model"), vs.getString("animation", ""), Math.max(0.05, vs.getDouble("speed", 0.8)),
                         Math.max(5, vs.getInt("life-ticks", 40)), Math.max(0.1, vs.getDouble("scale", 1.0)),
                         vs.getDouble("y-offset", 0.0), vs.getStringList("frames"), vs.getStringList("frame-parts"),
-                        vs.getString("tint", null), vs.getBoolean("glow", false), vs.getDouble("center", 0), vs.getBoolean("turn", true));
+                        vs.getString("tint", null), vs.getBoolean("glow", false), vs.getDouble("center", 0), vs.getBoolean("turn", true),
+                        vs.getBoolean("on-enemy", false));
             }
         }
         vfx = v;
