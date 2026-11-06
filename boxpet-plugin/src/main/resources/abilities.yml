@@ -569,6 +569,12 @@ abilities:
         - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
         - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
+      vfx:
+        model: vfx_heaven_ring
+        animation: idle
+        life-ticks: 120
+        scale: 2
+        y-offset: 0
   unicorn_nature:
     type: buff
     name: 'Giáp Lá Rừng Xanh'
@@ -928,6 +934,12 @@ abilities:
         - {sound: item.firecharge.use, volume: 0.8, pitch: 1.0}
       particles:
         - {particle: FLAME, count: 25, spread: 0.6, speed: 0.05, at: owner}
+      vfx:
+        model: vfx_phoenix_wings
+        animation: idle
+        life-ticks: 160
+        scale: 1.1
+        y-offset: 0
   frog_tongue_basic:
     type: projectile
     name: 'Lưỡi Dính'
@@ -1193,6 +1205,12 @@ abilities:
       particles:
         - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
         - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+      vfx:
+        model: vfx_phoenix_feathers
+        animation: skill
+        life-ticks: 30
+        scale: 1
+        y-offset: 0
   unicorn_heavenly_guard:
     type: buff
     name: 'Thánh Quang Hộ Thể'
@@ -1214,6 +1232,12 @@ abilities:
         - {sound: block.beacon.power_select, volume: 0.6, pitch: 1.6}
       particles:
         - {particle: END_ROD, count: 14, spread: 0.6, speed: 0.03, at: owner}
+      vfx:
+        model: vfx_heaven_guard
+        animation: idle
+        life-ticks: 100
+        scale: 1
+        y-offset: 0
   cubee_galaxy_mob:
     type: boost
     name: 'Tinh Tú May Mắn'

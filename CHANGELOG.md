@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.3 (2026-11-06)
+
+- Model hiệu ứng riêng (vfx/blueprints): cánh lửa và lông vũ Phượng Hoàng, vòng ấn Thiên Giới, hào quang Thánh Quang Hộ Thể. Kỹ năng hồi máu / buff hiện model trên chủ nhân, xoay theo người.
+- Cập nhật server: chép vfx/blueprints vào ModelEngine/blueprints + /meg reload, thay abilities.yml.
+
 ## 0.9.2 (2026-11-06)
 
 - Dòng chỉ số thứ 3: Sử thi mở ở cấp 30, Huyền thoại ở cấp 20.

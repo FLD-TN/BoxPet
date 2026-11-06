@@ -169,6 +169,7 @@ public final class AbilityService {
                     o.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, a.shieldTicks, amp, true, false, true));
                 }
                 fx(p, a, o);
+                if (a.vfx != null) onOwner(p, a, a.vfx.life());
                 announce(p, a);
                 p.cooldown = a.cooldownTicks;
             }
@@ -530,7 +531,21 @@ public final class AbilityService {
             applyDebuff(p, a, enemy, a.damage.at(lvl, mul));
         }
         fx(p, a, p.owner);
+        if (a.vfx != null) onOwner(p, a, a.buffTicks);
         announce(p, a);
+    }
+
+    /** 0.9.3: the skill's model stays on the owner for {@code ticks}, turning with them (wings, halo, rune ring). */
+    private void onOwner(ActivePet p, Ability a, int ticks) {
+        Location at = p.owner.getLocation().add(0, a.vfx.yOffset(), 0);
+        at.setYaw(p.owner.getBodyYaw());
+        PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
+                plugin.getLogger());
+        if (visual == null) return;
+        if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
+        Vfx v = new Vfx(visual, at, p.owner, 0, ticks, false, a.vfx.yOffset());
+        v.turn = true;
+        vfx.add(v);
     }
 
     /** The pet was put away / the plugin stops: no buff or stolen stat stays behind. */
@@ -842,6 +857,8 @@ public final class AbilityService {
         final double yOffset;
         Runnable onHit;
         List<Ability.ParticleFx> trail = List.of();
+        /** Follows the target's body rotation (wings stay behind the owner). */
+        boolean turn;
         /** Moves a free (not following) vfx each tick: the falling meteor. */
         java.util.function.UnaryOperator<Location> mover;
 
@@ -888,7 +905,7 @@ public final class AbilityService {
             if (follow != null) {
                 if (!follow.isValid() || follow.isDead()) return false;
                 Location at = follow.getLocation().add(0, yOffset, 0);
-                at.setYaw(loc.getYaw());
+                at.setYaw(turn ? follow.getBodyYaw() : loc.getYaw());
                 loc = at;
                 if (visual != null) visual.move(loc, loc.getYaw(), loc.getYaw());
             }
