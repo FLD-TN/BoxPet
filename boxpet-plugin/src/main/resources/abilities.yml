@@ -192,8 +192,8 @@ abilities:
         model: vfx_nova_fire
         animation: skill
         life-ticks: 74
-        scale: 0.45
-        y-offset: 0.0
+        scale: 0.15
+        y-offset: 0.6
 
   # 0.11.0: Rồng Lửa Bóng Tối, hiệu ứng chiêu gốc của Tinh Linh Bóng Tối (pack Cubees) nổ tại mục tiêu
   dragon_dark_nova:
@@ -236,8 +236,8 @@ abilities:
         model: vfx_nova_darkness
         animation: skill
         life-ticks: 74
-        scale: 0.45
-        y-offset: 0.0
+        scale: 0.4
+        y-offset: -0.1
 
   frog_tongue:
     type: projectile
@@ -1315,8 +1315,8 @@ abilities:
         model: vfx_nova_galaxy
         animation: skill
         life-ticks: 89
-        scale: 0.9
-        y-offset: 0.0
+        scale: 0.8
+        y-offset: 0.2
 
   cubee_earth_dig:
     type: boost
