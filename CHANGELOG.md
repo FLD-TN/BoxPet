@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.6 (2026-11-06)
+
+- Tinh Linh Thiên Hà và Bóng Tối xuống Sử thi, mỗi con 1 kỹ năng: Thiên Hà hạ mob, Bóng Tối đào mỏ (x2 từ đầu, x3 từ cấp 40). Đây là 2 pet kinh tế duy nhất ở Sử thi; kinh tế nhiệm vụ chỉ còn ở Thường / Hiếm.
+- Tinh Linh không còn toàn kinh tế: Gió chiến đấu (Lưỡi Gió), Băng chiến đấu (Gai Băng + làm chậm), Thiên Nhiên hỗ trợ (Chồi Non hồi % máu), Ánh Sáng hỗ trợ (Ánh Sáng Hộ Mệnh: giảm sát thương khi bị đánh). Đất / Lửa giữ kinh tế.
+- Cá Mập Rồng thành pet chiến đấu: Sóng Dữ (nổ sóng 3 ô + làm chậm), dòng thứ 3 Sát thương PvP.
+- Model hiệu ứng đợt 4: lưỡi gió, gai băng, chồi non, vòng sáng, sóng nước.
+- Cập nhật server: chép vfx/blueprints + /meg reload, thay abilities.yml và thư mục pets/.
+
 ## 0.9.5 (2026-11-06)
 
 - Model hiệu ứng đợt 3: lưỡi ếch 4 màu (đạn bay), tia mặt trời Thần Ra, lông vũ trắng vàng cho Sư Điểu, vòng đẩy lùi băng / sculk cho Xương Rồng.

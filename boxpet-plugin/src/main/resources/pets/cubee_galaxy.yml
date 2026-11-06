@@ -7,7 +7,7 @@ family: cubee_dragon
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
 role: boost
 # độ hiếm của pet này (một model = một pet = một độ hiếm). Độ hiếm cao hơn thì chỉ số gốc cao hơn
-rarity: legendary
+rarity: epic
 # icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
 icon: 'cubees:cubees-icon-galaxy_dragon'
 icon-fallback: DRAGON_EGG
@@ -34,6 +34,4 @@ stats:
     base: 1
     per-level: 0.05
 # kỹ năng trong abilities.yml
-ability: cubee_luck
-# kỹ năng thứ 2 (pet huyền thoại), hồi chiêu riêng
-ability-2: cubee_galaxy_mob
+ability: cubee_galaxy_mob

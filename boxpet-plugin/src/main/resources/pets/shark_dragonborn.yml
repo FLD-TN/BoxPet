@@ -5,7 +5,7 @@ color: '#4361EE:#4CC9F0:#7209B7'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: shark
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
-role: boost
+role: combat
 # độ hiếm của pet này (một model = một pet = một độ hiếm). Độ hiếm cao hơn thì chỉ số gốc cao hơn
 rarity: epic
 # icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
@@ -26,11 +26,16 @@ follow:
   fly: false
 # chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
-  PVE_DAMAGE:
+  ATTACK_DAMAGE:
     base: 1
     per-level: 0.05
   MAX_HEALTH:
     base: 1
-    per-level: 0.04
+    per-level: 0.05
 # kỹ năng trong abilities.yml
-ability: shark_treasure
+ability: shark_tidal
+# dòng chỉ số thứ 3 (mở khi đột phá)
+bonus-stat:
+  stat: PVP_DAMAGE
+  base: 0.5
+  per-level: 0.03
