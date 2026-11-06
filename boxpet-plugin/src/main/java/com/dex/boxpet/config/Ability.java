@@ -139,6 +139,8 @@ public final class Ability {
     /** 0.9.0: vfx animation per hit ({@code fx.vfx.animations}), and a model on a bleeding target ({@code debuff.vfx}). */
     public final List<String> vfxAnimations;
     public final String debuffVfx;
+    /** 0.9.4: model of the explosion of area hits, meteors and orbs ({@code fx.area-vfx}), scaled to the radius. */
+    public final String areaVfx;
     public final String boostType;
     public final Scaled boostTenths;
     public final boolean boostWhole;
@@ -214,6 +216,7 @@ public final class Ability {
         enemyAmount = en == null ? Scaled.ZERO : Scaled.read(en, "amount", 0);
         enemyRadius = en == null ? 0 : Math.max(0, Math.min(10, en.getDouble("radius", 0)));
         vfxAnimations = s.getStringList("fx.vfx.animations");
+        areaVfx = s.getString("fx.area-vfx", "");
         debuffVfx = d == null ? "" : d.getString("vfx", "");
         ConfigurationSection bl = s.getConfigurationSection("blast");
         blastRadius = bl == null ? 0 : Math.max(0, Math.min(8, bl.getDouble("radius", 4)));

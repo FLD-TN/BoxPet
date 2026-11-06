@@ -18,6 +18,7 @@
 #   heal + shield (hồi máu kèm khiên), shield + blast (radius / power: đẩy lùi kẻ địch khi khiên bật).
 #   Hạ mob và đào mỏ chỉ nhận hệ số chẵn (x2, x3).
 #   %radius% %chain% %hits% %count% %buff% %buff_stat% %enemy% %enemy_stat% %debuff_seconds%
+# Thêm (0.9.4): fx.area-vfx: model nổ (nổ lan, thiên thạch, cầu lửa xoay), scale theo bán kính. Model riêng của BoxPet: vfx/ trong repo.
 # Thêm (0.9.0): fx.vfx.animations (mỗi nhát một hoạt ảnh), debuff.vfx (model trên mục tiêu khi chảy máu).
 #   orbit (0.9.1): orbit.count cầu (model fx.vfx) xoay quanh chủ orbit.seconds giây, bán kính area.radius, chạm kẻ
 #   địch thì nổ (damage + debuff). meteor có fx.vfx: model rơi từ trên trời xuống vòng báo.
@@ -88,6 +89,7 @@ abilities:
       seconds: 3
       amplifier: 0
     fx:
+      area-vfx: vfx_burst_soul
       animation: skill
       sounds:
         - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
@@ -123,6 +125,7 @@ abilities:
       seconds: 3
       amplifier: 0
     fx:
+      area-vfx: vfx_burst_shadow
       animation: skill
       sounds:
         - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
@@ -164,6 +167,7 @@ abilities:
       seconds: 3
       amplifier: 0
     fx:
+      area-vfx: vfx_burst_holy
       animation: skill
       sounds:
         - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
@@ -293,6 +297,7 @@ abilities:
       seconds: 3
       amplifier: 0
     fx:
+      area-vfx: vfx_burst_arcane
       animation: skill
       sounds:
         - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
@@ -597,6 +602,11 @@ abilities:
         - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
         - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
+      vfx:
+        model: vfx_leaf_armor
+        animation: idle
+        life-ticks: 100
+        scale: 1
   unicorn_rainbow:
     type: buff
     name: 'Bước Chân Cầu Vồng'
@@ -619,6 +629,11 @@ abilities:
         - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
         - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
+      vfx:
+        model: vfx_rainbow_ring
+        animation: idle
+        life-ticks: 100
+        scale: 1
   unicorn_undead:
     type: buff
     name: 'Đoạt Lực'
@@ -648,6 +663,11 @@ abilities:
         - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
         - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
+      vfx:
+        model: vfx_soul_drain
+        animation: idle
+        life-ticks: 120
+        scale: 1
   shark_treasure:
     type: boost
     name: 'Mũi Săn Mồi'
@@ -1172,6 +1192,7 @@ abilities:
     area:
       radius: 4
     fx:
+      area-vfx: vfx_burst_holy
       animation: skill
       sounds:
         - {sound: entity.player.attack.sweep, volume: 1.0, pitch: 0.7, delay: 20}
@@ -1339,6 +1360,12 @@ abilities:
       particles:
         - {particle: ITEM_SLIME, count: 3, spread: 0.05, speed: 0.01, at: path}
         - {particle: ITEM_SLIME, count: 15, spread: 0.4, speed: 0.05, at: target}
+      vfx:
+        model: vfx_stone_chunk
+        animation: idle
+        speed: 0.7
+        life-ticks: 40
+        scale: 1
   frog_nether_tongue:
     type: projectile
     name: 'Lưỡi Dung Nham'
@@ -1415,6 +1442,11 @@ abilities:
       particles:
         - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
         - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+      vfx:
+        model: vfx_music_notes
+        animation: skill
+        life-ticks: 32
+        scale: 1
   steam_gear:
     type: projectile
     name: 'Đạn Bánh Răng'
@@ -1443,6 +1475,12 @@ abilities:
         - {particle: CRIT, count: 3, spread: 0.05, speed: 0.01, at: path}
         - {particle: SMOKE, count: 2, spread: 0.05, speed: 0.01, at: path}
         - {particle: CRIT, count: 14, spread: 0.4, speed: 0.1, at: target}
+      vfx:
+        model: vfx_gear
+        animation: idle
+        speed: 0.8
+        life-ticks: 40
+        scale: 1
   dragon_orbit:
     type: orbit
     name: 'Vòng Lửa Rồng'
@@ -1469,6 +1507,7 @@ abilities:
       seconds: 4
       amplifier: 0
     fx:
+      area-vfx: vfx_burst_fire
       animation: skill
       sounds:
         - {sound: entity.ender_dragon.growl, volume: 0.6, pitch: 1.5, delay: 4}

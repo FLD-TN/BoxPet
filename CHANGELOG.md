@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.9.4 (2026-11-06)
+
+- Model hiệu ứng đợt 2 (vfx/blueprints): 5 vòng nổ theo màu kỹ năng (fx.area-vfx, dùng cho nổ lan, thiên thạch, cầu lửa xoay), giáp lá, vòng cầu vồng, linh hồn Đoạt Lực, bánh răng, cục đá, nốt nhạc.
+- Cập nhật server: chép vfx/blueprints vào ModelEngine/blueprints + /meg reload, thay abilities.yml.
+
 ## 0.9.3 (2026-11-06)
 
 - Model hiệu ứng riêng (vfx/blueprints): cánh lửa và lông vũ Phượng Hoàng, vòng ấn Thiên Giới, hào quang Thánh Quang Hộ Thể. Kỹ năng hồi máu / buff hiện model trên chủ nhân, xoay theo người.

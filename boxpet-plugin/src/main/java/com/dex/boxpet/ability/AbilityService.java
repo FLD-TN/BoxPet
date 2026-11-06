@@ -423,6 +423,7 @@ public final class AbilityService {
                 if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
                 Effects.particle(at.clone().add(0, 0.5, 0), "EXPLOSION", 2, 0.5, 0);
                 Effects.particle(at.clone().add(0, 0.5, 0), "LAVA", 12, radius * 0.4, 0.05);
+                burst(a, at, radius);
                 Effects.sound(at, "entity.generic.explode", 0.7f, 1.2f);
                 double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
                 for (LivingEntity e : around(p.owner, at, radius)) {
@@ -487,11 +488,24 @@ public final class AbilityService {
                     if (orbs.get(i) != null) orbs.get(i).remove();
                     Effects.particle(at, "EXPLOSION", 1, 0, 0);
                     Effects.sound(at, "entity.generic.explode", 0.5f, 1.4f);
+                    burst(a, e.getLocation(), 1.3);
                     if (damage(p, a, e, base, false)) applyDebuff(p, a, e, base);
                     break;
                 }
             }
         }, 1L, 1L);
+    }
+
+    /** The skill's explosion model ({@code fx.area-vfx}) on the ground, 1 block radius at scale 1. */
+    private void burst(Ability a, Location at, double radius) {
+        if (a.areaVfx.isEmpty() || at.getWorld() == null) return;
+        Location l = at.clone();
+        l.setYaw(0);
+        PetVisual visual = PetVisual.create(l, a.areaVfx, Math.max(0.3, radius), plugin.settings().viewDistance, null, null,
+                false, plugin.getLogger());
+        if (visual == null) return;
+        visual.play("skill");
+        vfx.add(new Vfx(visual, l, null, 0, 14, false, 0));
     }
 
     private static void ring(Location at, double radius, String particle) {
@@ -600,6 +614,7 @@ public final class AbilityService {
             // 0.8.0: area, every enemy around the impact
             Location c = target.getLocation();
             Effects.particle(c.clone().add(0, 0.6, 0), "EXPLOSION", 1, 0, 0);
+            burst(a, c, a.areaRadius);
             ring(c, a.areaRadius, a.particles.stream().filter(x -> x.at().equalsIgnoreCase("target"))
                     .map(Ability.ParticleFx::particle).findFirst().orElse("CRIT"));
             List<LivingEntity> victims = around(p.owner, c, a.areaRadius);
