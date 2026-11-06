@@ -629,6 +629,7 @@ public final class AbilityService {
                 vfx.add(shown);
             }
         }
+        int firstHit = a.novaHits.get(0);
         for (int t : a.novaHits) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
@@ -642,6 +643,11 @@ public final class AbilityService {
                     if (damage(p, a, e, base, false)) {
                         applyDebuff(p, a, e, base);
                         particles(p, a, e, true);
+                        // 0.13.0: a nova with a mark section marks whoever its first hit catches (Hiệp Sĩ Thánh)
+                        if (t == firstHit && a.markBonus.base() > 0) {
+                            marks.put(e.getUniqueId(), new Mark(p.ownerId, a.markBonus.at(p.data.level, p.rarity.statMultiplier()),
+                                    System.currentTimeMillis() + a.markTicks * 50L));
+                        }
                     }
                 }
             }, t);

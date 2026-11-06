@@ -163,7 +163,7 @@ public final class PetIcons {
                 "bonus", num(m, "bonus", round1(a.markBonus.at(level, mul))),
                 "boost", paint(m, "boost", boostText(a.boostType, tenths)),
                 "boost_type", m.text("boost-types." + a.boostType),
-                "seconds", num(m, "time", (a.type == Ability.Type.MARK ? a.markTicks : a.type == Ability.Type.SHIELD
+                "seconds", num(m, "time", (a.type == Ability.Type.MARK || a.type == Ability.Type.NOVA && a.markBonus.base() > 0 ? a.markTicks : a.type == Ability.Type.SHIELD
                         || (a.type == Ability.Type.HEAL && a.shieldHearts.base() > 0) ? a.shieldTicks
                         : a.type == Ability.Type.BUFF ? a.buffTicks : a.type == Ability.Type.ORBIT ? a.orbitTicks
                         : a.type == Ability.Type.ZONE ? a.zoneTicks : a.type == Ability.Type.TETHER ? a.tetherTicks

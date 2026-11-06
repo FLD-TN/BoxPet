@@ -895,48 +895,51 @@ abilities:
         life-ticks: 9
         scale: 1.0
         y-offset: 0.2
+  # 0.13.0: hiệu ứng chiêu gốc của Tinh Linh Ánh Sáng (pack Cubees): vòng ấn + xích thánh tại mục tiêu
   knight_holy:
-    type: mark
-    name: 'Thánh Thương'
+    type: nova
+    name: 'Thánh Ấn Phán Xét'
     color: '#FFF1A8:#FFFFFF'
     description:
-      - 'Đâm xuyên cả hàng, gây %damage%'
-      - 'sát thương và đánh dấu mục tiêu'
+      - 'Mở vòng ấn thánh dưới chân mục'
+      - 'tiêu, xích thánh giáng 3 lần trong'
+      - '%radius% ô, mỗi lần gây %damage%'
+      - 'sát thương. Kẻ trúng bị đánh dấu'
       - '%seconds% giây: chủ nhân đánh nó'
       - 'mạnh hơn %bonus%%'
-    cooldown: 7
+    cooldown: 9
     pvp-multiplier: 0.7
     range: 12
-    cast-delay-ticks: 22
+    cast-delay-ticks: 16
+    area:
+      radius: 3
     damage:
-      base: 4.5
-      per-level: 0.14
-    pierce: true
+      base: 2
+      per-level: 0.06
+    # 2 lần xích đầu (0,45 / 0,65 giây) và lần giáng cuối (3,75 giây)
+    nova:
+      hit-ticks: [9, 13, 75]
     mark:
-      seconds: 4
+      seconds: 5
       bonus-percent:
         base: 6
         per-level: 0.12
     fx:
       animation: skill
       sounds:
-        - {sound: item.trident.throw, volume: 0.8, pitch: 1.2, delay: 18}
-        - {sound: entity.player.attack.strong, volume: 0.8, pitch: 1.0, delay: 22}
+        - {sound: block.beacon.activate, volume: 0.6, pitch: 1.6, delay: 16}
+        - {sound: block.chain.place, volume: 1.0, pitch: 0.8, delay: 25}
+        - {sound: block.chain.place, volume: 1.0, pitch: 1.0, delay: 29}
+        - {sound: block.bell.use, volume: 0.6, pitch: 1.4, delay: 91}
       particles:
-        - {particle: CRIT, count: 18, spread: 0.4, speed: 0.2, at: target}
+        - {particle: END_ROD, count: 10, spread: 0.5, speed: 0.05, at: target}
       vfx:
-        # 0.12.0: nhát đâm của pack: khung 1 -> 8 mỗi tick, nhuộm màu + sáng tối đa (như MythicMobs của pack)
-        model: vfx_pet_pierce_1
+        model: vfx_nova_light
         animation: skill
-        frames: [vfx_pet_pierce_2, vfx_pet_pierce_3, vfx_pet_pierce_4, vfx_pet_pierce_5, vfx_pet_pierce_6, vfx_pet_pierce_7, vfx_pet_pierce_8]
-        frame-parts: [bone, bone2]
-        tint: 'FEF79D'
-        glow: true
-        # khúc sáng giữa nhát đâm nằm ngay trên người địch (ô tính ở scale 1)
-        center: 1.75
-        life-ticks: 9
-        scale: 1.0
-        y-offset: 0.2
+        life-ticks: 99
+        scale: 0.4
+        y-offset: 0.0
+
   shiba_samurai:
     type: strike
     name: 'Song Kiếm Ánh Sáng'
@@ -1258,6 +1261,45 @@ abilities:
         speed: 0.7
         life-ticks: 40
         scale: 1.0
+  # 0.13.0: Rồng Hoa Thánh, hiệu ứng chiêu gốc của Tinh Linh Thiên Nhiên (pack Cubees): hoa nở dưới chân mục tiêu
+  dragon_holy_bloom:
+    type: nova
+    name: 'Hoa Thánh Khai Quang'
+    color: '#FFF1A8:#B8F5A0'
+    description:
+      - 'Gọi hoa thánh nở dưới chân mục'
+      - 'tiêu, nhuỵ hoa phóng cột sáng lên'
+      - 'trời: 3 đợt trong %radius% ô, mỗi'
+      - 'đợt gây %damage% sát thương'
+    cooldown: 9
+    pvp-multiplier: 0.7
+    range: 14
+    cast-delay-ticks: 10
+    area:
+      radius: 2.5
+    damage:
+      base: 1.8
+      per-level: 0.06
+    pve-multiplier: 1.0
+    # cột sáng bắn từ giây 1,5 tới 3,6
+    nova:
+      hit-ticks: [32, 48, 64]
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 2}
+        - {sound: block.azalea.place, volume: 1.0, pitch: 0.8, delay: 12}
+        - {sound: block.beacon.power_select, volume: 0.7, pitch: 1.8, delay: 40}
+        - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.6, delay: 58}
+      particles:
+        - {particle: END_ROD, count: 8, spread: 0.4, speed: 0.08, at: target}
+      vfx:
+        model: vfx_nova_bloom
+        animation: skill
+        life-ticks: 84
+        scale: 0.5
+        y-offset: 0.0
+
   griffon_phoenix_heal:
     type: heal
     name: 'Lông Vũ Phượng Hoàng'
