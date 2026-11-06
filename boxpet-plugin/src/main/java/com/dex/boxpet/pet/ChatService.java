@@ -67,7 +67,11 @@ public final class ChatService {
 
     Location bubbleLocation(ActivePet pet) {
         double h = pet.visual == null ? 1 : pet.visual.height();
-        return pet.pos.clone().add(0, h + plugin.settings().nametagOffset + 0.45, 0);
+        Location at = pet.pos.clone().add(0, h + plugin.settings().nametagOffset + 0.45, 0);
+        // VERTICAL billboard keeps the entity's own pitch: a pet looking up / down (flying spirits) tilted the text
+        at.setPitch(0);
+        at.setYaw(0);
+        return at;
     }
 
     /** Called every tick by the manager. */
