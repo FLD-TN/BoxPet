@@ -67,9 +67,20 @@ public final class PetVisual {
     public static @Nullable PetVisual create(Location at, String modelId, double scale, int renderRadius,
                                              @Nullable String idle, @Nullable String walk, boolean withHitbox,
                                              Logger log) {
+        return create(at, modelId, scale, renderRadius, idle, walk, withHitbox, false, log);
+    }
+
+    /**
+     * @param hidden 0.11.4: the model starts invisible, before ModelEngine can send it to anyone (call
+     *               {@link #visible(boolean)} later); hiding it after creation can be too late for the first packet
+     */
+    public static @Nullable PetVisual create(Location at, String modelId, double scale, int renderRadius,
+                                             @Nullable String idle, @Nullable String walk, boolean withHitbox,
+                                             boolean hidden, Logger log) {
         if (!exists(modelId)) return null;
         try {
             Dummy<Object> dummy = new Dummy<>();
+            if (hidden) dummy.setVisible(false);
             dummy.setLocation(at);
             dummy.setRenderRadius(renderRadius);
             dummy.setYBodyRot(at.getYaw());
