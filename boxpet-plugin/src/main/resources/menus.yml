@@ -786,15 +786,16 @@ items:
       - '<#BFC7D5>Đặt vào Lò ấp (/pet) để ấp'
   random-egg:
     lore:
-      - '<#BFC7D5>Nở ra một pet ngẫu nhiên'
-      - '<#BFC7D5>đúng độ hiếm của trứng'
+      - '<#BFC7D5>Mở ra trứng của một pet'
+      - '<#BFC7D5>ngẫu nhiên đúng độ hiếm'
       - ''
       - '<#FFD166>Thông tin:'
       - '<gray>• Độ hiếm: %rarity%'
-      - '<gray>• Số loại có thể nở: <white>%count%'
-      - '<gray>• Thời gian ấp: <white>%time%'
+      - '<gray>• Số loại pet có thể ra: <white>%count%'
       - ''
-      - '<#BFC7D5>Đặt vào Lò ấp (/pet) để ấp'
+      - '<#BFC7D5>Mở trong Lò ấp (/pet)'
+  # 0.23.0: tên trứng của một pet
+  egg-name: '<white>[Trứng] %pet%'
   breakthrough:
     lore:
       - '<#BFC7D5>Giúp pet vượt mốc cấp'

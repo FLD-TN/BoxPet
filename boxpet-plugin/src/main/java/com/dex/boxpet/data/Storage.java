@@ -98,6 +98,11 @@ public final class Storage {
                             + " target INT NOT NULL)");
                     st.executeUpdate("CREATE TABLE IF NOT EXISTS boxpet_autofeed (uuid VARCHAR(36) PRIMARY KEY,"
                             + " enabled INT NOT NULL, start_at INT NOT NULL, candy_first INT NOT NULL, items TEXT NOT NULL)");
+                    st.executeUpdate("CREATE TABLE IF NOT EXISTS boxpet_eggs_used (serial VARCHAR(36) PRIMARY KEY, kind VARCHAR(16) NOT NULL,"
+                            + " detail VARCHAR(64) NOT NULL, used_by VARCHAR(36) NOT NULL, used_at BIGINT NOT NULL)");
+                }
+                try (Statement st = c.createStatement(); ResultSet rs = st.executeQuery("SELECT serial FROM boxpet_eggs_used")) {
+                    while (rs.next()) usedEggs.add(rs.getString(1));
                 }
                 return null;
             }).get(30, TimeUnit.SECONDS);
@@ -279,6 +284,32 @@ public final class Storage {
     }
 
     // ------------------------------------------------------------------ save
+
+    /** 0.23.0: ids of eggs already opened / hatched (loaded at start, kept in memory, written through). */
+    private final java.util.Set<String> usedEggs = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    public boolean eggUsed(String serial) {
+        return usedEggs.contains(serial);
+    }
+
+    /** Marks an egg used (at once in memory, then in the database). @return false when it already was */
+    public boolean useEgg(String serial, String kind, String detail, UUID by) {
+        if (!usedEggs.add(serial)) return false;
+        CompletableFuture.runAsync(() -> {
+            try (PreparedStatement ps = connection().prepareStatement(
+                    "INSERT INTO boxpet_eggs_used (serial, kind, detail, used_by, used_at) VALUES (?, ?, ?, ?, ?)")) {
+                ps.setString(1, serial);
+                ps.setString(2, kind);
+                ps.setString(3, detail);
+                ps.setString(4, by.toString());
+                ps.setLong(5, System.currentTimeMillis());
+                ps.executeUpdate();
+            } catch (SQLException ex) {
+                log.log(Level.SEVERE, "Could not record used egg " + serial, ex);
+            }
+        }, thread);
+        return true;
+    }
 
     public CompletableFuture<Void> save(Batch batch) {
         return CompletableFuture.runAsync(() -> {

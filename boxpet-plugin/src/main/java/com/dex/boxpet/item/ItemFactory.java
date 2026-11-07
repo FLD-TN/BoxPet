@@ -36,12 +36,15 @@ public final class ItemFactory {
     private final NamespacedKey kindKey;
     private final NamespacedKey idKey;
     private final NamespacedKey rarityKey;
+    /** 0.23.0: one id per egg item (eggs never stack): used once, a copy with the same id is refused. */
+    private final NamespacedKey serialKey;
 
     public ItemFactory(BoxPetPlugin plugin) {
         this.plugin = plugin;
         this.kindKey = new NamespacedKey(plugin, "kind");
         this.idKey = new NamespacedKey(plugin, "id");
         this.rarityKey = new NamespacedKey(plugin, "rarity");
+        this.serialKey = new NamespacedKey(plugin, "serial");
     }
 
     // ------------------------------------------------------------------ build
@@ -49,14 +52,34 @@ public final class ItemFactory {
     public ItemStack egg(PetType type, int amount) {
         Rarity rarity = plugin.rarities().get(type.rarity);
         if (rarity == null) rarity = plugin.rarities().lowest();
-        ItemsConfig.EggLook look = plugin.items().fixedEgg;
         ItemStack item = base(type.icon, type.iconFallback, 0);
-        String name = look.name().replace("%pet%", type.name);
         List<String> lore = plugin.menus().lore("items.egg",
                 "pet", type.colouredName(), "rarity", rarity.coloured(), "role", plugin.menus().text("roles." + type.role.id),
                 "time", Format.duration(rarity.hatchSeconds()));
-        return finish(item, PetType.paint(type.color, name) + " <dark_gray>[" + rarity.coloured() + "<dark_gray>]", lore,
-                Kind.EGG, type.id, rarity.id(), amount);
+        return serial(finish(item, eggName(type), lore, Kind.EGG, type.id, rarity.id(), 1));
+    }
+
+    /** 0.23.0: "[Trứng] Rồng Lửa" (menus.yml items.egg-name). */
+    public String eggName(PetType type) {
+        return plugin.menus().textOr("items.egg-name", "<white>[Trứng] %pet%", "pet", type.colouredName());
+    }
+
+    /** A fresh id, one-item stack. */
+    private ItemStack serial(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.getPersistentDataContainer().set(serialKey, PersistentDataType.STRING, java.util.UUID.randomUUID().toString());
+            meta.setMaxStackSize(1);
+            item.setItemMeta(meta);
+        }
+        item.setAmount(1);
+        return item;
+    }
+
+    /** The egg's id, or null (not an egg, or an egg made before 0.23.0). */
+    public @Nullable String serialOf(@Nullable ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return null;
+        return item.getItemMeta().getPersistentDataContainer().get(serialKey, PersistentDataType.STRING);
     }
 
     public ItemStack randomEgg(Rarity rarity, int amount) {
@@ -65,8 +88,8 @@ public final class ItemFactory {
         List<String> lore = new ArrayList<>(plugin.menus().lore("items.random-egg", "rarity", rarity.coloured(),
                 "time", Format.duration(rarity.hatchSeconds()), "count", String.valueOf(plugin.incubator().poolSize(rarity))));
         lore.addAll(look.lore());
-        return finish(item, "<" + rarity.color() + ">" + look.name() + " <dark_gray>[" + rarity.coloured() + "<dark_gray>]", lore,
-                Kind.RANDOM_EGG, "random", rarity.id(), amount);
+        return serial(finish(item, "<" + rarity.color() + ">" + look.name() + " <dark_gray>[" + rarity.coloured() + "<dark_gray>]", lore,
+                Kind.RANDOM_EGG, "random", rarity.id(), 1));
     }
 
     public ItemStack consumable(ItemsConfig.Consumable c, int amount) {

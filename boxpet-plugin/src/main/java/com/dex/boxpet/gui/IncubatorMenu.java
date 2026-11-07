@@ -98,6 +98,22 @@ public final class IncubatorMenu extends Menu {
             plugin.messages().send(player, "egg.invalid");
             return;
         }
+        // 0.23.0: every egg has its own id and is used once; a copy of a used egg is refused and logged
+        String serial = plugin.itemFactory().serialOf(item);
+        if (serial == null) {
+            plugin.messages().send(player, "egg.invalid");
+            return;
+        }
+        if (plugin.storage().eggUsed(serial)) {
+            plugin.messages().send(player, "egg.used");
+            plugin.getLogger().warning("Used egg " + serial + " (" + info.kind() + " " + info.id() + "/" + info.rarity()
+                    + ") presented again by " + player.getName() + ": possible duplicate");
+            return;
+        }
+        if (info.kind() == ItemFactory.Kind.RANDOM_EGG) {
+            openRandom(item, rawSlot, info, serial);
+            return;
+        }
         int free = plugin.incubator().freeSlot(player, pd);
         if (free < 0) {
             plugin.messages().send(player, "incubator.full");
@@ -115,11 +131,40 @@ public final class IncubatorMenu extends Menu {
         }
         // put() saves at once: the inventory is saved in the same moment (no egg kept after a crash)
         pd.inventoryChanged = true;
+        plugin.storage().useEgg(serial, info.kind().name(), info.id(), player.getUniqueId());
         IncubatorSlot s = plugin.incubator().put(pd, free, info);
         Rarity r = plugin.rarities().get(s.rarity());
         plugin.messages().send(player, "incubator.placed", "time", Format.duration(r == null ? 0 : r.hatchSeconds()));
         sound("block.sniffer_egg.plop");
         refresh();
+    }
+
+    /** 0.23.0: a random egg opens at once into the egg of one pet (a tradeable item), shown with the gacha strip. */
+    private void openRandom(ItemStack item, int rawSlot, ItemFactory.Info info, String serial) {
+        Rarity r = plugin.rarities().get(info.rarity());
+        PetType type = r == null ? null : plugin.incubator().roll(r);
+        if (type == null) {
+            plugin.messages().send(player, "incubator.no-pet");
+            return;
+        }
+        ItemStack stack = player.getInventory().getItem(rawSlot);
+        if (stack == null || !stack.isSimilar(item)) return;
+        player.getInventory().setItem(rawSlot, stack.getAmount() <= 1 ? null : withAmount(stack, stack.getAmount() - 1));
+        plugin.storage().useEgg(serial, info.kind().name(), type.id, player.getUniqueId());
+        ItemStack egg = plugin.itemFactory().egg(type, 1);
+        for (ItemStack rest : player.getInventory().addItem(egg.clone()).values()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), rest);
+        }
+        // the random egg left and the pet egg came in: both written with the player's data at once
+        pd.inventoryChanged = true;
+        plugin.pets().save(pd);
+        new EggRollMenu(plugin, player, pd, type, r, egg).open();
+    }
+
+    private static ItemStack withAmount(ItemStack stack, int amount) {
+        ItemStack copy = stack.clone();
+        copy.setAmount(amount);
+        return copy;
     }
 
     private void open(int index) {

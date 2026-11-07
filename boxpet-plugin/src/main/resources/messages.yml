@@ -93,8 +93,15 @@ care:
   no-active: '<error>✘ Bạn chưa thả pet nào'
 
 egg:
+  # 0.23.0
+  opened: '<success>✔ Đã mở ra <text>%egg% <dark_gray>[%rarity%<dark_gray>]'
+  used: '<error>✘ Quả trứng này đã được dùng, không thể dùng lại'
   hint: '<muted>Mở <text>/pet <muted>→ <text>Lò ấp <muted>rồi bấm vào quả trứng để ấp'
   invalid: '<error>✘ Quả trứng này không còn hợp lệ, hãy báo quản trị viên'
+
+egg-opened:
+  title: '%egg%'
+  subtitle: '<gray>mở ra từ trứng ngẫu nhiên <dark_gray>[%rarity%<dark_gray>]'
 
 incubator:
   full: '<error>✘ Lò ấp đã đầy'

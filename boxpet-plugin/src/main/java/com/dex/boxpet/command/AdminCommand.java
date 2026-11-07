@@ -130,14 +130,14 @@ public final class AdminCommand implements TabExecutor {
         }
         String what = args[1].toLowerCase(Locale.ROOT);
         switch (what) {
-            case "egg" -> {
+            case "egg", "petegg" -> {
                 PetType t = plugin.types().get(args[3]);
                 if (t == null) {
                     plugin.messages().send(sender, "admin.bad-pet", "pet", args[3]);
                     return;
                 }
                 int n = amount(args, 4);
-                deliver(target, plugin.itemFactory().egg(t, 1), n);
+                for (int i = 0; i < n; i++) deliver(target, plugin.itemFactory().egg(t, 1), 1);
                 plugin.messages().send(sender, "admin.given", "amount", String.valueOf(n), "item", t.colouredName(), "player", target.getName());
             }
             case "randomegg" -> {
@@ -147,7 +147,7 @@ public final class AdminCommand implements TabExecutor {
                     return;
                 }
                 int n = amount(args, 4);
-                deliver(target, plugin.itemFactory().randomEgg(r, 1), n);
+                for (int i = 0; i < n; i++) deliver(target, plugin.itemFactory().randomEgg(r, 1), 1);
                 plugin.messages().send(sender, "admin.given", "amount", String.valueOf(n), "item",
                         plugin.items().randomEgg(r.id()).name() + " " + r.coloured(), "player", target.getName());
             }
@@ -339,7 +339,7 @@ public final class AdminCommand implements TabExecutor {
         List<String> options = switch (args.length) {
             case 1 -> SUBS;
             case 2 -> switch (args[0].toLowerCase(Locale.ROOT)) {
-                case "give" -> List.of("egg", "randomegg", "candy", "food", "breakthrough", "pet");
+                case "give" -> List.of("egg", "petegg", "randomegg", "candy", "food", "breakthrough", "pet");
                 case "pets", "incubator" -> players();
                 case "transfer", "set", "delete", "restore" -> loadedIds();
                 default -> List.of();
@@ -352,7 +352,7 @@ public final class AdminCommand implements TabExecutor {
             };
             case 4 -> switch (args[0].toLowerCase(Locale.ROOT)) {
                 case "give" -> switch (args[1].toLowerCase(Locale.ROOT)) {
-                    case "egg", "pet" -> plugin.types().ids();
+                    case "egg", "petegg", "pet" -> plugin.types().ids();
                     case "randomegg" -> plugin.rarities().ids();
                     case "candy" -> plugin.items().ids(true);
                     case "food" -> plugin.items().ids(false);
