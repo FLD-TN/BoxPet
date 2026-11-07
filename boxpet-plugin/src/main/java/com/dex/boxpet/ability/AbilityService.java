@@ -52,6 +52,11 @@ public final class AbilityService {
     private final Map<UUID, Mark> marks = new HashMap<>();
     /** Pet id -> {ability ready at, shield ready at} (epoch ms): kept when the pet is put away (no reset by re-summon). */
     private final Map<UUID, long[]> cooldowns = new HashMap<>();
+    /**
+     * 0.20.2: owner id -> when the skill of the pet they last put away is ready (epoch ms). A pet brought out
+     * inherits it, so swapping pets never gives a fresh skill (A casts, swap to B, B still waits for A's cooldown).
+     */
+    private final Map<UUID, Long> ownerReady = new HashMap<>();
     private int ticks;
     private BukkitTask task;
 
@@ -74,6 +79,7 @@ public final class AbilityService {
         marks.clear();
         for (Player pl : Bukkit.getOnlinePlayers()) clearBuffs(pl);
         cooldowns.clear();
+        ownerReady.clear();
     }
 
     // ------------------------------------------------------------------ cooldowns kept per pet
@@ -87,15 +93,23 @@ public final class AbilityService {
         long shield2 = Math.max(p.shieldReadyAt2, 0);
         if (ability <= now && shield <= now && ability2 <= now && shield2 <= now) cooldowns.remove(p.data.id);
         else cooldowns.put(p.data.id, new long[]{ability, shield, ability2, shield2});
+        long ready = Math.max(ability, shield);
+        if (ready > now) ownerReady.merge(p.ownerId, ready, Math::max);
     }
 
     /** The pet comes back: same cooldowns as when it left. */
     public void restore(ActivePet p) {
         long[] c = cooldowns.remove(p.data.id);
-        if (c == null) return;
         long now = System.currentTimeMillis();
-        p.cooldown = (int) Math.max(0, (c[0] - now) / 50L);
-        p.shieldReadyAt = c[1];
+        // 0.20.2: whatever pet comes out waits at least for the skill of the pet put away last
+        Long owner = ownerReady.get(p.ownerId);
+        if (owner != null && owner > now) {
+            p.cooldown = (int) Math.max(p.cooldown, (owner - now) / 50L);
+            p.shieldReadyAt = Math.max(p.shieldReadyAt, owner);
+        }
+        if (c == null) return;
+        p.cooldown = (int) Math.max(p.cooldown, (c[0] - now) / 50L);
+        p.shieldReadyAt = Math.max(p.shieldReadyAt, c[1]);
         if (c.length >= 4) {
             p.cooldown2 = (int) Math.max(0, (c[2] - now) / 50L);
             p.shieldReadyAt2 = c[3];
@@ -1231,9 +1245,10 @@ public final class AbilityService {
             }
         }
         if (marks.size() > 64) marks.values().removeIf(m -> m.until() < System.currentTimeMillis());
-        if (++ticks % 1200 == 0 && !cooldowns.isEmpty()) {
+        if (++ticks % 1200 == 0 && (!cooldowns.isEmpty() || !ownerReady.isEmpty())) {
             long now = System.currentTimeMillis();
             cooldowns.values().removeIf(c -> { for (long x : c) if (x > now) return false; return true; });
+            ownerReady.values().removeIf(t -> t <= now);
         }
     }
 
