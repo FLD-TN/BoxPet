@@ -192,6 +192,33 @@ public final class Ability {
     public final String debuffVfx;
     /** 0.9.4: model of the explosion of area hits, meteors and orbs ({@code fx.area-vfx}), scaled to the radius. */
     public final String areaVfx;
+    /**
+     * 0.17.0: one economy boost. {@code levels} (level -> tenths, already final: no rarity multiplier) replaces the
+     * smooth growth when set: the boost jumps at those levels (x1 -> x2 at 30 -> x3 at 50).
+     */
+    public record Boost(String type, Scaled tenths, boolean whole, java.util.NavigableMap<Integer, Integer> levels) {
+        public int at(int level, double rarityMultiplier) {
+            if (!levels.isEmpty()) {
+                var e = levels.floorEntry(level);
+                return e == null ? 0 : Math.max(0, e.getValue());
+            }
+            int t = (int) Math.floor(tenths.at(level, rarityMultiplier) + 1e-9);
+            if (whole) t -= t % 10;
+            return Math.max(0, t);
+        }
+    }
+
+    /** boost + boost-2 (0.17.0: an economy pet may boost two things, e.g. quest and mining). */
+    public final List<Boost> boosts;
+
+    public int boostAt(int index, int level, double rarityMultiplier) {
+        return index < boosts.size() ? boosts.get(index).at(level, rarityMultiplier) : 0;
+    }
+
+    public String boostTypeAt(int index) {
+        return index < boosts.size() ? boosts.get(index).type() : "";
+    }
+
     public final String boostType;
     public final Scaled boostTenths;
     public final boolean boostWhole;
@@ -313,7 +340,30 @@ public final class Ability {
         ConfigurationSection b = s.getConfigurationSection("boost");
         boostType = b == null ? "" : b.getString("type", "").toLowerCase(Locale.ROOT);
         boostTenths = b == null ? Scaled.ZERO : Scaled.read(b, "tenths", 0);
-        boostWhole = b != null && (b.getBoolean("whole", false) || boostType.equals("mining") || boostType.equals("mob"));
+        // 0.17.0: only mining must be whole (CataMines); mob takes decimals (MyBoxMobs multiplies money / gem by tenths)
+        boostWhole = b != null && (b.getBoolean("whole", false) || boostType.equals("mining"));
+        List<Boost> boostList = new java.util.ArrayList<>();
+        for (String key : new String[]{"boost", "boost-2"}) {
+            ConfigurationSection bs = s.getConfigurationSection(key);
+            if (bs == null || bs.getString("type", "").isBlank()) continue;
+            String bt = bs.getString("type", "").toLowerCase(Locale.ROOT);
+            java.util.TreeMap<Integer, Integer> lv = new java.util.TreeMap<>();
+            ConfigurationSection ls = bs.getConfigurationSection("levels");
+            if (ls != null) {
+                for (String k : ls.getKeys(false)) {
+                    try {
+                        // value = the bonus multiplier (+x0.3 -> 3 tenths), rounded half up to BoxCore's 0.1 steps
+                        lv.put(Integer.parseInt(k.trim()), (int) Math.round(ls.getDouble(k) * 10));
+                    } catch (NumberFormatException ignored) {
+                        // not a level number
+                    }
+                }
+            }
+            boolean whole = bs.getBoolean("whole", false) || bt.equals("mining");
+            if (whole) lv.replaceAll((k, v) -> v - v % 10);
+            boostList.add(new Boost(bt, Scaled.read(bs, "tenths", 0), whole, java.util.Collections.unmodifiableNavigableMap(lv)));
+        }
+        boosts = List.copyOf(boostList);
         ConfigurationSection fx = s.getConfigurationSection("fx");
         animation = fx == null ? "skill" : fx.getString("animation", "skill");
         sounds = new ArrayList<>();

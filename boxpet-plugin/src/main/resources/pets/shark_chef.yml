@@ -29,8 +29,8 @@ stats:
   MAX_HEALTH:
     base: 1
     per-level: 0.05
-  DEFENSE:
-    base: 0.5
-    per-level: 0.03
+  PVE_DAMAGE:
+    base: 1
+    per-level: 0.05
 # kỹ năng trong abilities.yml
 ability: shark_chef_feast

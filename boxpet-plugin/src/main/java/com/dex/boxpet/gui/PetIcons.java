@@ -159,8 +159,8 @@ public final class PetIcons {
         MenuTexts m = plugin.menus();
         Rarity r = rarity(plugin, type);
         double mul = r.statMultiplier();
-        int tenths = (int) Math.floor(a.boostTenths.at(level, mul));
-        if (a.boostWhole) tenths -= tenths % 10;
+        int tenths = a.boostAt(0, level, mul);
+        int tenths2 = a.boostAt(1, level, mul);
         String potion = m.text("potions." + a.potion.toLowerCase(Locale.ROOT));
         if (potion.startsWith("potions.")) potion = a.potion;
         String[] ph = {
@@ -172,8 +172,10 @@ public final class PetIcons {
                 "percent", num(m, "percent", a.type == Ability.Type.SHIELD ? a.shieldBelowPercent
                         : a.type == Ability.Type.BUFF ? a.buffBelowPercent : a.healBelowPercent),
                 "bonus", num(m, "bonus", round1(a.markBonus.at(level, mul))),
-                "boost", paint(m, "boost", boostText(m, a.boostType, tenths)),
-                "boost_type", m.text("boost-types." + a.boostType),
+                "boost", paint(m, "boost", boostText(m, a.boostTypeAt(0), tenths)),
+                "boost_type", m.text("boost-types." + a.boostTypeAt(0)),
+                "boost_2", paint(m, "boost", boostText(m, a.boostTypeAt(1), tenths2)),
+                "boost_type_2", m.text("boost-types." + a.boostTypeAt(1)),
                 "seconds", num(m, "time", (a.type == Ability.Type.MARK || a.type == Ability.Type.NOVA && a.markBonus.base() > 0 ? a.markTicks : a.type == Ability.Type.SHIELD
                         || (a.type == Ability.Type.HEAL && a.shieldHearts.base() > 0) ? a.shieldTicks
                         : a.type == Ability.Type.BUFF ? a.buffTicks : a.type == Ability.Type.ORBIT ? a.orbitTicks

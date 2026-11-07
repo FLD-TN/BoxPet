@@ -731,19 +731,27 @@ abilities:
         y-offset: 0.0
         turn: false
   # 0.11.0: Kỳ Lân Rừng Xanh thành pet kinh tế (nhiệm vụ)
+  # 0.17.0: Kỳ Lân Rừng Xanh (sử thi): tăng thưởng nhiệm vụ + nhân phần thưởng mob theo mốc
   unicorn_nature:
     type: boost
     name: 'Phúc Lành Rừng Xanh'
     color: '#8EE07A:#D8F8C6'
     description:
       - 'Tăng %boost% phần thưởng khi'
-      - 'hoàn thành nhiệm vụ'
+      - 'hoàn thành nhiệm vụ và nhân'
+      - 'phần thưởng mob, boss lên %boost_2%'
     boost:
       type: quest
       tenths:
-        base: 1
-        per-level: 0.1
+        base: 0.7
+        per-level: 0.07
       whole: false
+    # săn mob: x1, lên level 30 thành x2, level 50 thành x3
+    boost-2:
+      type: mob
+      levels:
+        30: 1
+        50: 2
 
   unicorn_rainbow:
     type: buff
@@ -846,19 +854,27 @@ abilities:
         base: 1
         per-level: 0.1
       whole: false
+  # 0.17.0: Mèo Đào Đất (sử thi): tăng thưởng nhiệm vụ + nhân đào mỏ theo mốc
   palcat_dig:
     type: boost
     name: 'Xẻng Thần'
     color: '#E0B36A:#FFE3A8'
     description:
-      - 'Nhân vật phẩm khi đào mỏ'
-      - 'lên %boost%'
+      - 'Tăng %boost% phần thưởng khi'
+      - 'hoàn thành nhiệm vụ và nhân'
+      - 'vật phẩm đào mỏ lên %boost_2%'
     boost:
-      type: mining
+      type: quest
       tenths:
-        base: 6
-        per-level: 0.15
-      whole: true
+        base: 0.7
+        per-level: 0.07
+      whole: false
+    # đào mỏ: x1, lên level 30 (sau đột phá) thành x2, level 50 thành x3
+    boost-2:
+      type: mining
+      levels:
+        30: 1
+        50: 2
   palcat_art:
     type: boost
     name: 'Cảm Hứng Họa Sĩ'
@@ -1538,19 +1554,22 @@ abilities:
         base: 7
         per-level: 0.12
       whole: true
+  # 0.17.0: Cá Mập Đầu Bếp, nhân phần thưởng mob theo mốc level (số lẻ được: MyBoxMobs nhân tiền / gem theo phần mười)
   shark_chef_feast:
     type: boost
     name: 'Tiệc Hải Sản'
     color: '#FFB4A2:#FFE5D9'
     description:
-      - 'Tăng %boost% phần thưởng khi'
-      - 'hoàn thành nhiệm vụ'
+      - 'Nhân phần thưởng khi hạ mob,'
+      - 'boss lên %boost%'
     boost:
-      type: quest
-      tenths:
-        base: 1
-        per-level: 0.1
-      whole: false
+      type: mob
+      # mốc level: mức cộng thêm (x1 + giá trị); BoxCore chỉ nhận bước 0,1 nên 0,25 làm tròn lên 0,3
+      levels:
+        10: 0.25
+        20: 0.5
+        30: 0.75
+        40: 1.0
   frog_stone_slam:
     type: projectile
     name: 'Lưỡi Đá'
@@ -1858,3 +1877,58 @@ abilities:
         - {sound: entity.player.splash.high_speed, volume: 0.6, pitch: 1.2, delay: 18}
       particles:
         - {particle: SPLASH, count: 30, spread: 1.0, speed: 0.1, at: target}
+  # 0.17.0: Cá Mập Con, chiến đấu bậc thường
+  shark_bite_basic:
+    type: strike
+    name: 'Cú Đớp Bất Ngờ'
+    color: '#7CCBFF:#D6F0FF'
+    description:
+      - 'Lặn xuống rồi trồi lên đớp mục'
+      - 'tiêu, gây %damage% sát thương'
+    cooldown: 10
+    pvp-multiplier: 0.4
+    range: 10
+    cast-delay-ticks: 18
+    damage:
+      base: 2.5
+      per-level: 0.1
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.player.splash, volume: 0.8, pitch: 1.2}
+        - {sound: entity.guardian.attack, volume: 0.5, pitch: 1.6, delay: 18}
+      particles:
+        - {particle: SPLASH, count: 20, spread: 0.5, speed: 0.1, at: target}
+        - {particle: BUBBLE_POP, count: 10, spread: 0.4, speed: 0.05, at: target}
+
+  # 0.17.0: Cá Mập Đại Dương, chiến đấu bậc hiếm
+  shark_bite:
+    type: strike
+    name: 'Hàm Răng Đại Dương'
+    color: '#0096C7:#9BE3FF'
+    description:
+      - 'Lặn xuống rồi trồi lên cắn mục'
+      - 'tiêu, gây %damage% sát thương và'
+      - 'giảm %enemy% %enemy_stat% của nó'
+      - 'trong %enemy_seconds% giây'
+    cooldown: 9
+    pvp-multiplier: 0.5
+    range: 10
+    cast-delay-ticks: 18
+    damage:
+      base: 3
+      per-level: 0.1
+    enemy-stat:
+      stat: MAX_HEALTH
+      seconds: 3
+      amount:
+        base: 1
+        per-level: 0.04
+    fx:
+      animation: skill
+      sounds:
+        - {sound: entity.player.splash, volume: 0.8, pitch: 1.0}
+        - {sound: entity.guardian.attack, volume: 0.6, pitch: 1.2, delay: 18}
+      particles:
+        - {particle: SPLASH, count: 25, spread: 0.5, speed: 0.1, at: target}
+        - {particle: DAMAGE_INDICATOR, count: 4, spread: 0.3, speed: 0.05, at: target}

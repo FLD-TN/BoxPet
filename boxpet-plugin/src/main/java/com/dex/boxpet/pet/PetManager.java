@@ -707,10 +707,12 @@ public final class PetManager {
         Map<String, Integer> m = new HashMap<>();
         Ability second = p.hasSecond(s().secondSkillLevel) ? p.ability2 : null;
         for (Ability a : new Ability[]{p.ability, second}) {
-            if (a == null || a.type != Ability.Type.BOOST || a.boostType.isEmpty() || p.abilityPaused()) continue;
-            int tenths = (int) Math.floor(a.boostTenths.at(p.data.level, p.rarity.statMultiplier()));
-            if (a.boostWhole) tenths -= tenths % 10;
-            if (tenths > 0) m.merge(a.boostType, tenths, Integer::sum);
+            if (a == null || a.type != Ability.Type.BOOST || p.abilityPaused()) continue;
+            // 0.17.0: every boost of the skill (boost + boost-2)
+            for (Ability.Boost b : a.boosts) {
+                int tenths = b.at(p.data.level, p.rarity.statMultiplier());
+                if (tenths > 0) m.merge(b.type(), tenths, Integer::sum);
+            }
         }
         if (m.isEmpty()) bonus.remove(p.ownerId);
         else bonus.put(p.ownerId, m);
