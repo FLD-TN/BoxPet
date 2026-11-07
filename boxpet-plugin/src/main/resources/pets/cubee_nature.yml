@@ -30,9 +30,9 @@ stats:
   MAX_HEALTH:
     base: 2
     per-level: 0.08
-  DEFENSE:
-    base: 0.5
-    per-level: 0.03
+  DAMAGE_REDUCTION:
+    base: 0.3
+    per-level: 0.02
 # kỹ năng trong abilities.yml
 ability: cubee_leaf_armor
 # 0.13.0: ẩn hiệu ứng chiêu gốc trong model (đã chuyển cho pet huyền thoại)

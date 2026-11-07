@@ -29,8 +29,8 @@ stats:
   ATTACK_DAMAGE:
     base: 0.8
     per-level: 0.04
-  CRITICAL_STRIKE_CHANCE:
-    base: 0.8
-    per-level: 0.03
+  CRITICAL_STRIKE_POWER:
+    base: 2
+    per-level: 0.08
 # kỹ năng trong abilities.yml
 ability: necro_skull

@@ -29,8 +29,8 @@ stats:
   ATTACK_DAMAGE:
     base: 0.8
     per-level: 0.04
-  MAX_HEALTH:
+  PVE_DAMAGE:
     base: 1
-    per-level: 0.04
+    per-level: 0.05
 # kỹ năng trong abilities.yml
 ability: shark_bite_basic

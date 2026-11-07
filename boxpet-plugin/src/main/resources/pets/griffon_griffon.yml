@@ -29,7 +29,7 @@ stats:
   MAX_HEALTH:
     base: 2
     per-level: 0.08
-  DEFENSE:
+  PVP_DAMAGE_REDUCTION:
     base: 0.5
     per-level: 0.03
 # kỹ năng trong abilities.yml

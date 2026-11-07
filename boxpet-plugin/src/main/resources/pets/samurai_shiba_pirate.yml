@@ -29,8 +29,8 @@ stats:
   ATTACK_DAMAGE:
     base: 1
     per-level: 0.05
-  PVP_DAMAGE:
+  PARRY_RATING:
     base: 0.5
-    per-level: 0.02
+    per-level: 0.03
 # kỹ năng trong abilities.yml
 ability: shiba_slash

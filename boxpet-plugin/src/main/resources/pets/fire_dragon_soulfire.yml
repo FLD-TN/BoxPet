@@ -29,8 +29,8 @@ stats:
   ATTACK_DAMAGE:
     base: 1
     per-level: 0.05
-  PVP_DAMAGE:
-    base: 0.5
-    per-level: 0.02
+  PVE_DAMAGE:
+    base: 1
+    per-level: 0.05
 # kỹ năng trong abilities.yml
 ability: dragon_soul_tornado

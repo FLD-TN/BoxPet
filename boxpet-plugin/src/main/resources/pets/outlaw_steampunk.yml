@@ -26,11 +26,11 @@ follow:
   fly: false
 # chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
-  CRITICAL_STRIKE_CHANCE:
-    base: 0.8
+  DEFENSE:
+    base: 0.5
     per-level: 0.03
-  ATTACK_DAMAGE:
-    base: 1
-    per-level: 0.05
+  BLOCK_RATING:
+    base: 0.5
+    per-level: 0.03
 # kỹ năng trong abilities.yml
 ability: steam_gear

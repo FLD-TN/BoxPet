@@ -26,11 +26,11 @@ follow:
   fly: false
 # chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
-  MAX_HEALTH:
-    base: 1
-    per-level: 0.05
   DEFENSE:
     base: 0.4
     per-level: 0.02
+  ADDITIONAL_EXPERIENCE:
+    base: 1
+    per-level: 0.05
 # kỹ năng trong abilities.yml
 ability: palcat_art

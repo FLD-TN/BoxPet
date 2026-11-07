@@ -29,7 +29,7 @@ stats:
   MAX_HEALTH:
     base: 1.5
     per-level: 0.06
-  DEFENSE:
+  DODGE_RATING:
     base: 0.5
     per-level: 0.03
 # kỹ năng trong abilities.yml

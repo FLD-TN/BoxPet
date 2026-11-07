@@ -29,8 +29,8 @@ stats:
   ATTACK_DAMAGE:
     base: 1
     per-level: 0.05
-  CRITICAL_STRIKE_CHANCE:
-    base: 0.5
-    per-level: 0.02
+  MAX_HEALTH:
+    base: 1
+    per-level: 0.05
 # kỹ năng trong abilities.yml
 ability: dragon_dark_nova

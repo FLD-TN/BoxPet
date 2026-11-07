@@ -29,8 +29,8 @@ stats:
   MAX_HEALTH:
     base: 1
     per-level: 0.05
-  DEFENSE:
-    base: 0.3
-    per-level: 0.02
+  ADDITIONAL_EXPERIENCE:
+    base: 1
+    per-level: 0.05
 # kỹ năng trong abilities.yml
 ability: shiba_lixi

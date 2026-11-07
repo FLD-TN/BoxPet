@@ -29,9 +29,9 @@ stats:
   ATTACK_DAMAGE:
     base: 1
     per-level: 0.05
-  MAX_HEALTH:
-    base: 1
-    per-level: 0.05
+  ARMOR:
+    base: 0.5
+    per-level: 0.03
 # kỹ năng trong abilities.yml
 ability: shark_tidal
 # dòng chỉ số thứ 3 (mở khi đột phá)
