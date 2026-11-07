@@ -84,6 +84,11 @@ public final class AbilityService {
 
     // ------------------------------------------------------------------ cooldowns kept per pet
 
+    /** 0.20.5: the owner left the server: per-owner scratch state goes (cooldowns stay, they are per pet). */
+    public void forget(UUID owner) {
+        hitCount.remove(owner);
+    }
+
     /** The pet leaves (dismiss, logout): remember when its ability and shield are ready again. */
     public void remember(ActivePet p) {
         long now = System.currentTimeMillis();

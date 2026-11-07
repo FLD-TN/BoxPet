@@ -95,6 +95,8 @@ public final class ChatService {
         long now = System.currentTimeMillis();
         Long ready = showcaseReady.get(pet.ownerId);
         if (ready != null && now < ready && !com.dex.boxpet.listener.InteractListener.bypass(pet.owner)) return "showcase.cooldown";
+        // 0.20.5: expired entries go, the map never grows with every player who ever showed off
+        if (showcaseReady.size() > 64) showcaseReady.values().removeIf(t -> t <= now);
         showcaseReady.put(pet.ownerId, now + plugin.settings().showcaseCooldownSeconds * 1000L);
         removeBubble(pet);
         removeShowcase(pet);

@@ -39,6 +39,7 @@ public final class PlayerListener implements Listener {
         plugin.interact().forget(e.getPlayer().getUniqueId());
         plugin.actions().forget(e.getPlayer().getUniqueId());
         plugin.xpListener().forget(e.getPlayer().getUniqueId());
+        plugin.abilityService().forget(e.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

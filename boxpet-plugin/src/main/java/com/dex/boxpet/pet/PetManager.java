@@ -362,6 +362,15 @@ public final class PetManager {
             return null;
         }
         if (pet.activeSince <= 0) pet.activeSince = System.currentTimeMillis();
+        // 0.20.5: a rarity lowered in the config (e.g. legendary -> epic) leaves pets above the new max level
+        int maxLevel = rarity(pet).maxLevel();
+        if (pet.level > maxLevel) {
+            plugin.getLogger().info("Pet " + pet.shortId() + " of " + player.getName() + " lowered from level " + pet.level
+                    + " to its rarity max " + maxLevel);
+            pet.level = maxLevel;
+            pet.xp = 0;
+            pet.dirty = true;
+        }
         ActivePet ap = new ActivePet(player, pd, pet, type, rarity(pet), plugin.abilities().get(type.ability));
         ap.ability2 = plugin.abilities().get(type.ability2);
         ap.nextIdleChat = System.currentTimeMillis() + randomIdle();
