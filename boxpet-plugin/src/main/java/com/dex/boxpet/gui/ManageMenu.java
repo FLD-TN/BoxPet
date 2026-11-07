@@ -22,6 +22,11 @@ public final class ManageMenu extends Menu {
 
     private final PlayerData owner;
     private final PetData pet;
+
+    @Override
+    protected boolean stale() {
+        return !owner.owns(pet);
+    }
     private final boolean admin;
 
     public ManageMenu(BoxPetPlugin plugin, Player player, PlayerData owner, PetData pet, boolean admin) {

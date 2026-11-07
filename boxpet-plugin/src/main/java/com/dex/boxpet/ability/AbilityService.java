@@ -1126,6 +1126,9 @@ public final class AbilityService {
                     false, a.enemyTicks);
             Effects.particle(ap.getLocation().add(0, 1, 0), "CRIT", 6, 0.3, 0.1);
         }
+        // 0.20.6: hurt / low-hp skills and shields only react to someone hitting the owner, never to falls, fire,
+        // cactus...: no pre-stacking Giáp Gai by jumping down, no cooldown lost to a small fall
+        if (attacker == null) return;
         if (a.type == Ability.Type.BUFF && !a.trigger.equals("combat")) {
             if (healthAfter <= 0) return;
             // 0.19.0: a stacking buff keeps stacking inside its window, the cooldown only gates opening a window

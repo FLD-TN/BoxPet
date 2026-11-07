@@ -27,6 +27,11 @@ public final class AutoFeedMenu extends Menu {
 
     private final PlayerData owner;
     private final PetData pet;
+
+    @Override
+    protected boolean stale() {
+        return !owner.owns(pet);
+    }
     private final Cycler at;
     private final Cycler prefer;
 

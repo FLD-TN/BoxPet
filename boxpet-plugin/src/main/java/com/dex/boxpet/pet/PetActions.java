@@ -66,6 +66,8 @@ public final class PetActions {
 
     /** @return the message key of the result */
     public String rename(Player player, PetData pet, String raw) {
+        PlayerData owner = plugin.pets().data(player.getUniqueId());
+        if (owner == null || !owner.owns(pet)) return "pet-gone";
         long now = System.currentTimeMillis();
         Long last = lastRename.get(player.getUniqueId());
         if (last != null && now - last < s().renameCooldownSeconds * 1000L
@@ -127,6 +129,7 @@ public final class PetActions {
 
     /** @return message key */
     public String evolve(Player player, PlayerData pd, PetData pet) {
+        if (!pd.owns(pet)) return "pet-gone";
         PetType.Stage next = nextStage(pet);
         if (next == null) return "evolve.none";
         if (pet.level < next.minLevel()) return "evolve.level";
@@ -159,6 +162,8 @@ public final class PetActions {
     // ------------------------------------------------------------------ release (spec 10.4)
 
     public void release(Player player, PlayerData pd, PetData pet) {
+        // 0.20.6: only a pet still in this storage (no second release, no refund twice, no release after a transfer)
+        if (!pd.owns(pet)) return;
         if (pet.id.equals(pd.activePet)) plugin.pets().dismiss(player, false, "release");
         pet.state = PetData.State.DELETED;
         pet.dirty = true;

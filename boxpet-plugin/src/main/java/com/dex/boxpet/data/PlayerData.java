@@ -16,6 +16,11 @@ public final class PlayerData {
     public final UUID uuid;
     /** Pets in storage ({@code COLLECTION}), by id, in hatch order. */
     public final Map<UUID, PetData> pets = new LinkedHashMap<>();
+
+    /** 0.20.6: this exact pet object is still in this player's storage (not released, not moved to someone else). */
+    public boolean owns(PetData pet) {
+        return pet != null && pets.get(pet.id) == pet && pet.state != PetData.State.DELETED;
+    }
     public final TreeMap<Integer, IncubatorSlot> incubator = new TreeMap<>();
     /** Pet type id -> best rarity index ever hatched (collection book). */
     public final Map<String, Integer> collection = new HashMap<>();

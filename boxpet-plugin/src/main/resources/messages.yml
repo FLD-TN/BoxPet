@@ -8,6 +8,8 @@ prefix: '<dark_gray>(</dark_gray><bold><#FFB3C7>Thú Cưng</#FFB3C7></bold><dark
 loading: '<muted>Dữ liệu thú cưng đang tải, thử lại sau giây lát'
 only-players: '<error>✘ Chỉ người chơi dùng được lệnh này'
 no-permission: '<error>✘ Bạn không có quyền dùng lệnh này'
+# 0.20.6: một menu cũ chỉ tới pet đã thả / đã chuyển cho người khác
+pet-gone: '<error>✘ Pet này không còn trong kho của bạn'
 combat-locked: '<error>✘ Đang giao tranh, chưa thể mở menu pet. Thử lại sau <text>%seconds% giây'
 
 nametag:

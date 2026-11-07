@@ -331,6 +331,8 @@ public final class PetManager {
     public SummonResult summon(Player player, PetData pet, boolean force) {
         PlayerData pd = players.get(player.getUniqueId());
         if (pd == null) return SummonResult.NOT_LOADED;
+        // 0.20.6: never bring out a pet that left this storage (released, transferred)
+        if (!pd.owns(pet)) return SummonResult.CANCELLED;
         if (pet.id.equals(pd.activePet) && active.containsKey(player.getUniqueId())) return SummonResult.ALREADY;
         boolean staff = com.dex.boxpet.listener.InteractListener.bypass(player);
         if (!force && !staff && combat.tagged(player.getUniqueId())) return SummonResult.COMBAT;

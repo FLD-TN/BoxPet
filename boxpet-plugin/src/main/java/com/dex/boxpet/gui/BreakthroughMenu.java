@@ -19,6 +19,11 @@ public final class BreakthroughMenu extends Menu {
     private final PlayerData owner;
     private final PetData pet;
 
+    @Override
+    protected boolean stale() {
+        return !owner.owns(pet);
+    }
+
     public BreakthroughMenu(BoxPetPlugin plugin, Player player, PlayerData owner, PetData pet) {
         super(plugin, player, 4, plugin.menus().title("breakthrough"));
         this.owner = owner;

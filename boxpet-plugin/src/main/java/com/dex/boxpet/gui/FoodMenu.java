@@ -22,6 +22,11 @@ public final class FoodMenu extends Menu {
     private final PlayerData owner;
     private final PetData pet;
 
+    @Override
+    protected boolean stale() {
+        return !owner.owns(pet);
+    }
+
     public FoodMenu(BoxPetPlugin plugin, Player player, PlayerData owner, PetData pet) {
         super(plugin, player, 4, plugin.menus().title("food"));
         this.owner = owner;

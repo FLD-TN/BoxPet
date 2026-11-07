@@ -50,7 +50,20 @@ public abstract class Menu implements InventoryHolder {
         return true;
     }
 
+    /** 0.20.6: true when what the menu is about is gone (a released / transferred pet). */
+    protected boolean stale() {
+        return false;
+    }
+
+    private boolean closeIfStale() {
+        if (!stale()) return false;
+        player.closeInventory();
+        plugin.messages().send(player, "pet-gone");
+        return true;
+    }
+
     public void open() {
+        if (closeIfStale()) return;
         if (combatLocked() && plugin.interact().combatLocked(player)) {
             player.closeInventory();
             plugin.interact().lockMessage(player);
@@ -95,13 +108,15 @@ public abstract class Menu implements InventoryHolder {
 
     void click(int slot, ClickType click) {
         Handler h = handlers.get(slot);
-        if (h != null) h.click(click);
+        if (h == null || closeIfStale()) return;
+        h.click(click);
     }
 
     protected void onOwnItemClick(ItemStack item, int rawSlot, ClickType click) {
     }
 
     void ownItemClick(ItemStack item, int rawSlot, ClickType click) {
+        if (closeIfStale()) return;
         onOwnItemClick(item, rawSlot, click);
     }
 
