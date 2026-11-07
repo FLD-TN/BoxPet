@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 /** {@code /pet [summon <name> | dismiss | hideothers | chat | rename <name>]} (spec 12, 13). */
 public final class PetCommand implements TabExecutor {
 
-    private static final List<String> SUBS = List.of("dismiss", "hideothers", "chat", "thongbao", "rename", "chedo", "muctieu");
+    private static final List<String> SUBS = List.of("dismiss", "hideothers", "chat", "thongbao", "rename", "chedo", "muctieu", "xem");
     private static final List<String> MODES = List.of("tancong", "phongthu", "thanthien");
     private static final List<String> TARGETS = List.of("tatca", "nguoi", "mob");
     /** Shown by tab completion (mob is written quaivat). */
@@ -66,6 +66,7 @@ public final class PetCommand implements TabExecutor {
                 plugin.pets().applyHiddenFor(p);
                 plugin.messages().send(p, pd.hideOthers ? "toggle.hide-others-on" : "toggle.hide-others-off");
             }
+            case "xem" -> view(p, args);
             case "chedo" -> {
                 String arg = args.length > 1 ? args[1].toLowerCase(java.util.Locale.ROOT) : "";
                 if (arg.equals("bidong")) arg = "thanthien"; // 0.21.1: old name still works
@@ -136,6 +137,50 @@ public final class PetCommand implements TabExecutor {
             if (t != null && (t.name.toLowerCase(Locale.ROOT).equals(q) || t.id.equals(typeQuery))) return d;
         }
         return null;
+    }
+
+    /**
+     * 0.24.0: /pet xem <player> [pet id]: a read-only view of that pet (the one shown in chat), or of the player's
+     * active pet. An offline owner's pet is read from the database.
+     */
+    private void view(Player viewer, String[] args) {
+        if (args.length < 2) {
+            plugin.messages().send(viewer, "pet-view.usage");
+            return;
+        }
+        java.util.UUID id = null;
+        if (args.length > 2) {
+            try {
+                id = java.util.UUID.fromString(args[2]);
+            } catch (IllegalArgumentException ex) {
+                plugin.messages().send(viewer, "pet-view.not-found");
+                return;
+            }
+        }
+        String name = args[1];
+        Player owner = org.bukkit.Bukkit.getPlayerExact(name);
+        PlayerData od = owner == null ? null : plugin.pets().data(owner.getUniqueId());
+        if (od != null) {
+            PetData pet = id == null ? od.active() : od.pets.get(id);
+            if (pet != null) {
+                new com.dex.boxpet.gui.PetViewMenu(plugin, viewer, pet, owner.getName()).open();
+                return;
+            }
+        }
+        if (id == null) {
+            plugin.messages().send(viewer, "pet-view.not-found");
+            return;
+        }
+        final java.util.UUID want = id;
+        plugin.storage().findPets(want.toString()).whenComplete((list, err) -> org.bukkit.Bukkit.getScheduler().runTask(plugin, () -> {
+            if (!viewer.isOnline()) return;
+            PetData found = null;
+            if (err == null && list != null) {
+                for (PetData d : list) if (d.id.equals(want) && d.state != PetData.State.DELETED) found = d;
+            }
+            if (found == null) plugin.messages().send(viewer, "pet-view.not-found");
+            else new com.dex.boxpet.gui.PetViewMenu(plugin, viewer, found, name).open();
+        }));
     }
 
     @Override

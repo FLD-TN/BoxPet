@@ -441,6 +441,16 @@ behaviour:
       - '<dark_gray>[<#7CFC9A>Chuột trái để đổi mục tiêu sau<dark_gray>]'
       - '<dark_gray>[<#7CFC9A>Chuột phải để đổi mục tiêu trước<dark_gray>]'
 
+# 0.24.0: xem pet của người khác (bấm vào pet được khoe trong chat)
+pet-view:
+  title: '<dark_gray>Pet của %player%'
+  owner: '<gray>• Chủ nhân: <white>%player%'
+  close:
+    name: '<#FF8A8A>Đóng'
+    lore:
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để đóng<dark_gray>]'
+
 manage:
   title: '<dark_gray>Quản lý pet'
   free: '<#7CFC9A>Miễn phí'

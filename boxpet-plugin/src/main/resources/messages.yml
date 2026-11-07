@@ -54,6 +54,10 @@ showcase-chat:
   # khi người chơi chưa thả pet mà gõ [pet]
   no-pet: '<gray>[Chưa thả pet]'
 
+pet-view:
+  usage: '<error>✘ Dùng: /pet xem [tên người chơi]'
+  not-found: '<error>✘ Không tìm thấy pet này, có thể đã bị thả hoặc chủ nhân chưa thả pet'
+
 behaviour:
   mode: '<success>✔ Chế độ chiến đấu của pet: <text>%mode%'
   target: '<success>✔ Mục tiêu của pet: <text>%target%'

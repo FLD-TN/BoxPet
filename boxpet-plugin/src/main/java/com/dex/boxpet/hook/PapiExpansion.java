@@ -65,6 +65,8 @@ public final class PapiExpansion extends PlaceholderExpansion {
             case "active_card" -> a == null ? "" : String.join("\n",
                     com.dex.boxpet.gui.PetIcons.showcaseLines(plugin, a).stream().map(Text::legacy).toList());
             case "active_type" -> a == null ? "" : a.type;
+            // 0.24.0: for the InteractiveChat click: /pet xem %player_name% %boxpet_active_id%
+            case "active_id" -> a == null ? "" : a.id.toString();
             case "active_level" -> a == null ? "" : String.valueOf(a.level);
             case "active_rarity" -> a == null ? "" : Text.legacy(plugin.pets().rarity(a).coloured());
             case "active_role" -> t == null ? "" : Text.legacy(plugin.menus().text("roles." + t.role.id));

@@ -10,7 +10,7 @@ softdepend: [BoxCore, BoxClans, WorldGuard, PlaceholderAPI, Vault, ItemsAdder, C
 commands:
   pet:
     description: Menu thú cưng
-    usage: /pet [dismiss|hideothers|chat|thongbao|rename|chedo|muctieu]
+    usage: /pet [dismiss|hideothers|chat|thongbao|rename|chedo|muctieu|xem]
     aliases: [pets, thucung]
   boxpet:
     description: Quản lý BoxPet
