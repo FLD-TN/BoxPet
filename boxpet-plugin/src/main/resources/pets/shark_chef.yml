@@ -7,7 +7,7 @@ family: shark
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
 role: boost
 # độ hiếm của pet này (một model = một pet = một độ hiếm). Độ hiếm cao hơn thì chỉ số gốc cao hơn
-rarity: rare
+rarity: common
 # icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
 icon: 'companions_2:icon_shark_chef'
 icon-fallback: COD
@@ -26,9 +26,9 @@ follow:
   fly: false
 # chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
-  MAX_HEALTH:
-    base: 1
-    per-level: 0.05
+  DEFENSE:
+    base: 0.5
+    per-level: 0.03
   PVE_DAMAGE:
     base: 1
     per-level: 0.05

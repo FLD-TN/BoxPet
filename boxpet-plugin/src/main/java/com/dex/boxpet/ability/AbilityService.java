@@ -1147,7 +1147,7 @@ public final class AbilityService {
                     false, plugin.getLogger());
             if (visual != null) {
                 if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
-                vfx.add(new Vfx(visual, at, p.owner, 0, a.shieldTicks, false, a.vfx.yOffset()));
+                vfx.add(new Vfx(visual, at, p.owner, 0, Math.min(a.shieldTicks, a.vfx.life()), false, a.vfx.yOffset()));
             }
         }
     }
