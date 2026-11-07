@@ -169,6 +169,8 @@ public final class AbilityService {
         if (a == null || a.type == Ability.Type.NONE || a.type == Ability.Type.BOOST) return;
         if (p.cooldown > 0) p.cooldown--;
         if (p.abilityPaused()) return;
+        // 0.21.0: passive: no skill at all, the pet only gives its stats (the cooldown keeps running)
+        if (p.player.petMode == MODE_PASSIVE) return;
         Player o = p.owner;
         switch (a.type) {
             case HEAL -> {
@@ -230,7 +232,7 @@ public final class AbilityService {
                 // hurt / low-hp buffs go off in onOwnerDamaged
                 if (!a.trigger.equals("combat")) return;
                 if (p.cooldown > 0 || !plugin.pets().combat().tagged(o.getUniqueId())) return;
-                LivingEntity target = plugin.pets().combat().target(o.getUniqueId(), 5000);
+                LivingEntity target = pickTarget(p);
                 if (target == null || target.getWorld() != o.getWorld()
                         || origin(p).distanceSquared(target.getLocation()) > a.range * a.range || !validTarget(o, target)) {
                     p.cooldown = RETRY_TICKS;
@@ -243,7 +245,7 @@ public final class AbilityService {
             }
             case PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE, TETHER, NOVA -> {
                 if (p.cooldown > 0 || !plugin.pets().combat().tagged(o.getUniqueId())) return;
-                LivingEntity target = plugin.pets().combat().target(o.getUniqueId(), 5000);
+                LivingEntity target = pickTarget(p);
                 // cheap checks first, WorldGuard last; a failed try waits RETRY_TICKS instead of retrying every tick
                 if (target == null) {
                     p.cooldown = RETRY_TICKS;
@@ -264,6 +266,30 @@ public final class AbilityService {
             default -> {
             }
         }
+    }
+
+    public static final int MODE_ATTACK = 0, MODE_DEFENSE = 1, MODE_PASSIVE = 2;
+    public static final int TARGET_ALL = 0, TARGET_PLAYERS = 1, TARGET_MOBS = 2;
+
+    /**
+     * 0.21.0: the pet's target by the owner's behaviour: attack = whoever the owner hit, else whoever hit the owner;
+     * defense = only whoever hit the owner; passive = none. The filter keeps players or mobs only.
+     */
+    private @Nullable LivingEntity pickTarget(ActivePet p) {
+        var pd = p.player;
+        if (pd.petMode == MODE_PASSIVE) return null;
+        var combat = plugin.pets().combat();
+        UUID o = p.ownerId;
+        if (pd.petMode == MODE_ATTACK) {
+            LivingEntity hit = combat.hitByOwner(o, 5000);
+            if (hit != null && fits(pd.petTarget, hit)) return hit;
+        }
+        LivingEntity by = combat.attackerOf(o, 5000);
+        return by != null && fits(pd.petTarget, by) ? by : null;
+    }
+
+    private static boolean fits(int filter, LivingEntity e) {
+        return filter == TARGET_ALL || (filter == TARGET_PLAYERS) == (e instanceof Player);
     }
 
     /** Tells the owner which skill just went off (toggle: /pet thongbao). */
@@ -1117,7 +1143,7 @@ public final class AbilityService {
 
     private void ownerDamaged(ActivePet p, double healthAfter, @Nullable LivingEntity attacker) {
         Ability a = p.ability;
-        if (a == null || p.abilityPaused()) return;
+        if (a == null || p.abilityPaused() || p.player.petMode == MODE_PASSIVE) return;
         long now = System.currentTimeMillis();
         // 0.16.0: while the shield is up, whoever hits the owner loses the enemy-stat (Giáp Bánh Răng)
         if (a.type == Ability.Type.SHIELD && !a.enemyStat.isEmpty() && now < p.shieldDebuffUntil

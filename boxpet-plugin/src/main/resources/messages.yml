@@ -47,6 +47,20 @@ toggle:
   cast-off: '<success>✔ Đã tắt thông báo kỹ năng của pet'
 
 
+# 0.21.0: khoe pet ra chat (/pet khoe, hoặc gõ [pet] trong tin nhắn)
+showcase-chat:
+  # tên pet trong chat, rê chuột vào để xem thẻ
+  tag: '<white>[%pet%<white>]'
+  line: '<text>%player% <gray>khoe pet {pet}'
+  none: '<error>✘ Hãy thả pet ra trước khi khoe'
+  cooldown: '<error>✘ Vừa khoe xong. Thử lại sau <text>%wait% giây'
+
+behaviour:
+  mode: '<success>✔ Chế độ chiến đấu của pet: <text>%mode%'
+  target: '<success>✔ Mục tiêu của pet: <text>%target%'
+  usage-mode: '<error>✘ Dùng: /pet chedo [tancong|phongthu|bidong]'
+  usage-target: '<error>✘ Dùng: /pet muctieu [tatca|nguoi|mob]'
+
 showcase:
   done: '<success>✔ Đang khoe %pet% <success>trong <text>%seconds% giây'
   cooldown: '<error>✘ Vừa khoe xong. Thử lại sau <text>%wait% giây'

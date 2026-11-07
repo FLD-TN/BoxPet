@@ -119,6 +119,56 @@ public final class ChatService {
         return "showcase.done";
     }
 
+    // ------------------------------------------------------------------ show off in chat (0.21.0)
+
+    /** Owner -> "[name]" with the pet card on hover, built on the main thread, read by the async chat event. */
+    private final java.util.Map<java.util.UUID, net.kyori.adventure.text.Component> chatCards = new java.util.concurrent.ConcurrentHashMap<>();
+    private final java.util.Map<java.util.UUID, Long> chatShowReady = new java.util.HashMap<>();
+
+    public void cacheCard(ActivePet pet) {
+        try {
+            String lines = String.join("\n<reset>", com.dex.boxpet.gui.PetIcons.showcaseLines(plugin, pet.data));
+            net.kyori.adventure.text.Component hover = Text.parse(lines, pet.owner);
+            net.kyori.adventure.text.Component name = Text.parse(plugin.messages().raw("showcase-chat.tag",
+                    "pet", plugin.pets().displayName(pet.data)), pet.owner);
+            chatCards.put(pet.ownerId, name.hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(hover)));
+        } catch (RuntimeException ex) {
+            chatCards.remove(pet.ownerId);
+        }
+    }
+
+    public void dropCard(java.util.UUID owner) {
+        chatCards.remove(owner);
+    }
+
+    /** Thread-safe: the "[name]" component of the owner's active pet, or null. */
+    public net.kyori.adventure.text.@org.jetbrains.annotations.Nullable Component card(java.util.UUID owner) {
+        return chatCards.get(owner);
+    }
+
+    /** /pet khoe: one line to everyone with the pet card on hover. @return message key, null when sent */
+    public @org.jetbrains.annotations.Nullable String showInChat(org.bukkit.entity.Player player) {
+        ActivePet pet = plugin.pets().active(player.getUniqueId());
+        if (pet == null) return "showcase-chat.none";
+        long now = System.currentTimeMillis();
+        Long ready = chatShowReady.get(player.getUniqueId());
+        if (ready != null && now < ready && !com.dex.boxpet.listener.InteractListener.bypass(player)) return "showcase-chat.cooldown";
+        if (chatShowReady.size() > 64) chatShowReady.values().removeIf(t -> t <= now);
+        chatShowReady.put(player.getUniqueId(), now + plugin.settings().chatShowCooldownSeconds * 1000L);
+        cacheCard(pet);
+        net.kyori.adventure.text.Component tag = card(player.getUniqueId());
+        if (tag == null) return "showcase-chat.none";
+        net.kyori.adventure.text.Component line = Text.parse(plugin.messages().raw("showcase-chat.line", "player", player.getName()), player)
+                .replaceText(net.kyori.adventure.text.TextReplacementConfig.builder().matchLiteral("{pet}").replacement(tag).build());
+        org.bukkit.Bukkit.getServer().sendMessage(line);
+        return null;
+    }
+
+    public long chatShowWait(java.util.UUID player) {
+        Long ready = chatShowReady.get(player);
+        return ready == null ? 0 : Math.max(0, (ready - System.currentTimeMillis() + 999) / 1000);
+    }
+
     /** Seconds before this player may show off again (0 = now). */
     public long showcaseWait(java.util.UUID player) {
         Long ready = showcaseReady.get(player);

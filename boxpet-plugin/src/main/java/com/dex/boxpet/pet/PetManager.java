@@ -180,6 +180,7 @@ public final class PetManager {
             if (p.visual != null) byBase.remove(p.visual.baseId());
         }
         plugin.stats().clearAll(player);
+        plugin.chat().dropCard(id);
         bonus.remove(id);
         combat.forget(id);
         if (swapCooldownLeft(id) <= 0) lastSwap.remove(id);
@@ -224,7 +225,7 @@ public final class PetManager {
         List<IncubatorSlot> inc = new ArrayList<>(pd.incubator.values());
         plugin.storage().save(new Storage.Batch(pd.uuid, pd.activePet, pd.hideOthers, pd.petChat, pets, inc,
                 new HashMap<>(pd.collection), pd.xpDay, new HashMap<>(pd.dailyXp),
-                new Storage.AutoFeed(pd.autoFeed, pd.autoFeedAt, pd.autoFeedCandyFirst, pd.pantryText()), pd.castChat));
+                new Storage.AutoFeed(pd.autoFeed, pd.autoFeedAt, pd.autoFeedCandyFirst, pd.pantryText()), pd.castChat, pd.petMode, pd.petTarget));
         pd.dirty = false;
         for (PetData p : pd.pets.values()) p.dirty = false;
     }
@@ -384,6 +385,7 @@ public final class PetManager {
         else ap.deadHidden = true;
         refreshStats(ap);
         refreshBonus(ap);
+        plugin.chat().cacheCard(ap);
         return ap;
     }
 
@@ -404,6 +406,7 @@ public final class PetManager {
             despawnVisual(p, true);
         }
         plugin.stats().clearPet(player);
+        plugin.chat().dropCard(player.getUniqueId());
         // 0.8.0: a skill buff ends with the pet (stats taken by enemies stay until they run out)
         plugin.stats().clearOwnBuff(player);
         bonus.remove(player.getUniqueId());
@@ -789,6 +792,7 @@ public final class PetManager {
                 }
                 updateHiddenState(p);
                 checkNametag(p);
+                if (seconds % 5 == 0) plugin.chat().cacheCard(p);
             } catch (RuntimeException ex) {
                 plugin.getLogger().log(Level.WARNING, "Pet second task failed for " + p.owner.getName(), ex);
             }

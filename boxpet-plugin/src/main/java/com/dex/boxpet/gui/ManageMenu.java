@@ -56,6 +56,18 @@ public final class ManageMenu extends Menu {
         fill();
     }
 
+    /** One line per choice, the current one marked (menus.yml behaviour.*). */
+    private org.bukkit.inventory.ItemStack behaviourButton(String key, String group, String[] ids, int current, Material icon) {
+        var m = plugin.menus();
+        String[] ph = new String[ids.length * 2];
+        for (int i = 0; i < ids.length; i++) {
+            ph[i * 2] = "line_" + (i + 1);
+            ph[i * 2 + 1] = m.text(i == current ? "behaviour.line-on" : "behaviour.line-off",
+                    "name", m.text("behaviour." + group + "." + ids[i] + ".name"), "desc", m.text("behaviour." + group + "." + ids[i] + ".desc"));
+        }
+        return button("behaviour." + key, icon, ph);
+    }
+
     private void drawPlayer(boolean active) {
         String name = plugin.pets().displayName(pet);
         // row 1: out / feed / pet / talk / sit
@@ -133,6 +145,19 @@ public final class ManageMenu extends Menu {
                         "min", String.valueOf(plugin.settings().renameMin), "max", String.valueOf(plugin.settings().renameMax));
                 open();
             }, this::open);
+        });
+        // 0.21.0: behaviour of every pet of this player (left = next, right = previous)
+        set(39, behaviourButton("mode", "modes", new String[]{"tancong", "phongthu", "bidong"}, owner.petMode, Material.IRON_SWORD), click -> {
+            owner.petMode = (owner.petMode + (click.isRightClick() ? 2 : 1)) % 3;
+            owner.dirty = true;
+            sound("ui.button.click");
+            refresh();
+        });
+        set(41, behaviourButton("target", "targets", new String[]{"tatca", "nguoi", "mob"}, owner.petTarget, Material.TARGET), click -> {
+            owner.petTarget = (owner.petTarget + (click.isRightClick() ? 2 : 1)) % 3;
+            owner.dirty = true;
+            sound("ui.button.click");
+            refresh();
         });
         // 0.9.7: show off: the card above the pet's head for everyone around
         set(42, button("manage.showcase", Material.SPYGLASS, "seconds", String.valueOf(plugin.settings().showcaseTicks / 20)), click -> {

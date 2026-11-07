@@ -32,6 +32,10 @@ public final class PlayerData {
     public boolean petChat = true;
     /** 0.8.0: "pet: skill!" line in chat when a skill goes off. */
     public boolean castChat = true;
+    /** 0.21.0: pet behaviour of this player, for every pet: 0 attack, 1 defense (only who hits the owner), 2 passive. */
+    public int petMode = 0;
+    /** 0.21.0: who the pet may target: 0 everyone, 1 players only, 2 mobs only. */
+    public int petTarget = 0;
     /** Auto feed (0.6.0): on/off, fullness to start eating at, candies before foods. */
     public boolean autoFeed;
     public int autoFeedAt = 30;

@@ -136,6 +136,7 @@ public final class BoxPetPlugin extends JavaPlugin {
         pm.registerEvents(new GuiListener(this), this);
         pm.registerEvents(input, this);
         pm.registerEvents(new PlayerListener(this), this);
+        pm.registerEvents(new com.dex.boxpet.listener.ChatShowListener(this), this);
         pm.registerEvents(new CombatListener(this), this);
         pm.registerEvents(interact, this);
         xpListener = new XpListener(this);

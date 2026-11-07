@@ -394,6 +394,53 @@ library:
 
 # ------------------------------------------------------------------ quản lý pet
 
+# 0.21.0: chế độ hành vi của pet (áp dụng cho mọi pet của người chơi)
+behaviour:
+  line-on: '<#7CFC9A>✔ %name% <gray>- %desc%'
+  line-off: '<gray>✘ %name% - %desc%'
+  modes:
+    tancong:
+      name: 'Tấn công'
+      desc: 'ra chiêu khi chủ nhân đánh hoặc bị đánh'
+    phongthu:
+      name: 'Phòng thủ'
+      desc: 'chỉ ra chiêu lên kẻ đánh chủ nhân'
+    bidong:
+      name: 'Bị động'
+      desc: 'không ra chiêu, chỉ cho chỉ số'
+  targets:
+    tatca:
+      name: 'Tất cả'
+      desc: 'người chơi và mob'
+    nguoi:
+      name: 'Người chơi'
+      desc: 'chỉ đánh người chơi'
+    mob:
+      name: 'Mob'
+      desc: 'chỉ đánh mob'
+  mode:
+    name: '<#FF9F5A>Chế độ chiến đấu'
+    lore:
+      - '<#BFC7D5>Áp dụng cho mọi pet của bạn'
+      - ''
+      - '%line_1%'
+      - '%line_2%'
+      - '%line_3%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để đổi chế độ sau<dark_gray>]'
+      - '<dark_gray>[<#7CFC9A>Chuột phải để đổi chế độ trước<dark_gray>]'
+  target:
+    name: '<#FF6B6B>Mục tiêu'
+    lore:
+      - '<#BFC7D5>Pet được ra chiêu lên ai'
+      - ''
+      - '%line_1%'
+      - '%line_2%'
+      - '%line_3%'
+      - ''
+      - '<dark_gray>[<#7CFC9A>Chuột trái để đổi mục tiêu sau<dark_gray>]'
+      - '<dark_gray>[<#7CFC9A>Chuột phải để đổi mục tiêu trước<dark_gray>]'
+
 manage:
   title: '<dark_gray>Quản lý pet'
   free: '<#7CFC9A>Miễn phí'

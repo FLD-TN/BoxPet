@@ -194,6 +194,10 @@ pet-chat:
 showcase:
   seconds: 10
   cooldown-seconds: 30
+  # giây chờ giữa 2 lần /pet khoe (khoe ra chat)
+  chat-cooldown-seconds: 30
+  # gõ [pet] trong chat để khoe pet đang thả (rê chuột xem thẻ)
+  chat-token: true
 
 release:
   # thả pet thì trả lại 1 kẹo (mã trong items.yml), '' = không trả

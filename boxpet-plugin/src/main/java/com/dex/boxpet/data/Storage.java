@@ -30,7 +30,7 @@ public final class Storage {
     public record Batch(UUID player, @Nullable UUID activePet, boolean hideOthers, boolean petChat,
                         List<PetData> pets, @Nullable List<IncubatorSlot> incubator,
                         @Nullable Map<String, Integer> collection, long xpDay, @Nullable Map<String, Double> dailyXp,
-                        @Nullable AutoFeed autoFeed, boolean castChat) {
+                        @Nullable AutoFeed autoFeed, boolean castChat, int petMode, int petTarget) {
     }
 
     /** Auto feed settings and box of one player (0.6.0). */
@@ -94,6 +94,8 @@ public final class Storage {
                     st.executeUpdate("CREATE TABLE IF NOT EXISTS boxpet_daily_xp (uuid VARCHAR(36) NOT NULL,"
                             + " source VARCHAR(32) NOT NULL, amount DOUBLE NOT NULL, PRIMARY KEY (uuid, source))");
                     st.executeUpdate("CREATE TABLE IF NOT EXISTS boxpet_options (uuid VARCHAR(36) PRIMARY KEY, cast_chat INT NOT NULL)");
+                    st.executeUpdate("CREATE TABLE IF NOT EXISTS boxpet_behaviour (uuid VARCHAR(36) PRIMARY KEY, mode INT NOT NULL,"
+                            + " target INT NOT NULL)");
                     st.executeUpdate("CREATE TABLE IF NOT EXISTS boxpet_autofeed (uuid VARCHAR(36) PRIMARY KEY,"
                             + " enabled INT NOT NULL, start_at INT NOT NULL, candy_first INT NOT NULL, items TEXT NOT NULL)");
                 }
@@ -189,6 +191,15 @@ public final class Storage {
                 if (rs.next()) data.castChat = rs.getInt(1) != 0;
             }
         }
+        try (PreparedStatement ps = c.prepareStatement("SELECT mode, target FROM boxpet_behaviour WHERE uuid = ?")) {
+            ps.setString(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    data.petMode = Math.max(0, Math.min(2, rs.getInt(1)));
+                    data.petTarget = Math.max(0, Math.min(2, rs.getInt(2)));
+                }
+            }
+        }
         try (PreparedStatement ps = c.prepareStatement("SELECT enabled, start_at, candy_first, items FROM boxpet_autofeed WHERE uuid = ?")) {
             ps.setString(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -281,7 +292,7 @@ public final class Storage {
 
     /** Saves pets only (offline edits by staff). */
     public CompletableFuture<Void> savePets(List<PetData> pets) {
-        return save(new Batch(null, null, false, true, pets, null, null, 0, null, null, true));
+        return save(new Batch(null, null, false, true, pets, null, null, 0, null, null, true, 0, 0));
     }
 
     /** Sets a player's active pet row without loading the player (staff on an offline owner). */
@@ -377,6 +388,12 @@ public final class Storage {
                 try (PreparedStatement ps = c.prepareStatement("REPLACE INTO boxpet_options (uuid, cast_chat) VALUES (?, ?)")) {
                     ps.setString(1, id);
                     ps.setInt(2, b.castChat() ? 1 : 0);
+                    ps.executeUpdate();
+                }
+                try (PreparedStatement ps = c.prepareStatement("REPLACE INTO boxpet_behaviour (uuid, mode, target) VALUES (?, ?, ?)")) {
+                    ps.setString(1, id);
+                    ps.setInt(2, b.petMode());
+                    ps.setInt(3, b.petTarget());
                     ps.executeUpdate();
                 }
                 if (b.autoFeed() != null) {

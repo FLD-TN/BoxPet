@@ -85,6 +85,20 @@ public final class CombatTracker {
         return t;
     }
 
+    /** 0.21.0: who the owner hit last (within the window), alive, or null. */
+    public @Nullable LivingEntity hitByOwner(UUID owner, long windowMillis) {
+        State s = states.get(owner);
+        if (s == null || s.lastTarget == null || System.currentTimeMillis() - s.lastTargetAt > windowMillis) return null;
+        return living(s.lastTarget);
+    }
+
+    /** 0.21.0: who hit the owner last (within the window), alive, or null. */
+    public @Nullable LivingEntity attackerOf(UUID owner, long windowMillis) {
+        State s = states.get(owner);
+        if (s == null || s.lastAttacker == null || System.currentTimeMillis() - s.lastAttackerAt > windowMillis) return null;
+        return living(s.lastAttacker);
+    }
+
     private static @Nullable LivingEntity living(UUID id) {
         Entity e = Bukkit.getEntity(id);
         return e instanceof LivingEntity le && le.isValid() && !le.isDead() ? le : null;

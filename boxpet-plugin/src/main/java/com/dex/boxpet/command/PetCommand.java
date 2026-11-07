@@ -19,7 +19,10 @@ import org.jetbrains.annotations.NotNull;
 /** {@code /pet [summon <name> | dismiss | hideothers | chat | rename <name>]} (spec 12, 13). */
 public final class PetCommand implements TabExecutor {
 
-    private static final List<String> SUBS = List.of("summon", "dismiss", "hideothers", "chat", "thongbao", "rename");
+    private static final List<String> SUBS = List.of("summon", "dismiss", "hideothers", "chat", "thongbao", "rename", "khoe",
+            "chedo", "muctieu");
+    private static final List<String> MODES = List.of("tancong", "phongthu", "bidong");
+    private static final List<String> TARGETS = List.of("tatca", "nguoi", "mob");
 
     private final BoxPetPlugin plugin;
 
@@ -70,6 +73,30 @@ public final class PetCommand implements TabExecutor {
                 pd.dirty = true;
                 plugin.pets().applyHiddenFor(p);
                 plugin.messages().send(p, pd.hideOthers ? "toggle.hide-others-on" : "toggle.hide-others-off");
+            }
+            case "khoe" -> {
+                String key = plugin.chat().showInChat(p);
+                if (key != null) plugin.messages().send(p, key, "wait", String.valueOf(Math.max(1, plugin.chat().chatShowWait(p.getUniqueId()))));
+            }
+            case "chedo" -> {
+                int i = args.length > 1 ? MODES.indexOf(args[1].toLowerCase(java.util.Locale.ROOT)) : (pd.petMode + 1) % 3;
+                if (i < 0) {
+                    plugin.messages().send(p, "behaviour.usage-mode");
+                    return true;
+                }
+                pd.petMode = i;
+                pd.dirty = true;
+                plugin.messages().send(p, "behaviour.mode", "mode", plugin.menus().text("behaviour.modes." + MODES.get(i) + ".name"));
+            }
+            case "muctieu" -> {
+                int i = args.length > 1 ? TARGETS.indexOf(args[1].toLowerCase(java.util.Locale.ROOT)) : (pd.petTarget + 1) % 3;
+                if (i < 0) {
+                    plugin.messages().send(p, "behaviour.usage-target");
+                    return true;
+                }
+                pd.petTarget = i;
+                pd.dirty = true;
+                plugin.messages().send(p, "behaviour.target", "target", plugin.menus().text("behaviour.targets." + TARGETS.get(i) + ".name"));
             }
             case "thongbao" -> {
                 pd.castChat = !pd.castChat;

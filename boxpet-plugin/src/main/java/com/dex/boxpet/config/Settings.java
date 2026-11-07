@@ -32,6 +32,10 @@ public final class Settings {
     public final int maxIncubator;
     public final double gemPerMinute;
     public final int clickCooldownTicks;
+    /** 0.21.0: seconds between two /pet khoe of one player. */
+    public final int chatShowCooldownSeconds;
+    /** 0.21.0: "[pet]" in chat shows the active pet. */
+    public final boolean chatShowToken;
     public final int inputTimeoutSeconds;
     public final boolean hideWhenInvisible;
 
@@ -163,6 +167,8 @@ public final class Settings {
         maxIncubator = Math.max(defaultIncubator, Math.min(7, c.getInt("incubator.max-slots", 5)));
         gemPerMinute = Math.max(0, c.getDouble("incubator.gem-per-minute", 1));
         clickCooldownTicks = Math.max(0, c.getInt("menu.click-cooldown-ticks", 4));
+        chatShowCooldownSeconds = Math.max(0, c.getInt("showcase.chat-cooldown-seconds", 30));
+        chatShowToken = c.getBoolean("showcase.chat-token", true);
         inputTimeoutSeconds = Math.max(5, c.getInt("menu.input-timeout-seconds", 30));
         hideWhenInvisible = c.getBoolean("hide-when-invisible", true);
 
