@@ -571,14 +571,21 @@ abilities:
     description:
       - 'Khi máu chủ nhân dưới %percent%%,'
       - 'hồi tổng %heal% máu trong %heal_seconds%'
-      - 'giây'
-    cooldown: 14
+      - 'giây và +%buff% %buff_stat% trong'
+      - '%buff_seconds% giây'
+    cooldown: 16
+    buff:
+      stat: DEFENSE
+      amount:
+        base: 2
+        per-level: 0.06
+      seconds: 5
     heal:
       amount:
         base: 4
         per-level: 0.1
       percent: false
-      below-percent: 70
+      below-percent: 50
       pulses: 5
       interval-ticks: 20
     fx:
@@ -1062,7 +1069,8 @@ abilities:
       - 'Quét và đánh dấu mọi kẻ địch'
       - 'trong %radius% ô quanh mục tiêu'
       - '%seconds% giây: chủ nhân đánh'
-      - 'chúng mạnh hơn %bonus%%'
+      - 'chúng mạnh hơn %bonus%% và được'
+      - '+%buff% %buff_stat% trong %buff_seconds% giây'
     cooldown: 14
     range: 16
     cast-delay-ticks: 30
@@ -1073,6 +1081,13 @@ abilities:
       bonus-percent:
         base: 5
         per-level: 0.1
+    # 0.16.1: chủ nhân được thêm Sát thương khi quét
+    buff:
+      stat: ATTACK_DAMAGE
+      amount:
+        base: 1.5
+        per-level: 0.05
+      seconds: 6
     fx:
       animation: skill
       sounds:
@@ -1349,7 +1364,7 @@ abilities:
         base: 3.5
         per-level: 0.08
       percent: false
-      below-percent: 60
+      below-percent: 40
       pulses: 5
       interval-ticks: 20
     fx:

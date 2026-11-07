@@ -7,7 +7,7 @@ family: cacti
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
 role: support
 # độ hiếm của pet này (một model = một pet = một độ hiếm). Độ hiếm cao hơn thì chỉ số gốc cao hơn
-rarity: rare
+rarity: common
 # icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback
 icon: 'companions_1:icon_cacti_frozen'
 icon-fallback: CACTUS

@@ -187,6 +187,11 @@ public final class AbilityService {
                 announce(p, a);
                 p.cooldown = a.cooldownTicks;
                 if (a.areaRadius > 0 && (a.damage.base() > 0 || !a.enemyStat.isEmpty())) domain(p, a);
+                // 0.16.1: a heal with a buff section also gives the owner that stat
+                if (!a.buffStat.isEmpty()) {
+                    plugin.stats().tempStat(plugin, o, BUFF_KEY, a.buffStat, a.buffAmount.at(p.data.level, p.rarity.statMultiplier()),
+                            a.buffRelative, a.buffTicks);
+                }
             }
             case POTION -> {
                 if (--p.potionRefresh > 0) return;
