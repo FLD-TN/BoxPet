@@ -161,6 +161,20 @@ public final class AbilityService {
                 used(p);
                 double amount = a.heal.at(p.data.level, p.rarity.statMultiplier());
                 if (a.healPercent) amount = max.getValue() * amount / 100.0;
+                if (a.healPulses > 1) {
+                    // 0.16.0: hồi máu dần, the total split over the pulses
+                    double step = amount / a.healPulses;
+                    amount = step;
+                    for (int i = 1; i < a.healPulses; i++) {
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                            if (plugin.pets().active(p.ownerId) != p || !o.isOnline() || o.isDead()) return;
+                            AttributeInstance mx = o.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                            if (mx == null) return;
+                            o.setHealth(Math.min(mx.getValue(), o.getHealth() + step));
+                            Effects.particle(o.getLocation().add(0, 1, 0), "HEART", 1, 0.3, 0);
+                        }, (long) i * a.healInterval);
+                    }
+                }
                 o.setHealth(Math.min(max.getValue(), o.getHealth() + amount));
                 // 0.8.0: a heal may also give a shield (Thần Ra)
                 double hearts = a.shieldHearts.at(p.data.level, p.rarity.statMultiplier());
@@ -329,8 +343,19 @@ public final class AbilityService {
             case MARK -> {
                 if (first) {
                     double bonus = a.markBonus.at(p.data.level, p.rarity.statMultiplier());
-                    marks.put(target.getUniqueId(), new Mark(p.ownerId, bonus, System.currentTimeMillis() + a.markTicks * 50L));
-                    showAt(p, a, target);
+                    long until = System.currentTimeMillis() + a.markTicks * 50L;
+                    // 0.16.0: an area mark tags every enemy around the target (Quét Mục Tiêu)
+                    List<LivingEntity> tagged = new ArrayList<>();
+                    tagged.add(target);
+                    if (a.areaRadius > 0) {
+                        for (LivingEntity e : around(p.owner, target.getLocation(), a.areaRadius)) if (!e.equals(target)) tagged.add(e);
+                    }
+                    for (LivingEntity e : tagged) {
+                        marks.put(e.getUniqueId(), new Mark(p.ownerId, bonus, until));
+                        showAt(p, a, e);
+                        // a support mark (no damage) still brings its enemy-stat (Lệnh Truy Nã)
+                        if (a.damage.base() <= 0) applyDebuff(p, a, e, 0);
+                    }
                 } else {
                     sounds(p, a);
                 }
@@ -734,7 +759,20 @@ public final class AbilityService {
     private void buff(ActivePet p, Ability a, @Nullable LivingEntity enemy) {
         int lvl = p.data.level;
         double mul = p.rarity.statMultiplier();
-        if (!a.buffStat.isEmpty()) {
+        boolean firstStack = true;
+        if (!a.buffChoices.isEmpty()) {
+            // 0.16.0: Hộp Quà, one stat at random
+            Ability.Choice c = a.buffChoices.get(java.util.concurrent.ThreadLocalRandom.current().nextInt(a.buffChoices.size()));
+            plugin.stats().tempStat(plugin, p.owner, BUFF_KEY, c.stat(), c.amount().at(lvl, mul), false, a.buffTicks);
+        } else if (!a.buffStat.isEmpty() && a.buffStacks > 1) {
+            // 0.16.0: Tích Giáp, one more step per trigger, all steps renewed
+            long now = System.currentTimeMillis();
+            if (now > p.buffStackUntil) p.buffStack = 0;
+            firstStack = p.buffStack == 0;
+            p.buffStack = Math.min(a.buffStacks, p.buffStack + 1);
+            p.buffStackUntil = now + a.buffTicks * 50L;
+            plugin.stats().tempStat(plugin, p.owner, BUFF_KEY, a.buffStat, a.buffAmount.at(lvl, mul) * p.buffStack, a.buffRelative, a.buffTicks);
+        } else if (!a.buffStat.isEmpty()) {
             plugin.stats().tempStat(plugin, p.owner, BUFF_KEY, a.buffStat, a.buffAmount.at(lvl, mul), a.buffRelative, a.buffTicks);
         }
         if (!a.buff2Stat.isEmpty()) {
@@ -742,20 +780,30 @@ public final class AbilityService {
         }
         if (!a.enemyStat.isEmpty()) {
             double v = -a.enemyAmount.at(lvl, mul);
-            if (a.enemyRadius > 0) {
+            if (a.enemyRadius > 0 && a.enemyDomain) {
+                // 0.16.0: lãnh địa, enemies inside lose the stat as long as they stay (renewed every half second)
+                for (int t = 0; t < a.buffTicks; t += 10) {
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        if (plugin.pets().active(p.ownerId) != p || !p.owner.isOnline()) return;
+                        for (LivingEntity e : around(p.owner, p.owner.getLocation(), a.enemyRadius)) {
+                            if (e instanceof Player ep) plugin.stats().tempStat(plugin, ep, DEBUFF_KEY, a.enemyStat, v, a.buffRelative, 12);
+                        }
+                    }, t);
+                }
+            } else if (a.enemyRadius > 0) {
                 for (LivingEntity e : around(p.owner, p.owner.getLocation(), a.enemyRadius)) {
-                    if (e instanceof Player ep) plugin.stats().tempStat(plugin, ep, DEBUFF_KEY, a.enemyStat, v, a.buffRelative, a.buffTicks);
+                    if (e instanceof Player ep) plugin.stats().tempStat(plugin, ep, DEBUFF_KEY, a.enemyStat, v, a.buffRelative, a.enemyTicks);
                 }
                 ring(p.owner.getLocation(), a.enemyRadius, "END_ROD");
             } else if (enemy instanceof Player ep && validTarget(p.owner, ep)) {
-                plugin.stats().tempStat(plugin, ep, DEBUFF_KEY, a.enemyStat, v, a.buffRelative, a.buffTicks);
+                plugin.stats().tempStat(plugin, ep, DEBUFF_KEY, a.enemyStat, v, a.buffRelative, a.enemyTicks);
             }
         }
         if (enemy != null && a.debuff != Ability.Debuff.NONE && validTarget(p.owner, enemy)) {
             applyDebuff(p, a, enemy, a.damage.at(lvl, mul));
         }
         fx(p, a, p.owner);
-        if (a.vfx != null) {
+        if (a.vfx != null && firstStack) {
             onOwner(p, a, a.buffTicks);
             // 0.15.0: the same model under the robbed enemy too (Kỳ Lân U Minh)
             if (a.vfx.onEnemy() && enemy != null && validTarget(p.owner, enemy)) onEntity(a, enemy, a.buffTicks);
@@ -1014,6 +1062,13 @@ public final class AbilityService {
         Ability a = p.ability;
         if (a == null || p.abilityPaused()) return;
         long now = System.currentTimeMillis();
+        // 0.16.0: while the shield is up, whoever hits the owner loses the enemy-stat (Giáp Bánh Răng)
+        if (a.type == Ability.Type.SHIELD && !a.enemyStat.isEmpty() && now < p.shieldDebuffUntil
+                && attacker instanceof Player ap && validTarget(p.owner, ap)) {
+            plugin.stats().tempStat(plugin, ap, DEBUFF_KEY, a.enemyStat, -a.enemyAmount.at(p.data.level, p.rarity.statMultiplier()),
+                    false, a.enemyTicks);
+            Effects.particle(ap.getLocation().add(0, 1, 0), "CRIT", 6, 0.3, 0.1);
+        }
         if (a.type == Ability.Type.BUFF && !a.trigger.equals("combat")) {
             if (now < p.shieldReadyAt || healthAfter <= 0) return;
             if (a.trigger.equals("low-hp")) {
@@ -1036,6 +1091,7 @@ public final class AbilityService {
         int amp = Math.max(0, (int) Math.ceil(hearts / 2.0) - 1);
         p.owner.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, a.shieldTicks, amp, true, false, true));
         p.shieldReadyAt = now + a.cooldownTicks * 50L;
+        p.shieldDebuffUntil = now + a.shieldTicks * 50L;
         fx(p, a, p.owner);
         announce(p, a);
         if (a.blastRadius > 0) {

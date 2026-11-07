@@ -72,6 +72,11 @@ public final class ActivePet {
     public int cooldown;
     public int potionRefresh;
     public long shieldReadyAt;
+    /** 0.16.0: stacks of a stacking buff and when they run out. */
+    public int buffStack;
+    public long buffStackUntil;
+    /** 0.16.0: until when attackers of the owner are weakened by the shield. */
+    public long shieldDebuffUntil;
     /** 0.9.0: the second skill and its own cooldowns (AbilityService swaps them in while it runs that skill). */
     public @Nullable Ability ability2;
     public int cooldown2;

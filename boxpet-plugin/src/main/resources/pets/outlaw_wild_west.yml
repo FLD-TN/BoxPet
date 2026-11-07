@@ -5,7 +5,7 @@ color: '#9E2A2B'
 # họ pet: nhóm trong thư viện và bộ câu thoại riêng (dialogues.yml families)
 family: outlaw
 # combat (chiến đấu), support (hỗ trợ), boost (kinh tế)
-role: combat
+role: support
 # độ hiếm của pet này (một model = một pet = một độ hiếm). Độ hiếm cao hơn thì chỉ số gốc cao hơn
 rarity: common
 # icon ItemsAdder của pack (namespace:id); không có ItemsAdder thì dùng icon-fallback

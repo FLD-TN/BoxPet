@@ -194,6 +194,11 @@ public final class PetIcons {
                 "buff2", num(m, "bonus", round1(a.buff2Amount.at(level, mul))),
                 "buff2_stat", statName(plugin, a.buff2Stat),
                 "buff_seconds", num(m, "time", a.buffTicks / 20.0),
+                "stacks", num(m, "time", a.buffStacks),
+                "heal_seconds", num(m, "time", (a.healPulses - 1) * a.healInterval / 20.0),
+                "choice_1", choice(plugin, m, a, 0, level, mul),
+                "choice_2", choice(plugin, m, a, 1, level, mul),
+                "choice_3", choice(plugin, m, a, 2, level, mul),
                 "enemy", num(m, "damage", round1(a.enemyAmount.at(level, mul))),
                 "enemy_stat", statName(plugin, a.enemyStat),
                 "pvp", num(m, "percent", Math.round(a.pvp(plugin.settings().defaultPvpMultiplier) * 100))
@@ -211,6 +216,13 @@ public final class PetIcons {
             out.add(m.text("pet-card.ability-cooldown", "value", Format.decimal(a.cooldownTicks / 20.0)));
         }
         return out;
+    }
+
+    /** 0.16.0: "2 Sát thương" of a random-buff choice (empty when there is no such choice). */
+    private static String choice(BoxPetPlugin plugin, MenuTexts m, Ability a, int i, int level, double mul) {
+        if (i >= a.buffChoices.size()) return "";
+        Ability.Choice c = a.buffChoices.get(i);
+        return num(m, "bonus", round1(c.amount().at(level, mul))) + " " + statName(plugin, c.stat());
     }
 
     /** A number in the colour of its kind (menus.yml ability-numbers), then back to the description colour. */

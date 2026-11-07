@@ -422,35 +422,37 @@ abilities:
         speed: 0.7
         life-ticks: 40
         scale: 1.0
+  # 0.16.0: hỗ trợ, quà ngẫu nhiên cho chủ nhân khi giao tranh
   necro_gift:
-    type: projectile
+    type: buff
     name: 'Hộp Quà Bất Ngờ'
     color: '#FF6B6B:#FFD3D3'
     description:
-      - 'Ném hộp quà vào mục tiêu,'
-      - 'gây %damage% sát thương'
-    cooldown: 10
-    pvp-multiplier: 0.4
-    range: 14
-    cast-delay-ticks: 18
-    damage:
-      base: 3
-      per-level: 0.1
-    pve-multiplier: 1.0
+      - 'Khi giao tranh, tặng chủ nhân'
+      - '1 quà ngẫu nhiên trong %buff_seconds%'
+      - 'giây: +%choice_1%,'
+      - '+%choice_2% hoặc +%choice_3%'
+    cooldown: 16
+    range: 12
+    trigger: combat
+    buff:
+      seconds: 6
+      random:
+        - {stat: ATTACK_DAMAGE, base: 1.5, per-level: 0.05}
+        - {stat: DEFENSE, base: 2, per-level: 0.06}
+        - {stat: CRITICAL_STRIKE_CHANCE, base: 3, per-level: 0.08}
     fx:
       animation: skill
       sounds:
-        - {sound: entity.ender_dragon.flap, volume: 0.6, pitch: 1.5, delay: 4}
-        - {sound: entity.evoker.cast_spell, volume: 0.8, pitch: 1.3, delay: 18}
+        - {sound: entity.player.levelup, volume: 0.5, pitch: 1.6}
       particles:
-        - {particle: HAPPY_VILLAGER, count: 3, spread: 0.05, speed: 0.01, at: path}
-        - {particle: HAPPY_VILLAGER, count: 15, spread: 0.4, speed: 0.05, at: target}
+        - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
       vfx:
         model: vfx_necromancer_cat_gift
         animation: loop
-        speed: 0.7
-        life-ticks: 40
-        scale: 1.0
+        life-ticks: 30
+        scale: 0.8
+        y-offset: 2.4
   knight_pierce:
     type: strike
     name: 'Mũi Giáo Xuyên'
@@ -525,122 +527,127 @@ abilities:
         life-ticks: 10
         scale: 1.2
         y-offset: 0.0
+  # 0.16.0: hỗ trợ, đánh dấu + giảm Phòng thủ (không gây sát thương)
   outlaw_mark:
     type: mark
-    name: 'Đánh Dấu Mục Tiêu'
+    name: 'Lệnh Truy Nã'
     color: '#FF5E5E:#FFC2A8'
     description:
-      - 'Đánh dấu mục tiêu %seconds% giây:'
+      - 'Truy nã mục tiêu %seconds% giây:'
       - 'đòn của chủ nhân lên nó mạnh'
-      - 'hơn %bonus%%, kèm %damage% sát thương'
+      - 'hơn %bonus%%, nó bị giảm %enemy%'
+      - '%enemy_stat% trong %enemy_seconds% giây'
     cooldown: 12
-    pvp-multiplier: 0.5
     range: 16
     cast-delay-ticks: 30
-    damage:
-      base: 1.5
-      per-level: 0.05
     mark:
       seconds: 6
       bonus-percent:
-        base: 4
-        per-level: 0.08
+        base: 5
+        per-level: 0.1
+    enemy-stat:
+      stat: DEFENSE
+      seconds: 6
+      amount:
+        base: 1.2
+        per-level: 0.05
     fx:
       animation: skill
       sounds:
-        - {sound: entity.arrow.shoot, volume: 0.8, pitch: 0.8, delay: 28}
-        - {sound: block.note_block.bell, volume: 0.7, pitch: 1.6, delay: 30}
-      particles:
-        - {particle: CRIT, count: 10, spread: 0.3, speed: 0.1, at: target}
+        - {sound: entity.experience_orb.pickup, volume: 0.6, pitch: 0.6, delay: 28}
       vfx:
         model: vfx_red_target
         animation: skill
+        tint: 'FF3B3B'
+        glow: true
         life-ticks: 120
         scale: 1.0
         y-offset: 2.3
+  # 0.16.0: hồi máu dần
   griffon_heal:
     type: heal
     name: 'Lông Vũ Chữa Lành'
     color: '#FFD24D:#FFF5C2'
     description:
       - 'Khi máu chủ nhân dưới %percent%%,'
-      - 'hồi %heal% máu cho chủ nhân'
-    cooldown: 10
+      - 'hồi tổng %heal% máu trong %heal_seconds%'
+      - 'giây'
+    cooldown: 14
     heal:
       amount:
-        base: 2
-        per-level: 0.05
+        base: 4
+        per-level: 0.1
       percent: false
       below-percent: 70
+      pulses: 5
+      interval-ticks: 20
     fx:
       animation: skill
       sounds:
         - {sound: entity.allay.item_taken, volume: 1.0, pitch: 1.3}
       particles:
-        - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
-        - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+        - {particle: HEART, count: 4, spread: 0.4, speed: 0, at: owner}
       vfx:
         model: vfx_feathers_light
         animation: skill
         life-ticks: 28
         scale: 1.0
+  # 0.16.0: tích giáp, mỗi lần bị đánh cộng dồn Phòng thủ
   cacti_shield_desert:
-    type: shield
-    name: 'Khiên Gai Sa Mạc'
+    type: buff
+    name: 'Giáp Gai Sa Mạc'
     color: '#E6C27A:#FFF0C2'
     description:
-      - 'Khi máu chủ nhân dưới %percent%%,'
-      - 'tạo khiên %hearts% tim trong'
-      - '%seconds% giây'
-    cooldown: 50
-    shield:
-      below-percent: 40
-      hearts:
-        base: 1.5
-        per-level: 0.04
+      - 'Mỗi lần chủ nhân bị đánh: +%buff%'
+      - '%buff_stat%, cộng dồn tối đa %stacks%'
+      - 'lần trong %seconds% giây'
+    cooldown: 1
+    trigger: hurt
+    buff:
+      stat: DEFENSE
+      amount:
+        base: 0.8
+        per-level: 0.025
       seconds: 6
+      stacks: 5
     fx:
       animation: skill
       sounds:
-        - {sound: block.amethyst_block.chime, volume: 1.0, pitch: 0.8}
-      particles:
-        - {particle: CRIT, count: 15, spread: 0.6, speed: 0.05, at: owner}
+        - {sound: block.sand.place, volume: 0.6, pitch: 1.2}
       vfx:
         model: vfx_spike_shield_desert
         animation: idle
         life-ticks: 120
         scale: 1.0
         y-offset: 0.0
+  # 0.16.0: phản kích, kẻ vừa đánh chủ nhân bị giảm Chí mạng
   cacti_shield_frozen:
-    type: shield
-    name: 'Khiên Gai Băng'
+    type: buff
+    name: 'Gai Băng Phản Kích'
     color: '#9EE7FF:#E3FAFF'
     description:
-      - 'Khi máu chủ nhân dưới %percent%%,'
-      - 'tạo khiên %hearts% tim trong'
-      - '%seconds% giây và đẩy nhẹ kẻ địch'
-      - 'trong %radius% ô'
-    cooldown: 45
-    blast:
-      radius: 3
-      power: 0.6
-    shield:
-      below-percent: 40
-      hearts:
-        base: 2
-        per-level: 0.05
-      seconds: 6
+      - 'Khi chủ nhân bị đánh, gai băng'
+      - 'làm kẻ vừa đánh giảm %enemy%%'
+      - '%enemy_stat% trong %enemy_seconds% giây'
+    cooldown: 8
+    trigger: hurt
+    enemy-stat:
+      stat: CRITICAL_STRIKE_CHANCE
+      seconds: 4
+      amount:
+        base: 3
+        per-level: 0.1
     fx:
-      area-vfx: vfx_push_ice
       animation: skill
+      area-vfx: vfx_push_ice
       sounds:
-        - {sound: block.amethyst_block.chime, volume: 1.0, pitch: 0.8}
+        - {sound: block.glass.break, volume: 0.6, pitch: 1.6}
       particles:
-        - {particle: CRIT, count: 15, spread: 0.6, speed: 0.05, at: owner}
+        - {particle: SNOWFLAKE, count: 12, spread: 0.5, speed: 0.05, at: owner}
       vfx:
         model: vfx_spike_shield_frozen
         animation: idle
-        life-ticks: 120
+        life-ticks: 60
         scale: 1.0
         y-offset: 0.0
   cacti_shield_sculk:
@@ -676,15 +683,16 @@ abilities:
         life-ticks: 120
         scale: 1.0
         y-offset: 0.0
+  # 0.16.0: lãnh địa, kẻ địch đứng trong vòng bị giảm chỉ số suốt thời gian buff
   unicorn_heavenly:
     type: buff
     name: 'Thiên Giới'
     color: '#FFFFFF:#B8E6FF'
     description:
-      - 'Chủ nhân +%buff%% %buff_stat%,'
-      - 'kẻ địch trong %radius% ô quanh chủ'
-      - 'nhân -%enemy%% %enemy_stat%'
-      - 'trong %seconds% giây'
+      - 'Mở Thiên Giới %seconds% giây: chủ'
+      - 'nhân +%buff%% %buff_stat%, kẻ địch'
+      - 'đứng trong %radius% ô bị giảm %enemy%%'
+      - '%enemy_stat% khi còn trong vùng'
     cooldown: 25
     range: 12
     trigger: combat
@@ -697,6 +705,7 @@ abilities:
     enemy-stat:
       stat: PVP_DAMAGE
       radius: 5
+      domain: true
       amount:
         base: 2
         per-level: 0.08
@@ -713,6 +722,7 @@ abilities:
         life-ticks: 120
         scale: 2.0
         y-offset: 0.0
+        turn: false
   # 0.11.0: Kỳ Lân Rừng Xanh thành pet kinh tế (nhiệm vụ)
   unicorn_nature:
     type: boost
@@ -856,21 +866,23 @@ abilities:
         per-level: 0.1
       whole: false
   # 0.11.0: Palcat Nhạc Sĩ thành pet hỗ trợ (giáp như Kỳ Lân Rừng Xanh), hiệu ứng nốt nhạc của chính model
+  # 0.16.0: cổ vũ khi giao tranh
   palcat_music:
     type: buff
-    name: 'Giai Điệu Hộ Thân'
+    name: 'Giai Điệu Cổ Vũ'
     color: '#A5B4FF:#DCE2FF'
     description:
-      - 'Khi chủ nhân bị đánh: +%buff%'
-      - '%buff_stat% trong %seconds% giây'
-    cooldown: 30
-    trigger: hurt
+      - 'Khi giao tranh, chủ nhân được'
+      - '+%buff% %buff_stat% trong %seconds% giây'
+    cooldown: 18
+    range: 12
+    trigger: combat
     buff:
-      stat: DEFENSE
+      stat: ATTACK_DAMAGE
       amount:
-        base: 2
-        per-level: 0.08
-      seconds: 5
+        base: 1.5
+        per-level: 0.05
+      seconds: 6
     fx:
       animation: skill
       sounds:
@@ -1041,40 +1053,33 @@ abilities:
         life-ticks: 10
         scale: 1.2
         y-offset: 0.0
+  # 0.16.0: hỗ trợ, đánh dấu mọi kẻ địch quanh mục tiêu (không gây sát thương)
   outlaw_cyborg:
     type: mark
-    name: 'Loạt Đạn Đánh Dấu'
+    name: 'Quét Mục Tiêu'
     color: '#4DD8FF:#C2F3FF'
     description:
-      - 'Đánh dấu mục tiêu %seconds% giây'
-      - '(chủ nhân đánh mạnh hơn %bonus%%)'
-      - 'rồi bắn %hits% viên, mỗi viên'
-      - '%damage% sát thương'
-    cooldown: 12
+      - 'Quét và đánh dấu mọi kẻ địch'
+      - 'trong %radius% ô quanh mục tiêu'
+      - '%seconds% giây: chủ nhân đánh'
+      - 'chúng mạnh hơn %bonus%%'
+    cooldown: 14
     range: 16
     cast-delay-ticks: 30
-    damage:
-      base: 1.6
-      per-level: 0.06
-    hits:
-      count: 3
-      interval-ticks: 6
+    area:
+      radius: 5
     mark:
       seconds: 6
       bonus-percent:
-        base: 4
-        per-level: 0.08
+        base: 5
+        per-level: 0.1
     fx:
       animation: skill
       sounds:
-        - {sound: entity.arrow.shoot, volume: 0.8, pitch: 0.8, delay: 28}
-        - {sound: block.note_block.bell, volume: 0.7, pitch: 1.6, delay: 30}
-      particles:
-        - {particle: CRIT, count: 10, spread: 0.3, speed: 0.1, at: target}
+        - {sound: block.beacon.power_select, volume: 0.6, pitch: 1.8, delay: 28}
       vfx:
         model: vfx_red_target
         animation: skill
-        # 0.15.0: tâm ngắm đỏ, sáng tối đa
         tint: 'FF2B2B'
         glow: true
         life-ticks: 120
@@ -1180,33 +1185,32 @@ abilities:
         life-ticks: 10
         scale: 1.2
         y-offset: 0.0
+  # 0.16.0: hỗ trợ, chỉ đánh dấu (không gây sát thương)
   outlaw_mark_basic:
     type: mark
-    name: 'Đánh Dấu Mục Tiêu'
+    name: 'Chỉ Điểm'
     color: '#FF5E5E:#FFC2A8'
     description:
-      - 'Đánh dấu mục tiêu %seconds% giây:'
+      - 'Chỉ điểm mục tiêu %seconds% giây:'
       - 'đòn của chủ nhân lên nó mạnh'
       - 'hơn %bonus%%'
-    cooldown: 14
-    pvp-multiplier: 0.4
+    cooldown: 12
     range: 16
     cast-delay-ticks: 30
     mark:
       seconds: 6
       bonus-percent:
-        base: 3
-        per-level: 0.06
+        base: 4
+        per-level: 0.08
     fx:
       animation: skill
       sounds:
-        - {sound: entity.arrow.shoot, volume: 0.8, pitch: 0.8, delay: 28}
-        - {sound: block.note_block.bell, volume: 0.7, pitch: 1.6, delay: 30}
-      particles:
-        - {particle: CRIT, count: 10, spread: 0.3, speed: 0.1, at: target}
+        - {sound: entity.experience_orb.pickup, volume: 0.6, pitch: 0.6, delay: 28}
       vfx:
         model: vfx_red_target
         animation: skill
+        tint: 'FF5E5E'
+        glow: true
         life-ticks: 120
         scale: 1.0
         y-offset: 2.3
@@ -1330,30 +1334,32 @@ abilities:
         scale: 1.0
   # 0.13.0: Rồng Hoa Thánh, hiệu ứng chiêu gốc của Tinh Linh Thiên Nhiên (pack Cubees): hoa nở dưới chân mục tiêu
   # 0.13.1: Tinh Linh Thiên Nhiên, giáp lá như Kỳ Lân Rừng Xanh trước đây
+  # 0.16.0: hồi máu dần, vòng phép xanh dưới chân
   cubee_leaf_armor:
-    type: buff
-    name: 'Giáp Lá Rừng Xanh'
+    type: heal
+    name: 'Mầm Xanh Chữa Lành'
     color: '#8EE07A:#D8F8C6'
     description:
-      - 'Khi chủ nhân bị đánh: +%buff%'
-      - '%buff_stat% trong %seconds% giây'
-    cooldown: 30
-    trigger: hurt
-    buff:
-      stat: DEFENSE
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'hồi tổng %heal% máu trong %heal_seconds%'
+      - 'giây'
+    cooldown: 14
+    heal:
       amount:
-        base: 2
+        base: 3.5
         per-level: 0.08
-      seconds: 5
+      percent: false
+      below-percent: 60
+      pulses: 5
+      interval-ticks: 20
     fx:
       animation: skill
       sounds:
         - {sound: entity.allay.item_taken, volume: 0.8, pitch: 1.4}
         - {sound: block.amethyst_block.chime, volume: 0.8, pitch: 1.2}
       particles:
-        - {particle: END_ROD, count: 12, spread: 0.5, speed: 0.03, at: owner}
+        - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
       vfx:
-        # 0.13.2: chỉ vòng phép dưới chân (tách từ chiêu gốc Tinh Linh Ánh Sáng), nhuộm xanh lá
         model: vfx_magic_circle
         animation: skill
         tint: '8EE07A'
@@ -1361,6 +1367,7 @@ abilities:
         life-ticks: 99
         scale: 0.5
         y-offset: 0.05
+        turn: false
 
   dragon_holy_bloom:
     type: nova
@@ -1630,66 +1637,66 @@ abilities:
         speed: 0.8
         life-ticks: 40
         scale: 1.0
+  # 0.16.0: cổ vũ khi giao tranh (Chí mạng)
   griffon_rock:
-    type: heal
-    name: 'Bản Nhạc Hồi Sức'
+    type: buff
+    name: 'Bản Rock Cuồng Nhiệt'
     color: '#FF4FD8:#FFC2F1'
     description:
-      - 'Khi máu chủ nhân dưới %percent%%,'
-      - 'hồi %heal%% máu tối đa'
-    cooldown: 16
-    heal:
+      - 'Khi giao tranh, chủ nhân được'
+      - '+%buff%% %buff_stat% trong %seconds% giây'
+    cooldown: 18
+    range: 12
+    trigger: combat
+    buff:
+      stat: CRITICAL_STRIKE_CHANCE
       amount:
-        base: 6
-        per-level: 0.08
-      percent: true
-      below-percent: 50
+        base: 3
+        per-level: 0.1
+      seconds: 6
     fx:
       animation: skill
       sounds:
-        - {sound: entity.allay.item_taken, volume: 1.0, pitch: 1.3}
-      particles:
-        - {particle: HEART, count: 6, spread: 0.4, speed: 0, at: owner}
-        - {particle: HAPPY_VILLAGER, count: 10, spread: 0.5, speed: 0, at: owner}
+        - {sound: block.note_block.guitar, volume: 0.9, pitch: 1.0}
+        - {sound: block.note_block.guitar, volume: 0.9, pitch: 1.4, delay: 4}
       vfx:
         model: vfx_music_notes
         animation: skill
         life-ticks: 32
         scale: 1
+  # 0.16.0: hỗ trợ, khiên làm yếu kẻ đánh vào
   steam_gear:
-    type: projectile
-    name: 'Đạn Bánh Răng'
+    type: shield
+    name: 'Giáp Bánh Răng'
     color: '#C9A227:#F5E6B8'
     description:
-      - 'Bắn bánh răng vào mục tiêu,'
-      - 'gây %damage% sát thương và làm'
-      - 'chậm %seconds% giây'
-    cooldown: 9
-    pvp-multiplier: 0.5
-    range: 16
-    cast-delay-ticks: 16
-    damage:
-      base: 3
-      per-level: 0.1
-    debuff:
-      type: slow
-      seconds: 2
-      amplifier: 0
+      - 'Khi máu chủ nhân dưới %percent%%,'
+      - 'lắp giáp %hearts% tim trong %seconds%'
+      - 'giây, kẻ đánh vào giáp bị giảm'
+      - '%enemy% %enemy_stat% %enemy_seconds% giây'
+    cooldown: 35
+    shield:
+      below-percent: 50
+      hearts:
+        base: 2
+        per-level: 0.05
+      seconds: 6
+    enemy-stat:
+      stat: ATTACK_DAMAGE
+      seconds: 3
+      amount:
+        base: 1
+        per-level: 0.04
     fx:
       animation: skill
       sounds:
-        - {sound: block.piston.extend, volume: 0.7, pitch: 1.6, delay: 12}
-        - {sound: entity.iron_golem.hurt, volume: 0.5, pitch: 1.8, delay: 16}
-      particles:
-        - {particle: CRIT, count: 3, spread: 0.05, speed: 0.01, at: path}
-        - {particle: SMOKE, count: 2, spread: 0.05, speed: 0.01, at: path}
-        - {particle: CRIT, count: 14, spread: 0.4, speed: 0.1, at: target}
+        - {sound: block.anvil.use, volume: 0.5, pitch: 1.6}
       vfx:
         model: vfx_gear
         animation: idle
-        speed: 0.8
-        life-ticks: 40
-        scale: 1
+        life-ticks: 120
+        scale: 1.2
+        y-offset: 1.0
   cubee_dark_hunt:
     type: boost
     name: 'Bóng Tối Săn Đêm'

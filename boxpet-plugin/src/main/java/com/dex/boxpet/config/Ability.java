@@ -166,6 +166,17 @@ public final class Ability {
     public final boolean buffRelative;
     /** 0.15.0: a second stat given with the buff (buff.also), e.g. a little Phòng thủ with Né đòn. */
     public final String buff2Stat;
+    /** 0.16.0: one of these is given at random instead of buff.stat (Hộp Quà). */
+    public record Choice(String stat, Scaled amount) {
+    }
+    public final List<Choice> buffChoices;
+    /** 0.16.0: each trigger adds one more step of buff.amount, up to this many (Tích Giáp); 1 = no stacking. */
+    public final int buffStacks;
+    /** 0.16.0: the heal is given in this many steps, interval apart (hồi máu dần). */
+    public final int healPulses;
+    public final int healInterval;
+    /** 0.16.0: enemies inside enemy-stat.radius keep losing the stat for the whole buff (lãnh địa). */
+    public final boolean enemyDomain;
     public final Scaled buff2Amount;
     /** Buff: a stat taken from enemy players (the target / attacker, or every enemy within {@code enemyRadius}). */
     public final String enemyStat;
@@ -215,6 +226,8 @@ public final class Ability {
         heal = h == null ? Scaled.ZERO : Scaled.read(h, "amount", 0).times(healMul);
         healPercent = h != null && h.getBoolean("percent", false);
         healBelowPercent = h == null ? 100 : Math.max(1, Math.min(100, h.getInt("below-percent", 100)));
+        healPulses = h == null ? 1 : Math.max(1, Math.min(20, h.getInt("pulses", 1)));
+        healInterval = h == null ? 20 : Math.max(5, h.getInt("interval-ticks", 20));
         ConfigurationSection sh = s.getConfigurationSection("shield");
         shieldBelowPercent = sh == null ? 40 : Math.max(1, Math.min(99, sh.getInt("below-percent", 40)));
         shieldHearts = sh == null ? Scaled.ZERO : Scaled.read(sh, "hearts", 2).times(healMul);
@@ -272,12 +285,25 @@ public final class Ability {
         ConfigurationSection b2 = bu == null ? null : bu.getConfigurationSection("also");
         buff2Stat = b2 == null ? "" : b2.getString("stat", "").toUpperCase(Locale.ROOT);
         buff2Amount = b2 == null ? Scaled.ZERO : Scaled.read(b2, "amount", 0);
+        List<Choice> choices = new java.util.ArrayList<>();
+        if (bu != null) {
+            for (java.util.Map<?, ?> mm : bu.getMapList("random")) {
+                Object st = mm.get("stat");
+                if (st == null) continue;
+                double base = mm.get("base") instanceof Number n ? n.doubleValue() : 0;
+                double per = mm.get("per-level") instanceof Number n ? n.doubleValue() : 0;
+                choices.add(new Choice(st.toString().toUpperCase(Locale.ROOT), new Scaled(base, per)));
+            }
+        }
+        buffChoices = List.copyOf(choices);
+        buffStacks = bu == null ? 1 : Math.max(1, Math.min(10, bu.getInt("stacks", 1)));
         buffBelowPercent = bu == null ? 40 : Math.max(1, Math.min(100, bu.getInt("below-percent", 40)));
         ConfigurationSection en = s.getConfigurationSection("enemy-stat");
         enemyStat = en == null ? "" : en.getString("stat", "").toUpperCase(Locale.ROOT);
         enemyAmount = en == null ? Scaled.ZERO : Scaled.read(en, "amount", 0);
         enemyRadius = en == null ? 0 : Math.max(0, Math.min(10, en.getDouble("radius", 0)));
         enemyTicks = en == null || !en.contains("seconds") ? buffTicks : (int) Math.round(en.getDouble("seconds") * 20);
+        enemyDomain = en != null && en.getBoolean("domain", false);
         vfxAnimations = s.getStringList("fx.vfx.animations");
         areaVfx = s.getString("fx.area-vfx", "");
         debuffVfx = d == null ? "" : d.getString("vfx", "");
