@@ -89,7 +89,7 @@ public final class ManageMenu extends Menu {
         if (!player.hasPermission(com.dex.boxpet.pet.CareService.AUTOFEED_PERMISSION)) {
             set(41, button("manage.autofeed-locked", Material.HOPPER), click -> plugin.messages().send(player, "autofeed.locked"));
         } else {
-            set(38, button(owner.autoFeed ? "manage.autofeed-on" : "manage.autofeed-off", Material.HOPPER,
+            set(41, button(owner.autoFeed ? "manage.autofeed-on" : "manage.autofeed-off", Material.HOPPER,
                     "at", String.valueOf(owner.autoFeedAt)), click -> {
                 if (click.isRightClick()) {
                     new AutoFeedMenu(plugin, player, owner, pet).open();
