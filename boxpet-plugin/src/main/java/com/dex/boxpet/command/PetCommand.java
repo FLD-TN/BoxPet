@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 /** {@code /pet [summon <name> | dismiss | hideothers | chat | rename <name>]} (spec 12, 13). */
 public final class PetCommand implements TabExecutor {
 
-    private static final List<String> SUBS = List.of("dismiss", "hideothers", "chat", "thongbao", "rename", "chedo", "muctieu", "xem");
+    private static final List<String> SUBS = List.of("dismiss", "hideothers", "chat", "thongbao", "rename", "chedo", "muctieu");
     private static final List<String> MODES = List.of("tancong", "phongthu", "thanthien");
     private static final List<String> TARGETS = List.of("tatca", "nguoi", "mob");
     /** Shown by tab completion (mob is written quaivat). */
@@ -144,24 +144,22 @@ public final class PetCommand implements TabExecutor {
      * active pet. An offline owner's pet is read from the database.
      */
     private void view(Player viewer, String[] args) {
-        if (args.length < 2) {
-            plugin.messages().send(viewer, "pet-view.usage");
-            return;
+        // 0.24.1: hidden: only the chat click of a shown pet knows the pet id; anything else looks like an unknown command
+        java.util.UUID id;
+        try {
+            id = args.length > 2 ? java.util.UUID.fromString(args[2]) : null;
+        } catch (IllegalArgumentException ex) {
+            id = null;
         }
-        java.util.UUID id = null;
-        if (args.length > 2) {
-            try {
-                id = java.util.UUID.fromString(args[2]);
-            } catch (IllegalArgumentException ex) {
-                plugin.messages().send(viewer, "pet-view.not-found");
-                return;
-            }
+        if (id == null) {
+            plugin.messages().send(viewer, "usage.pet");
+            return;
         }
         String name = args[1];
         Player owner = org.bukkit.Bukkit.getPlayerExact(name);
         PlayerData od = owner == null ? null : plugin.pets().data(owner.getUniqueId());
         if (od != null) {
-            PetData pet = id == null ? od.active() : od.pets.get(id);
+            PetData pet = od.pets.get(id);
             if (pet != null) {
                 new com.dex.boxpet.gui.PetViewMenu(plugin, viewer, pet, owner.getName()).open();
                 return;

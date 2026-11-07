@@ -38,6 +38,13 @@ public abstract class Menu implements InventoryHolder {
         this.inventory = Bukkit.createInventory(this, rows * 9, Text.parse(title));
     }
 
+    /** 0.24.1: another inventory shape (a 3x3 dropper for the pet view). */
+    protected Menu(BoxPetPlugin plugin, Player player, org.bukkit.event.inventory.InventoryType type, String title) {
+        this.plugin = plugin;
+        this.player = player;
+        this.inventory = Bukkit.createInventory(this, type, Text.parse(title));
+    }
+
     @Override
     public @NotNull Inventory getInventory() {
         return inventory;

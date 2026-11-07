@@ -445,11 +445,6 @@ behaviour:
 pet-view:
   title: '<dark_gray>Pet của %player%'
   owner: '<gray>• Chủ nhân: <white>%player%'
-  close:
-    name: '<#FF8A8A>Đóng'
-    lore:
-      - ''
-      - '<dark_gray>[<#7CFC9A>Chuột trái để đóng<dark_gray>]'
 
 manage:
   title: '<dark_gray>Quản lý pet'

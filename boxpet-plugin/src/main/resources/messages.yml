@@ -55,7 +55,6 @@ showcase-chat:
   no-pet: '<gray>[Chưa thả pet]'
 
 pet-view:
-  usage: '<error>✘ Dùng: /pet xem [tên người chơi]'
   not-found: '<error>✘ Không tìm thấy pet này, có thể đã bị thả hoặc chủ nhân chưa thả pet'
 
 behaviour:
