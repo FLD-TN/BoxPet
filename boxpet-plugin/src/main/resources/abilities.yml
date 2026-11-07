@@ -1435,18 +1435,20 @@ abilities:
       - '%buff_stat% và kẻ địch đứng trong'
       - '%radius% ô bị giảm %enemy% %enemy_stat%'
     cooldown: 60
+    # hồi 12% máu tối đa ở lv1, tối đa 20% ở lv60 (đã tính hệ số huyền thoại và heal-multiplier)
     heal:
       amount:
-        base: 4.6
-        per-level: 0.05
+        base: 3.69
+        per-level: 0.0355
       percent: true
-      below-percent: 60
+      below-percent: 40
+    # giảm sát thương 5% ở lv1, tối đa 10% ở lv60, suốt 6 giây lãnh địa
     buff:
       stat: DAMAGE_REDUCTION
       amount:
         base: 2
-        per-level: 0.05
-      seconds: 4
+        per-level: 0.0339
+      seconds: 6
     area:
       radius: 3.5
     # kẻ địch đứng trong lãnh địa bị giảm chỉ số, làm mới mỗi nửa giây (rời vùng là hết sau 0,6 giây)
@@ -1456,8 +1458,9 @@ abilities:
       amount:
         base: 1.5
         per-level: 0.05
+    # lãnh địa 6 giây: làm mới mỗi nửa giây
     nova:
-      hit-ticks: [0, 10, 20, 30, 40, 50, 60, 70]
+      hit-ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110]
     fx:
       animation: skill
       sounds:
@@ -1470,7 +1473,9 @@ abilities:
       vfx:
         model: vfx_domain_phoenix
         animation: skill
-        life-ticks: 79
+        # animation gốc 4 giây, chạy chậm 0.67 cho đủ 6 giây lãnh địa
+        anim-speed: 0.67
+        life-ticks: 119
         scale: 1.4
         y-offset: 0.0
         # vòng cột đứng yên, không xoay theo người chơi

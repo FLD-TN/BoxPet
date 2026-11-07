@@ -885,7 +885,7 @@ public final class AbilityService {
         if (visual == null) return;
         if (a.vfx.tint() != null) visual.tint(color(a.vfx.tint()));
         if (a.vfx.glow()) visual.fullBright();
-        if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
+        if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation(), a.vfx.animSpeed());
         Vfx v = new Vfx(visual, at, p.owner, 0, ticks, false, a.vfx.yOffset());
         v.turn = a.vfx.turn();
         vfx.add(v);

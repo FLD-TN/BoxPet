@@ -78,7 +78,7 @@ public final class Ability {
      */
     public record VfxFx(String model, String animation, double speed, int life, double scale, double yOffset,
                         List<String> frames, List<String> parts, @Nullable String tint, boolean glow, double center,
-                        boolean turn, boolean onEnemy) {
+                        boolean turn, boolean onEnemy, double animSpeed) {
         /** 0.12.0: a flipbook effect of the pack (frame models swapped into {@code parts}, one per tick). */
         public boolean flipbook() {
             return !frames.isEmpty() && !parts.isEmpty();
@@ -396,7 +396,7 @@ public final class Ability {
                         Math.max(5, vs.getInt("life-ticks", 40)), Math.max(0.1, vs.getDouble("scale", 1.0)),
                         vs.getDouble("y-offset", 0.0), vs.getStringList("frames"), vs.getStringList("frame-parts"),
                         vs.getString("tint", null), vs.getBoolean("glow", false), vs.getDouble("center", 0), vs.getBoolean("turn", true),
-                        vs.getBoolean("on-enemy", false));
+                        vs.getBoolean("on-enemy", false), Math.max(0.1, vs.getDouble("anim-speed", 1.0)));
             }
         }
         vfx = v;

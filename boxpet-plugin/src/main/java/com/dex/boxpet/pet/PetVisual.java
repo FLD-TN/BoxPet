@@ -204,9 +204,14 @@ public final class PetVisual {
 
     /** Plays a one-shot animation over the idle / walk state. Unknown names are ignored by ModelEngine. */
     public void play(String animation) {
+        play(animation, 1.0);
+    }
+
+    /** 0.20.3: {@code speed} below 1 stretches the animation (a 4 s effect shown for 6 s). */
+    public void play(String animation, double speed) {
         if (removed || animation == null || animation.isEmpty()) return;
         try {
-            model.getAnimationHandler().playAnimation(animation, 0.1, 0.1, 1.0, true);
+            model.getAnimationHandler().playAnimation(animation, 0.1, 0.1, speed, true);
         } catch (RuntimeException ignored) {
             // animation missing in this model
         }
