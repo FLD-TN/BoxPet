@@ -72,13 +72,13 @@ public final class ManageMenu extends Menu {
         String name = plugin.pets().displayName(pet);
         // row 1: out / feed / pet / talk / sit
         if (active) {
-            set(40, button("manage.dismiss", Material.GRAY_DYE, "pet", name), click -> {
+            set(49, button("manage.dismiss", Material.GRAY_DYE, "pet", name), click -> {
                 plugin.pets().dismiss(player, true, "menu");
                 plugin.messages().send(player, "dismiss.done", "pet", name);
                 refresh();
             });
         } else {
-            set(40, button("manage.summon", Material.LIME_DYE, "pet", name), click -> {
+            set(49, button("manage.summon", Material.LIME_DYE, "pet", name), click -> {
                 StorageMenu.summon(plugin, player, pet);
                 refresh();
             });
@@ -87,7 +87,7 @@ public final class ManageMenu extends Menu {
                 click -> new FoodMenu(plugin, player, owner, pet).open());
         // auto feed (rank perk): left = on / off, right = open the food box
         if (!player.hasPermission(com.dex.boxpet.pet.CareService.AUTOFEED_PERMISSION)) {
-            set(38, button("manage.autofeed-locked", Material.HOPPER), click -> plugin.messages().send(player, "autofeed.locked"));
+            set(41, button("manage.autofeed-locked", Material.HOPPER), click -> plugin.messages().send(player, "autofeed.locked"));
         } else {
             set(38, button(owner.autoFeed ? "manage.autofeed-on" : "manage.autofeed-off", Material.HOPPER,
                     "at", String.valueOf(owner.autoFeedAt)), click -> {
@@ -147,13 +147,13 @@ public final class ManageMenu extends Menu {
             }, this::open);
         });
         // 0.21.0: behaviour of every pet of this player (left = next, right = previous)
-        set(39, behaviourButton("mode", "modes", new String[]{"tancong", "phongthu", "thanthien"}, owner.petMode, Material.IRON_SWORD), click -> {
+        set(38, behaviourButton("mode", "modes", new String[]{"tancong", "phongthu", "thanthien"}, owner.petMode, Material.IRON_SWORD), click -> {
             owner.petMode = (owner.petMode + (click.isRightClick() ? 2 : 1)) % 3;
             owner.dirty = true;
             sound("ui.button.click");
             refresh();
         });
-        set(41, behaviourButton("target", "targets", new String[]{"tatca", "nguoi", "mob"}, owner.petTarget, Material.TARGET), click -> {
+        set(39, behaviourButton("target", "targets", new String[]{"tatca", "nguoi", "mob"}, owner.petTarget, Material.TARGET), click -> {
             owner.petTarget = (owner.petTarget + (click.isRightClick() ? 2 : 1)) % 3;
             owner.dirty = true;
             sound("ui.button.click");
