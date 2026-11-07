@@ -29,8 +29,8 @@ stats:
   DEFENSE:
     base: 0.4
     per-level: 0.02
-  ADDITIONAL_EXPERIENCE:
-    base: 1
-    per-level: 0.05
+  DAMAGE_REDUCTION:
+    base: 0.3
+    per-level: 0.02
 # kỹ năng trong abilities.yml
 ability: palcat_art

@@ -26,11 +26,11 @@ follow:
   fly: false
 # chỉ số MMOItems ở cấp 1 và tăng mỗi cấp, rồi nhân stat-multiplier của độ hiếm, bậc tiến hóa và thân thiết
 stats:
-  DEFENSE:
-    base: 0.5
-    per-level: 0.03
-  ADDITIONAL_EXPERIENCE:
+  MAX_HEALTH:
     base: 1
     per-level: 0.05
+  PVP_DAMAGE_REDUCTION:
+    base: 0.5
+    per-level: 0.03
 # kỹ năng trong abilities.yml
 ability: unicorn_nature

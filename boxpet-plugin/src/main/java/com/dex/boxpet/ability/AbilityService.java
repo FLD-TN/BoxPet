@@ -653,12 +653,26 @@ public final class AbilityService {
         Location[] center = {target.getLocation()};
         Vfx shown = null;
         boolean atPet = a.novaAt.equals("pet");
+        // 0.17.2: a line nova starts at the pet (or close enough that its far end reaches the target), facing it
+        boolean line = a.lineTo > 0;
+        double sc = a.vfx == null ? 1 : a.vfx.scale();
+        Vector lineDir = center[0].toVector().subtract(p.pos.toVector()).setY(0);
+        double lineDist = lineDir.length();
+        lineDir = lineDist < 0.01 ? new Vector(0, 0, 1) : lineDir.multiply(1 / lineDist);
+        Location lineStart = p.pos.clone();
+        if (line && lineDist > a.lineTo * sc * 0.9) {
+            lineStart = center[0].clone().subtract(lineDir.clone().multiply(a.lineTo * sc * 0.85));
+            lineStart.setY(center[0].getY());
+        }
+        lineStart.setYaw(yawTo(lineStart, center[0]));
+        lineStart.setPitch(0);
         Location beamFrom = null;
         if (a.vfx != null) {
             boolean travel = !atPet && a.novaTravel > 0;
             Location at = atPet || travel ? p.pos.clone().add(0, a.vfx.yOffset(), 0) : center[0].clone().add(0, a.vfx.yOffset(), 0);
             at.setYaw(yawTo(atPet || travel ? at : p.pos, center[0]));
             at.setPitch(0);
+            if (line) at = lineStart.clone().add(0, a.vfx.yOffset(), 0);
             if (atPet && !a.beamParticle.isEmpty()) {
                 // 0.13.1: the model faces the target, so "back" is away from it (the flower stands behind the pet)
                 Vector away = at.toVector().subtract(center[0].toVector()).setY(0);
@@ -670,7 +684,7 @@ public final class AbilityService {
                     plugin.getLogger());
             if (visual != null) {
                 if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
-                shown = new Vfx(visual, at, atPet ? null : target, 0, a.vfx.life(), false, a.vfx.yOffset());
+                shown = new Vfx(visual, at, atPet || line ? null : target, 0, a.vfx.life(), false, a.vfx.yOffset());
                 if (travel) {
                     // 0.14.0: blown from the pet to the target, then it stays on the target
                     shown.travelFrom = at.clone();
@@ -680,6 +694,8 @@ public final class AbilityService {
             }
         }
         int firstHit = a.novaHits.get(0);
+        final Location lineOrigin = lineStart;
+        final Vector lineAxis = lineDir;
         final Location beam = beamFrom;
         for (int hit = 0; hit < a.novaHits.size(); hit++) {
             int t = a.novaHits.get(hit);
@@ -689,9 +705,23 @@ public final class AbilityService {
                 // follows the target while it lives, else the last place it was
                 if (target.isValid() && !target.isDead() && target.getWorld() == center[0].getWorld()) center[0] = target.getLocation();
                 Location c = center[0];
-                List<LivingEntity> victims = around(p.owner, c, radius);
-                if (!victims.contains(target) && validTarget(p.owner, target)
-                        && target.getLocation().distanceSquared(c) <= radius * radius + 1) victims.add(0, target);
+                List<LivingEntity> victims;
+                if (line) {
+                    // the corridor of the fissure, fixed where it opened
+                    double from = a.lineFrom * sc, to = a.lineTo * sc;
+                    Location mid = lineOrigin.clone().add(lineAxis.clone().multiply((from + to) / 2));
+                    victims = new ArrayList<>();
+                    for (LivingEntity e : around(p.owner, mid, (to - from) / 2 + a.lineWidth + 1)) {
+                        Vector rel = e.getLocation().toVector().subtract(lineOrigin.toVector()).setY(0);
+                        double along = rel.dot(lineAxis);
+                        if (along < from - 0.5 || along > to + 0.5) continue;
+                        if (rel.subtract(lineAxis.clone().multiply(along)).length() <= a.lineWidth) victims.add(e);
+                    }
+                } else {
+                    victims = around(p.owner, c, radius);
+                    if (!victims.contains(target) && validTarget(p.owner, target)
+                            && target.getLocation().distanceSquared(c) <= radius * radius + 1) victims.add(0, target);
+                }
                 for (LivingEntity e : victims) {
                     if (beam != null && beam.getWorld() == e.getWorld()) line(beam, e.getLocation().add(0, e.getHeight() * 0.55, 0), a.beamParticle);
                     if (damage(p, a, e, dmg, false)) {

@@ -29,7 +29,7 @@ stats:
   ATTACK_DAMAGE:
     base: 1.2
     per-level: 0.06
-  BLOCK_RATING:
+  PVP_DAMAGE_REDUCTION:
     base: 0.5
     per-level: 0.03
 # kỹ năng trong abilities.yml

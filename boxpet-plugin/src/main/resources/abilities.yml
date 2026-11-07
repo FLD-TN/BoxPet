@@ -1528,6 +1528,48 @@ abilities:
         scale: 0.8
         y-offset: 0.2
 
+  # 0.17.2: Tinh Linh Đất (sử thi): đường nứt đất gốc của chính nó, đánh theo một hành lang thẳng
+  cubee_earth_quake:
+    type: nova
+    name: 'Địa Chấn'
+    color: '#B08D57:#E8D3A2'
+    description:
+      - 'Xé đường nứt đất về phía mục'
+      - 'tiêu: các khối đất trồi lên gây'
+      - '%damage% sát thương, rồi vỡ tung'
+      - 'đá gây thêm %damage_final% sát thương'
+    cooldown: 10
+    pvp-multiplier: 0.6
+    range: 12
+    cast-delay-ticks: 8
+    damage:
+      base: 2
+      per-level: 0.07
+    pve-multiplier: 1.0
+    nova:
+      # khối đất trồi lên (1,4 giây) và vỡ tung đá (3,6 giây)
+      hit-ticks: [28, 72]
+      weights: [1, 1.5]
+      # hành lang trúng đòn: từ 0,9 tới 6,3 ô trước điểm nứt (tính ở scale 1), rộng 1,5 ô mỗi bên
+      line:
+        from: 0.9
+        to: 6.3
+        width: 1.5
+    fx:
+      animation: skill
+      sounds:
+        - {sound: block.rooted_dirt.break, volume: 1.0, pitch: 0.7, delay: 30}
+        - {sound: entity.generic.explode, volume: 0.6, pitch: 0.6, delay: 36}
+        - {sound: block.stone.break, volume: 1.0, pitch: 0.6, delay: 80}
+      particles:
+        - {particle: CRIT, count: 8, spread: 0.4, speed: 0.1, at: target}
+      vfx:
+        model: vfx_nova_earth
+        animation: skill
+        life-ticks: 94
+        scale: 0.8
+        y-offset: 0.0
+
   cubee_earth_dig:
     type: boost
     name: 'Đất Lành Khai Khoáng'

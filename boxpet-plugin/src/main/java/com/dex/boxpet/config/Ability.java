@@ -152,6 +152,10 @@ public final class Ability {
     public final List<Double> novaWeights;
     /** 0.14.0: the effect starts at the pet and reaches the target in this many ticks (Lốc Linh Hồn), 0 = at the target. */
     public final int novaTravel;
+    /** 0.17.2: a line nova (Địa Chấn): hits a corridor from lineFrom to lineTo blocks ahead (vfx scale 1), lineWidth wide. */
+    public final double lineFrom;
+    public final double lineTo;
+    public final double lineWidth;
 
     public double novaWeight(int hit) {
         return hit < novaWeights.size() ? novaWeights.get(hit) : 1.0;
@@ -301,6 +305,9 @@ public final class Ability {
         for (Double wv : s.getDoubleList("nova.weights")) w.add(Math.max(0, wv));
         novaWeights = List.copyOf(w);
         novaTravel = Math.max(0, s.getInt("nova.travel-ticks", 0));
+        lineFrom = Math.max(0, s.getDouble("nova.line.from", 0));
+        lineTo = Math.max(0, s.getDouble("nova.line.to", 0));
+        lineWidth = Math.max(0.5, s.getDouble("nova.line.width", 1.5));
         ConfigurationSection ob = s.getConfigurationSection("orbit");
         orbitTicks = ob == null ? 120 : (int) Math.round(Math.max(1, ob.getDouble("seconds", 6)) * 20);
         trigger = s.getString("trigger", "combat").toLowerCase(Locale.ROOT);
