@@ -147,7 +147,7 @@ public final class ManageMenu extends Menu {
             }, this::open);
         });
         // 0.21.0: behaviour of every pet of this player (left = next, right = previous)
-        set(39, behaviourButton("mode", "modes", new String[]{"tancong", "phongthu", "bidong"}, owner.petMode, Material.IRON_SWORD), click -> {
+        set(39, behaviourButton("mode", "modes", new String[]{"tancong", "phongthu", "thanthien"}, owner.petMode, Material.IRON_SWORD), click -> {
             owner.petMode = (owner.petMode + (click.isRightClick() ? 2 : 1)) % 3;
             owner.dirty = true;
             sound("ui.button.click");

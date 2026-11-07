@@ -21,7 +21,7 @@ public final class PetCommand implements TabExecutor {
 
     private static final List<String> SUBS = List.of("summon", "dismiss", "hideothers", "chat", "thongbao", "rename", "khoe",
             "chedo", "muctieu");
-    private static final List<String> MODES = List.of("tancong", "phongthu", "bidong");
+    private static final List<String> MODES = List.of("tancong", "phongthu", "thanthien");
     private static final List<String> TARGETS = List.of("tatca", "nguoi", "mob");
 
     private final BoxPetPlugin plugin;
@@ -79,7 +79,9 @@ public final class PetCommand implements TabExecutor {
                 if (key != null) plugin.messages().send(p, key, "wait", String.valueOf(Math.max(1, plugin.chat().chatShowWait(p.getUniqueId()))));
             }
             case "chedo" -> {
-                int i = args.length > 1 ? MODES.indexOf(args[1].toLowerCase(java.util.Locale.ROOT)) : (pd.petMode + 1) % 3;
+                String arg = args.length > 1 ? args[1].toLowerCase(java.util.Locale.ROOT) : "";
+                if (arg.equals("bidong")) arg = "thanthien"; // 0.21.1: old name still works
+                int i = args.length > 1 ? MODES.indexOf(arg) : (pd.petMode + 1) % 3;
                 if (i < 0) {
                     plugin.messages().send(p, "behaviour.usage-mode");
                     return true;

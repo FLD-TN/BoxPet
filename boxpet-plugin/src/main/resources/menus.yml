@@ -405,9 +405,9 @@ behaviour:
     phongthu:
       name: 'Phòng thủ'
       desc: 'chỉ ra chiêu lên kẻ đánh chủ nhân'
-    bidong:
-      name: 'Bị động'
-      desc: 'không ra chiêu, chỉ cho chỉ số'
+    thanthien:
+      name: 'Thân thiện'
+      desc: 'không ra chiêu lên kẻ địch'
   targets:
     tatca:
       name: 'Tất cả'
