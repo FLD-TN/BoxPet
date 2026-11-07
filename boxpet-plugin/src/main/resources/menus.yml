@@ -411,13 +411,13 @@ behaviour:
   targets:
     tatca:
       name: 'Tất cả'
-      desc: 'người chơi và mob'
+      desc: 'người chơi và quái vật'
     nguoi:
       name: 'Người chơi'
       desc: 'chỉ đánh người chơi'
     mob:
-      name: 'Mob'
-      desc: 'chỉ đánh mob'
+      name: 'Quái vật'
+      desc: 'chỉ đánh quái vật'
   mode:
     name: '<#FF9F5A>Chế độ chiến đấu'
     lore:
@@ -761,8 +761,13 @@ collection:
       - ''
       - '<#FFD166>Mốc thưởng:'
       - '%milestones%'
-  milestone-done: '<#7CFC9A>✔ <white>%score% điểm<gray>: %stats%'
-  milestone-todo: '<#FF8A8A>✘ <white>%score% điểm<gray>: %stats%'
+  # 0.21.2: mốc đã đạt: dấu ✔ xanh, chữ trắng, số xanh; mốc chưa đạt: xám đậm (&8) và dấu ✘
+  milestone-done: '<#7CFC9A>✔ <white>%score% điểm: %stats%'
+  milestone-todo: '<dark_gray>✘ %score% điểm: %stats%'
+  milestone-stat-done: '<#7CFC9A>+%value% <white>%stat%'
+  milestone-stat-todo: '<dark_gray>+%value% %stat%'
+  milestone-separator-done: '<white>, '
+  milestone-separator-todo: '<dark_gray>, '
 
 deleted:
   title: '<dark_gray>Pet đã xoá'

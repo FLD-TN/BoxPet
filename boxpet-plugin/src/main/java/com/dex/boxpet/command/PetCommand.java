@@ -91,7 +91,9 @@ public final class PetCommand implements TabExecutor {
                 plugin.messages().send(p, "behaviour.mode", "mode", plugin.menus().text("behaviour.modes." + MODES.get(i) + ".name"));
             }
             case "muctieu" -> {
-                int i = args.length > 1 ? TARGETS.indexOf(args[1].toLowerCase(java.util.Locale.ROOT)) : (pd.petTarget + 1) % 3;
+                String targetArg = args.length > 1 ? args[1].toLowerCase(java.util.Locale.ROOT) : "";
+                if (targetArg.equals("quaivat")) targetArg = "mob"; // 0.21.2: shown as Quái vật
+                int i = args.length > 1 ? TARGETS.indexOf(targetArg) : (pd.petTarget + 1) % 3;
                 if (i < 0) {
                     plugin.messages().send(p, "behaviour.usage-target");
                     return true;

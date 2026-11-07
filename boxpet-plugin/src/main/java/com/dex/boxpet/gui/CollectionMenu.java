@@ -65,10 +65,12 @@ public final class CollectionMenu extends Menu {
         int score = plugin.collectionService().score(pd);
         List<String> rows = new ArrayList<>();
         for (CollectionConfig.Milestone m : plugin.collectionConfig().milestones) {
+            boolean done = score >= m.score();
             StringBuilder stats = new StringBuilder();
             for (Map.Entry<String, Double> e : m.stats().entrySet()) {
-                if (stats.length() > 0) stats.append("<gray>, ");
-                stats.append(statShort(e.getKey(), e.getValue()));
+                if (stats.length() > 0) stats.append(plugin.menus().textOr(done ? "collection.milestone-separator-done"
+                        : "collection.milestone-separator-todo", done ? "<white>, " : "<dark_gray>, "));
+                stats.append(statShort(e.getKey(), e.getValue(), done));
             }
             rows.add(plugin.menus().text(score >= m.score() ? "collection.milestone-done" : "collection.milestone-todo",
                     "score", String.valueOf(m.score()), "label", m.label(), "stats", stats.toString()));
@@ -101,9 +103,11 @@ public final class CollectionMenu extends Menu {
     }
 
     /** "+1 Phòng thủ" with the stat's display name (without its icon). */
-    private String statShort(String stat, double value) {
+    /** 0.21.2: a reached milestone shows its numbers green and words white, a missing one all dark gray. */
+    private String statShort(String stat, double value, boolean done) {
         String label = plugin.menus().text("stat-names." + stat);
         if (label.equals("stat-names." + stat)) label = stat;
-        return "<#7CFC9A>+" + Format.decimal(value) + " <white>" + label;
+        return plugin.menus().textOr(done ? "collection.milestone-stat-done" : "collection.milestone-stat-todo",
+                done ? "<#7CFC9A>+%value% <white>%stat%" : "<dark_gray>+%value% %stat%", "value", Format.decimal(value), "stat", label);
     }
 }

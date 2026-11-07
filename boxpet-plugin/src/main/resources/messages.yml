@@ -59,7 +59,7 @@ behaviour:
   mode: '<success>✔ Chế độ chiến đấu của pet: <text>%mode%'
   target: '<success>✔ Mục tiêu của pet: <text>%target%'
   usage-mode: '<error>✘ Dùng: /pet chedo [tancong|phongthu|thanthien]'
-  usage-target: '<error>✘ Dùng: /pet muctieu [tatca|nguoi|mob]'
+  usage-target: '<error>✘ Dùng: /pet muctieu [tatca|nguoi|quaivat]'
 
 showcase:
   done: '<success>✔ Đang khoe %pet% <success>trong <text>%seconds% giây'
