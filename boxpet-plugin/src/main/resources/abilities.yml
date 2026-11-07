@@ -889,7 +889,8 @@ abilities:
     color: '#FFD84D:#FFF3A8'
     description:
       - 'Phóng lưỡi gây %damage% sát thương,'
-      - 'bật sang %chain% mục tiêu gần đó'
+      - 'rồi bật liên tiếp sang %chain% kẻ địch'
+      - 'gần đó (mỗi lần yếu đi một chút)'
     cooldown: 55
     range: 14
     cast-delay-ticks: 18
@@ -897,7 +898,7 @@ abilities:
       base: 6.5
       per-level: 0.215
     chain:
-      targets: 1
+      targets: 3
       range: 5
       ratio: 0.7
     fx:
@@ -926,8 +927,8 @@ abilities:
     range: 12
     cast-delay-ticks: 22
     damage:
-      base: 7.5
-      per-level: 0.248
+      base: 6.5
+      per-level: 0.215
     pierce: true
     fx:
       animation: skill
@@ -1001,14 +1002,17 @@ abilities:
     name: 'Song Kiếm Ánh Sáng'
     color: '#FF4D6D:#FFC2CF'
     description:
-      - 'Chém mục tiêu %hits% nhát, mỗi'
-      - 'nhát gây %damage% sát thương'
+      - 'Chém %hits% nhát quét quanh mục tiêu,'
+      - 'mỗi nhát gây %damage% sát thương cho'
+      - 'mọi kẻ địch trong %radius% ô'
     cooldown: 55
     range: 10
     cast-delay-ticks: 20
     damage:
-      base: 3.75
-      per-level: 0.124
+      base: 3.25
+      per-level: 0.107
+    area:
+      radius: 2.5
     hits:
       count: 2
       interval-ticks: 8
