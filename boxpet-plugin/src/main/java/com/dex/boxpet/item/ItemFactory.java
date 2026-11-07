@@ -61,7 +61,7 @@ public final class ItemFactory {
 
     /** 0.23.0: "[Trứng] Rồng Lửa" (menus.yml items.egg-name). */
     public String eggName(PetType type) {
-        return plugin.menus().textOr("items.egg-name", "<white>[Trứng] %pet%", "pet", type.colouredName());
+        return plugin.menus().textOr("items.egg-name", "<gray>[<#FFE08A>Trứng<gray>] %pet%", "pet", type.colouredName());
     }
 
     /** A fresh id, one-item stack. */

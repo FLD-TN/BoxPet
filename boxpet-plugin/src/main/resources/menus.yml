@@ -795,7 +795,7 @@ items:
       - ''
       - '<#BFC7D5>Mở trong Lò ấp (/pet)'
   # 0.23.0: tên trứng của một pet
-  egg-name: '<white>[Trứng] %pet%'
+  egg-name: '<gray>[<#FFE08A>Trứng<gray>] %pet%'
   breakthrough:
     lore:
       - '<#BFC7D5>Giúp pet vượt mốc cấp'
