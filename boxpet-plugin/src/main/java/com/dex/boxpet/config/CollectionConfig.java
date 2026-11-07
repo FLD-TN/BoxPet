@@ -25,7 +25,8 @@ public final class CollectionConfig {
                 Map<String, Double> stats = new LinkedHashMap<>();
                 ConfigurationSection st = s.getConfigurationSection("stats");
                 if (st != null) for (String k : st.getKeys(false)) stats.put(k.toUpperCase(Locale.ROOT), st.getDouble(k));
-                milestones.add(new Milestone(Math.max(0, s.getInt("score", 0)), s.getString("label", key), stats));
+                // 0.25.0: count = number of pet types (an older file's "score" is read as a count)
+                milestones.add(new Milestone(Math.max(0, s.getInt("count", s.getInt("score", 0))), s.getString("label", key), stats));
             }
         }
         milestones.sort((a, b) -> Integer.compare(a.score(), b.score()));

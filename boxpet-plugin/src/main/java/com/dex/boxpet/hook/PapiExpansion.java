@@ -74,7 +74,8 @@ public final class PapiExpansion extends PlaceholderExpansion {
             case "active_fullness" -> a == null ? "" : String.valueOf(a.fullness);
             case "active_age" -> a == null ? "" : String.valueOf(a.ageDays(System.currentTimeMillis()));
             case "has_active" -> a == null ? "false" : "true";
-            case "collection_score" -> String.valueOf(plugin.collectionService().score(pd));
+            case "collection_score", "collection_count" -> String.valueOf(plugin.collectionService().score(pd));
+            case "collection_total" -> String.valueOf(plugin.types().size());
             case "storage_used" -> String.valueOf(pd.pets.size());
             case "storage_max" -> player.getPlayer() == null ? "" : String.valueOf(plugin.pets().capacity(player.getPlayer()));
             default -> null;

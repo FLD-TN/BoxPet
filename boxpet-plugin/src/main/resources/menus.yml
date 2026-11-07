@@ -299,10 +299,10 @@ main:
       - ''
       - '<dark_gray>[<#7CFC9A>Chuột trái để mở<dark_gray>]'
   collection:
-    name: '<#FFD166>Bộ sưu tập <dark_gray>[<gray>%score% điểm<dark_gray>]'
+    name: '<#FFD166>Bộ sưu tập <dark_gray>[<gray>%owned%/%total%<dark_gray>]'
     lore:
-      - '<#BFC7D5>Mỗi loại pet từng sở hữu'
-      - '<#BFC7D5>cho điểm, đủ mốc nhận chỉ số'
+      - '<#BFC7D5>Mỗi loại pet từng có trong'
+      - '<#BFC7D5>kho tính 1, đủ mốc nhận chỉ số'
       - ''
       - '<gray>• Đã sở hữu: <white>%owned%<gray>/%total%'
       - ''
@@ -748,27 +748,25 @@ collection:
       - '<#7CFC9A>✔ Đã sở hữu'
       - ''
       - '<gray>• Độ hiếm: %rarity%'
-      - '<gray>• Điểm: <white>%points%'
   missing:
     name: '<gray>%plain%'
     lore:
       - '<#FF8A8A>✘ Chưa sở hữu'
       - ''
       - '<gray>• Độ hiếm: %rarity%'
-      - '<gray>• Điểm: <white>%points%'
   info:
-    name: '<#FFD166>Điểm sưu tập: <white>%score%'
+    name: '<#FFD166>Bộ sưu tập: <white>%owned%<gray>/%total%'
     lore:
-      - '<#BFC7D5>Mỗi loại pet từng sở hữu'
-      - '<#BFC7D5>cho điểm theo độ hiếm'
+      - '<#BFC7D5>Mỗi loại pet từng có trong'
+      - '<#BFC7D5>kho tính 1, thả đi vẫn giữ'
       - ''
       - '<gray>• Đã sở hữu: <white>%owned%<gray>/%total%'
       - ''
       - '<#FFD166>Mốc thưởng:'
       - '%milestones%'
   # 0.21.2: mốc đã đạt: dấu ✔ xanh, chữ trắng, số xanh; mốc chưa đạt: xám đậm (&8) và dấu ✘
-  milestone-done: '<#7CFC9A>✔ <white>%score% điểm: %stats%'
-  milestone-todo: '<dark_gray>✘ %score% điểm: %stats%'
+  milestone-done: '<#7CFC9A>✔ <white>%score% pet: %stats%'
+  milestone-todo: '<dark_gray>✘ %score% pet: %stats%'
   milestone-stat-done: '<#7CFC9A>+%value% <white>%stat%'
   milestone-stat-todo: '<dark_gray>+%value% %stat%'
   milestone-separator-done: '<white>, '

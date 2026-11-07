@@ -1,24 +1,25 @@
-# BoxPet — bộ sưu tập (BOXPET_SPEC 9.4)
-# Mỗi loại pet từng ấp được cho điểm theo độ hiếm cao nhất (rarities.yml collection-points).
-# Đủ điểm thì nhận chỉ số MMOItems vĩnh viễn, cộng dồn các mốc đã đạt, kể cả khi không thả pet.
+# BoxPet — bộ sưu tập
+# Mỗi loại pet từng có trong kho (cho ăn, tương tác được) tính 1. Thả pet đi vẫn giữ.
+# Đủ số loại thì nhận chỉ số MMOItems vĩnh viễn, cộng dồn các mốc đã đạt, kể cả khi không thả pet.
+#   count   số loại pet cần có
 milestones:
-  m10:
-    score: 10
+  m5:
+    count: 5
     label: 'Người nuôi pet'
     stats:
       DEFENSE: 1
-  m25:
-    score: 25
+  m15:
+    count: 15
     label: 'Người sưu tầm'
     stats:
       MAX_HEALTH: 2
-  m50:
-    score: 50
+  m30:
+    count: 30
     label: 'Nhà sưu tầm'
     stats:
       CRITICAL_STRIKE_CHANCE: 1
-  m100:
-    score: 100
+  m45:
+    count: 45
     label: 'Bậc thầy thú cưng'
     stats:
       ATTACK_DAMAGE: 1

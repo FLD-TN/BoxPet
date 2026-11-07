@@ -52,7 +52,7 @@ public final class MainMenu extends Menu {
         set(40, button("main.incubator", Material.SNIFFER_EGG, "hatching", String.valueOf(hatching), "ready", String.valueOf(ready),
                 "slots", String.valueOf(plugin.incubator().slots(player))), click -> new IncubatorMenu(plugin, player, pd).open());
         set(42, button("main.collection", Material.BOOK, "score", String.valueOf(plugin.collectionService().score(pd)),
-                "owned", String.valueOf(pd.collection.size()), "total", String.valueOf(plugin.types().size())),
+                "owned", String.valueOf(plugin.collectionService().score(pd)), "total", String.valueOf(plugin.types().size())),
                 click -> new CollectionMenu(plugin, player, pd, 0).open());
         set(48, button("main.hide-others", Material.ENDER_EYE, "state", onOff(pd.hideOthers)), click -> {
             pd.hideOthers = !pd.hideOthers;

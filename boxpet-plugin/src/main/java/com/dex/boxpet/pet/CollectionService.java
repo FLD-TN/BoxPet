@@ -34,16 +34,11 @@ public final class CollectionService {
         if (online != null && score(pd) != scoreBefore) apply(online, pd);
     }
 
+    /** 0.25.0: the collection counts pet types ever kept in storage (types still in the config), no points. */
     public int score(PlayerData pd) {
-        int sum = 0;
-        for (Map.Entry<String, Integer> e : pd.collection.entrySet()) {
-            PetType t = plugin.types().get(e.getKey());
-            if (t == null) continue;
-            // 0.5.0: points of the pet's one rarity
-            Rarity r = plugin.rarities().get(t.rarity);
-            sum += r == null ? 0 : r.collectionPoints();
-        }
-        return sum;
+        int n = 0;
+        for (String type : pd.collection.keySet()) if (plugin.types().get(type) != null) n++;
+        return n;
     }
 
     public void apply(Player player, PlayerData pd) {

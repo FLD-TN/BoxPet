@@ -77,7 +77,7 @@ public final class CollectionMenu extends Menu {
         }
         set(4, icon(Material.NETHER_STAR, plugin.menus().name("collection.info", "score", String.valueOf(score)),
                 plugin.menus().lore("collection.info", Map.of("milestones", rows), "score", String.valueOf(score),
-                        "owned", String.valueOf(pd.collection.size()), "total", String.valueOf(plugin.types().size()))), null);
+                        "owned", String.valueOf(plugin.collectionService().score(pd)), "total", String.valueOf(plugin.types().size()))), null);
         set(45, button("common.back", Material.ARROW), click -> new MainMenu(plugin, player).open());
         set(52, role.icon(), click -> {
             if (role.click(click)) {
