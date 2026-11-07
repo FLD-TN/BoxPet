@@ -802,11 +802,14 @@ public final class AbilityService {
         } else if (!a.buffStat.isEmpty() && a.buffStacks > 1) {
             // 0.16.0: Tích Giáp, one more step per trigger, all steps renewed
             long now = System.currentTimeMillis();
-            if (now > p.buffStackUntil) p.buffStack = 0;
+            if (now > p.buffStackUntil) {
+                p.buffStack = 0;
+                p.buffStackUntil = now + a.buffTicks * 50L; // the window opens with the first hit, not renewed
+            }
             firstStack = p.buffStack == 0;
             p.buffStack = Math.min(a.buffStacks, p.buffStack + 1);
-            p.buffStackUntil = now + a.buffTicks * 50L;
-            plugin.stats().tempStat(plugin, p.owner, BUFF_KEY, a.buffStat, a.buffAmount.at(lvl, mul) * p.buffStack, a.buffRelative, a.buffTicks);
+            int left = (int) Math.max(1, (p.buffStackUntil - now) / 50L);
+            plugin.stats().tempStat(plugin, p.owner, BUFF_KEY, a.buffStat, a.buffAmount.at(lvl, mul) * p.buffStack, a.buffRelative, left);
         } else if (!a.buffStat.isEmpty()) {
             plugin.stats().tempStat(plugin, p.owner, BUFF_KEY, a.buffStat, a.buffAmount.at(lvl, mul), a.buffRelative, a.buffTicks);
         }
@@ -1105,7 +1108,13 @@ public final class AbilityService {
             Effects.particle(ap.getLocation().add(0, 1, 0), "CRIT", 6, 0.3, 0.1);
         }
         if (a.type == Ability.Type.BUFF && !a.trigger.equals("combat")) {
-            if (now < p.shieldReadyAt || healthAfter <= 0) return;
+            if (healthAfter <= 0) return;
+            // 0.19.0: a stacking buff keeps stacking inside its window, the cooldown only gates opening a window
+            if (a.buffStacks > 1 && now < p.buffStackUntil) {
+                if (p.buffStack < a.buffStacks) buff(p, a, attacker);
+                return;
+            }
+            if (now < p.shieldReadyAt) return;
             if (a.trigger.equals("low-hp")) {
                 AttributeInstance mx = p.owner.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                 if (mx == null || healthAfter / mx.getValue() * 100 > a.buffBelowPercent) return;

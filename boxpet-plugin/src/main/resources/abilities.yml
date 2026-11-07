@@ -42,15 +42,15 @@ abilities:
     description:
       - 'Phun cầu lửa lớn vào 1 mục tiêu,'
       - 'gây %damage% sát thương và nung'
-      - 'chảy %enemy% Phòng thủ của nó'
+      - 'chảy %enemy% Phòng thủ của kẻ địch'
       - 'trong %enemy_seconds% giây'
-    cooldown: 8
+    cooldown: 35
     pvp-multiplier: 0.7
     range: 14
     cast-delay-ticks: 18
     damage:
       base: 4.5
-      per-level: 0.15
+      per-level: 0.149
     pve-multiplier: 1.0
     enemy-stat:
       stat: DEFENSE
@@ -121,15 +121,15 @@ abilities:
       - 'tới mục tiêu, xoáy %hit_count% đợt trong'
       - '%radius% ô, mỗi đợt gây %damage%'
       - 'sát thương'
-    cooldown: 10
+    cooldown: 60
     pvp-multiplier: 0.7
     range: 14
     cast-delay-ticks: 8
     area:
       radius: 2.5
     damage:
-      base: 1.2
-      per-level: 0.04
+      base: 1.9
+      per-level: 0.063
     pve-multiplier: 1.0
     nova:
       # lốc bay từ rồng tới mục tiêu trong 26 tick, rồi xoáy trên mục tiêu: 5 đợt
@@ -160,15 +160,15 @@ abilities:
       - 'gây %damage% sát thương và giảm'
       - '%enemy% Sát thương của kẻ địch'
       - 'trong %enemy_seconds% giây'
-    cooldown: 8
+    cooldown: 55
     pvp-multiplier: 0.7
     area:
       radius: 3
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 3
-      per-level: 0.1
+      base: 5
+      per-level: 0.165
     pve-multiplier: 1.0
     enemy-stat:
       stat: ATTACK_DAMAGE
@@ -201,15 +201,15 @@ abilities:
       - 'gây %damage% sát thương và nung'
       - 'chảy %enemy% Phòng thủ của kẻ'
       - 'địch trong %enemy_seconds% giây'
-    cooldown: 9
+    cooldown: 55
     pvp-multiplier: 0.7
     range: 14
     cast-delay-ticks: 8
     area:
       radius: 3
     damage:
-      base: 4
-      per-level: 0.13
+      base: 5
+      per-level: 0.165
     pve-multiplier: 1.0
     # tick (sau khi hiệu ứng bắt đầu) gây sát thương: khung nổ của animation
     nova:
@@ -246,15 +246,15 @@ abilities:
       - 'gây %damage% sát thương và giảm'
       - '%enemy% Sát thương của kẻ địch'
       - 'trong %enemy_seconds% giây'
-    cooldown: 9
+    cooldown: 60
     pvp-multiplier: 0.7
     range: 14
     cast-delay-ticks: 8
     area:
       radius: 3.5
     damage:
-      base: 3.3
-      per-level: 0.11
+      base: 8
+      per-level: 0.264
     pve-multiplier: 1.0
     nova:
       hit-ticks: [33]
@@ -320,14 +320,14 @@ abilities:
     description:
       - 'Ném cầu lửa vào mục tiêu, gây'
       - '%damage% sát thương và giảm %enemy%'
-      - 'Phòng thủ của nó %enemy_seconds% giây'
-    cooldown: 8
+      - 'Phòng thủ của kẻ địch %enemy_seconds% giây'
+    cooldown: 35
     pvp-multiplier: 0.5
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 3
-      per-level: 0.1
+      base: 4.5
+      per-level: 0.149
     pve-multiplier: 1.0
     enemy-stat:
       stat: DEFENSE
@@ -357,13 +357,13 @@ abilities:
       - 'Ném cầu băng vào mục tiêu,'
       - 'gây %damage% sát thương và làm'
       - 'chậm %seconds% giây'
-    cooldown: 8
+    cooldown: 35
     pvp-multiplier: 0.5
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 3
-      per-level: 0.1
+      base: 4.5
+      per-level: 0.149
     pve-multiplier: 1.0
     debuff:
       type: slow
@@ -392,14 +392,14 @@ abilities:
       - 'gây %damage% sát thương và giảm'
       - '%enemy% Sát thương của kẻ địch'
       - 'trong %enemy_seconds% giây'
-    cooldown: 8
+    cooldown: 55
     area:
       radius: 3
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 3
-      per-level: 0.1
+      base: 5
+      per-level: 0.165
     pve-multiplier: 1.0
     enemy-stat:
       stat: ATTACK_DAMAGE
@@ -432,7 +432,7 @@ abilities:
       - '1 quà ngẫu nhiên trong %buff_seconds%'
       - 'giây: +%choice_1%,'
       - '+%choice_2% hoặc +%choice_3%'
-    cooldown: 16
+    cooldown: 25
     range: 12
     trigger: combat
     buff:
@@ -460,13 +460,13 @@ abilities:
     description:
       - 'Lao tới đâm thẳng mục tiêu,'
       - 'gây %damage% sát thương'
-    cooldown: 9
+    cooldown: 25
     pvp-multiplier: 0.4
     range: 10
     cast-delay-ticks: 22
     damage:
-      base: 3.5
-      per-level: 0.12
+      base: 4
+      per-level: 0.132
     fx:
       animation: skill
       sounds:
@@ -495,13 +495,13 @@ abilities:
       - 'Chém mục tiêu, gây %damage%'
       - 'sát thương và chảy máu'
       - '%seconds% giây'
-    cooldown: 9
+    cooldown: 35
     pvp-multiplier: 0.5
     range: 10
     cast-delay-ticks: 20
     damage:
-      base: 3
-      per-level: 0.1
+      base: 4.5
+      per-level: 0.149
     debuff:
       type: bleed
       seconds: 3
@@ -534,10 +534,10 @@ abilities:
     color: '#FF5E5E:#FFC2A8'
     description:
       - 'Truy nã mục tiêu %seconds% giây:'
-      - 'đòn của chủ nhân lên nó mạnh'
-      - 'hơn %bonus%%, nó bị giảm %enemy%'
+      - 'đòn của chủ nhân lên kẻ địch mạnh'
+      - 'hơn %bonus%%, kẻ địch bị giảm %enemy%'
       - '%enemy_stat% trong %enemy_seconds% giây'
-    cooldown: 12
+    cooldown: 35
     range: 16
     cast-delay-ticks: 30
     mark:
@@ -573,7 +573,7 @@ abilities:
       - 'hồi tổng %heal% máu trong %heal_seconds%'
       - 'giây và +%buff% %buff_stat% trong'
       - '%buff_seconds% giây'
-    cooldown: 16
+    cooldown: 35
     buff:
       stat: DEFENSE
       amount:
@@ -582,8 +582,8 @@ abilities:
       seconds: 5
     heal:
       amount:
-        base: 4
-        per-level: 0.1
+        base: 6
+        per-level: 0.15
       percent: false
       below-percent: 50
       pulses: 5
@@ -605,17 +605,18 @@ abilities:
     name: 'Giáp Gai Sa Mạc'
     color: '#E6C27A:#FFF0C2'
     description:
-      - 'Mỗi lần chủ nhân bị đánh: +%buff%'
-      - '%buff_stat%, cộng dồn tối đa %stacks%'
-      - 'lần trong %seconds% giây'
-    cooldown: 1
+      - 'Khi chủ nhân bị đánh, mở giáp gai'
+      - '%seconds% giây: mỗi đòn trúng chủ nhân'
+      - '+%buff% %buff_stat%, cộng dồn tối đa'
+      - '%stacks% lần'
+    cooldown: 35
     trigger: hurt
     buff:
       stat: DEFENSE
       amount:
         base: 0.8
         per-level: 0.025
-      seconds: 6
+      seconds: 10
       stacks: 5
     fx:
       animation: skill
@@ -636,7 +637,7 @@ abilities:
       - 'Khi chủ nhân bị đánh, gai băng'
       - 'làm kẻ vừa đánh giảm %enemy%%'
       - '%enemy_stat% trong %enemy_seconds% giây'
-    cooldown: 8
+    cooldown: 25
     trigger: hurt
     enemy-stat:
       stat: CRITICAL_STRIKE_CHANCE
@@ -666,7 +667,7 @@ abilities:
       - 'tạo khiên %hearts% tim trong'
       - '%seconds% giây và đẩy lùi kẻ địch'
       - 'trong %radius% ô'
-    cooldown: 45
+    cooldown: 55
     blast:
       radius: 4
       # 0.15.0: lực đẩy ~ 2 ô
@@ -674,8 +675,8 @@ abilities:
     shield:
       below-percent: 40
       hearts:
-        base: 2
-        per-level: 0.05
+        base: 4
+        per-level: 0.1
       seconds: 6
     fx:
       area-vfx: vfx_push_sculk
@@ -700,7 +701,7 @@ abilities:
       - 'nhân +%buff%% %buff_stat%, kẻ địch'
       - 'đứng trong %radius% ô bị giảm %enemy%%'
       - '%enemy_stat% khi còn trong vùng'
-    cooldown: 25
+    cooldown: 60
     range: 12
     trigger: combat
     buff:
@@ -761,7 +762,7 @@ abilities:
       - 'Khi chủ nhân bị đánh: +%buff%%'
       - '%buff_stat% và +%buff2% %buff2_stat%'
       - 'trong %seconds% giây'
-    cooldown: 25
+    cooldown: 55
     trigger: hurt
     buff:
       stat: DODGE_RATING
@@ -795,7 +796,7 @@ abilities:
       - 'Cướp %enemy% %enemy_stat% của'
       - 'mục tiêu cho chủ nhân trong'
       - '%seconds% giây'
-    cooldown: 20
+    cooldown: 55
     range: 10
     trigger: combat
     buff:
@@ -881,12 +882,12 @@ abilities:
       - 'Khi máu chủ nhân dưới %percent%%,'
       - 'vẽ khiên %hearts% tim bảo vệ chủ'
       - 'nhân trong %seconds% giây'
-    cooldown: 40
+    cooldown: 25
     shield:
       below-percent: 40
       hearts:
-        base: 1.5
-        per-level: 0.04
+        base: 2.25
+        per-level: 0.06
       seconds: 6
     fx:
       animation: skill
@@ -910,7 +911,7 @@ abilities:
     description:
       - 'Khi giao tranh, chủ nhân được'
       - '+%buff% %buff_stat% trong %seconds% giây'
-    cooldown: 18
+    cooldown: 25
     range: 12
     trigger: combat
     buff:
@@ -935,12 +936,12 @@ abilities:
       - 'Phóng lưỡi gây %damage% sát thương,'
       - 'bật sang %chain% mục tiêu gần đó'
       - 'và làm chậm %seconds% giây'
-    cooldown: 8
+    cooldown: 55
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 2.8
-      per-level: 0.11
+      base: 5
+      per-level: 0.165
     chain:
       targets: 1
       range: 5
@@ -971,12 +972,12 @@ abilities:
       - 'Đâm xuyên cả hàng kẻ địch giữa'
       - 'pet và mục tiêu, gây %damage%'
       - 'sát thương mỗi kẻ'
-    cooldown: 7
+    cooldown: 55
     range: 12
     cast-delay-ticks: 22
     damage:
-      base: 4
-      per-level: 0.13
+      base: 6
+      per-level: 0.198
     pierce: true
     fx:
       animation: skill
@@ -1009,17 +1010,17 @@ abilities:
       - '%hit_count% lần trong %radius% ô, mỗi lần gây'
       - '%damage% sát thương, lần giáng cuối'
       - 'gây %damage_final%. Kẻ trúng bị đánh dấu'
-      - '%seconds% giây: chủ nhân đánh nó'
+      - '%seconds% giây: chủ nhân đánh kẻ địch'
       - 'mạnh hơn %bonus%%'
-    cooldown: 9
+    cooldown: 60
     pvp-multiplier: 0.7
     range: 12
     cast-delay-ticks: 16
     area:
       radius: 3
     damage:
-      base: 0.63
-      per-level: 0.02
+      base: 0.8
+      per-level: 0.026
     # xích giáng liên tục từ 0,6 tới 2,5 giây (7 lần), lần giáng cuối ở 3,75 giây mạnh gấp 3
     nova:
       hit-ticks: [12, 18, 24, 30, 36, 42, 48, 75]
@@ -1053,12 +1054,12 @@ abilities:
       - 'Chém mục tiêu %hits% nhát, mỗi nhát'
       - '%damage% sát thương, chủ nhân được'
       - '+%buff% %buff_stat% trong %buff_seconds% giây'
-    cooldown: 9
+    cooldown: 55
     range: 10
     cast-delay-ticks: 20
     damage:
       base: 3
-      per-level: 0.1
+      per-level: 0.099
     hits:
       count: 2
       interval-ticks: 8
@@ -1100,7 +1101,7 @@ abilities:
       - '%seconds% giây: chủ nhân đánh'
       - 'chúng mạnh hơn %bonus%% và được'
       - '+%buff% %buff_stat% trong %buff_seconds% giây'
-    cooldown: 14
+    cooldown: 55
     range: 16
     cast-delay-ticks: 30
     area:
@@ -1137,17 +1138,17 @@ abilities:
       - 'Khi máu chủ nhân dưới %percent%%,'
       - 'hồi %heal% máu và tạo khiên'
       - '%hearts% tim trong %seconds% giây'
-    cooldown: 14
+    cooldown: 55
     heal:
       amount:
-        base: 2
-        per-level: 0.05
+        base: 4
+        per-level: 0.1
       percent: false
       below-percent: 40
     shield:
       hearts:
-        base: 1
-        per-level: 0.03
+        base: 2
+        per-level: 0.06
       seconds: 5
     fx:
       animation: skill
@@ -1174,13 +1175,13 @@ abilities:
     description:
       - 'Phóng lưỡi vào mục tiêu,'
       - 'gây %damage% sát thương'
-    cooldown: 8
+    cooldown: 25
     pvp-multiplier: 0.4
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 2.2
-      per-level: 0.09
+      base: 4
+      per-level: 0.132
     pve-multiplier: 1.0
     fx:
       animation: skill
@@ -1203,13 +1204,13 @@ abilities:
     description:
       - 'Chém mục tiêu, gây %damage%'
       - 'sát thương'
-    cooldown: 11
+    cooldown: 25
     pvp-multiplier: 0.4
     range: 10
     cast-delay-ticks: 20
     damage:
-      base: 3
-      per-level: 0.1
+      base: 4
+      per-level: 0.132
     fx:
       animation: skill
       sounds:
@@ -1236,9 +1237,9 @@ abilities:
     color: '#FF5E5E:#FFC2A8'
     description:
       - 'Chỉ điểm mục tiêu %seconds% giây:'
-      - 'đòn của chủ nhân lên nó mạnh'
+      - 'đòn của chủ nhân lên kẻ địch mạnh'
       - 'hơn %bonus%%'
-    cooldown: 12
+    cooldown: 25
     range: 16
     cast-delay-ticks: 30
     mark:
@@ -1266,13 +1267,13 @@ abilities:
       - 'Lao tới đâm thẳng mục tiêu,'
       - 'gây %damage% sát thương và làm'
       - 'chậm %seconds% giây'
-    cooldown: 7
+    cooldown: 35
     pvp-multiplier: 0.5
     range: 10
     cast-delay-ticks: 22
     damage:
-      base: 3.5
-      per-level: 0.12
+      base: 4.5
+      per-level: 0.149
     debuff:
       type: slow
       seconds: 2
@@ -1304,11 +1305,11 @@ abilities:
     description:
       - 'Khi máu chủ nhân dưới %percent%%,'
       - 'hồi %heal% máu cho chủ nhân'
-    cooldown: 14
+    cooldown: 25
     heal:
       amount:
-        base: 1.5
-        per-level: 0.04
+        base: 2.25
+        per-level: 0.06
       percent: false
       below-percent: 50
     fx:
@@ -1331,15 +1332,15 @@ abilities:
     description:
       - 'Chém mục tiêu bằng nhát kiếm'
       - 'đỏ rực, gây %damage% sát thương và'
-      - 'giảm %enemy%% %enemy_stat% của nó'
+      - 'giảm %enemy%% %enemy_stat% của kẻ địch'
       - 'trong %enemy_seconds% giây'
-    cooldown: 9
+    cooldown: 35
     pvp-multiplier: 0.5
     range: 10
     cast-delay-ticks: 20
     damage:
-      base: 3
-      per-level: 0.1
+      base: 4.5
+      per-level: 0.149
     enemy-stat:
       stat: CRITICAL_STRIKE_POWER
       seconds: 4
@@ -1373,13 +1374,13 @@ abilities:
       - 'Bắn cầu thánh quang gây %damage%'
       - 'sát thương, rồi nảy sang %chain% kẻ'
       - 'địch gần đó (mỗi lần còn 75%)'
-    cooldown: 8
+    cooldown: 55
     pvp-multiplier: 0.7
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 3.8
-      per-level: 0.13
+      base: 5
+      per-level: 0.165
     chain:
       targets: 2
       range: 6
@@ -1410,11 +1411,11 @@ abilities:
       - 'Khi máu chủ nhân dưới %percent%%,'
       - 'hồi tổng %heal% máu trong %heal_seconds%'
       - 'giây'
-    cooldown: 14
+    cooldown: 25
     heal:
       amount:
-        base: 3.5
-        per-level: 0.08
+        base: 5.25
+        per-level: 0.12
       percent: false
       below-percent: 40
       pulses: 5
@@ -1445,15 +1446,15 @@ abilities:
       - 'phóng cột sáng từ nhuỵ hoa vào'
       - 'đối thủ 3 đợt, mỗi đợt gây %damage%'
       - 'sát thương trong %radius% ô'
-    cooldown: 9
+    cooldown: 60
     pvp-multiplier: 0.7
     range: 14
     cast-delay-ticks: 10
     area:
       radius: 2.5
     damage:
-      base: 1.8
-      per-level: 0.06
+      base: 3.17
+      per-level: 0.105
     pve-multiplier: 1.0
     # cột sáng bắn từ giây 1,5 tới 3,6
     nova:
@@ -1491,11 +1492,11 @@ abilities:
       - '%heal% máu cho chủ nhân. Kẻ địch'
       - 'đứng trong %radius% ô bị giảm %enemy%'
       - '%enemy_stat% khi còn ở trong vùng'
-    cooldown: 14
+    cooldown: 60
     heal:
       amount:
-        base: 2.5
-        per-level: 0.06
+        base: 5
+        per-level: 0.12
       percent: false
       below-percent: 60
     area:
@@ -1532,22 +1533,31 @@ abilities:
     color: '#4CC9F0:#FFD6FF'
     description:
       - 'Gọi tinh vân xoáy dưới chân'
-      - 'mục tiêu, nổ 4 đợt trong'
-      - '%radius% ô, mỗi đợt gây %damage%'
-      - 'sát thương'
-    cooldown: 10
+      - 'mục tiêu, nổ %hit_count% đợt trong %radius% ô:'
+      - 'mỗi đợt %damage% sát thương, đợt'
+      - 'cuối %damage_final%. Kẻ địch trúng đòn'
+      - 'bị giảm %enemy%% %enemy_stat%'
+      - 'trong %enemy_seconds% giây'
+    cooldown: 60
     pvp-multiplier: 0.6
     range: 12
     cast-delay-ticks: 10
     area:
-      radius: 2.5
+      radius: 3.5
     damage:
-      base: 1.2
-      per-level: 0.04
+      base: 1.6
+      per-level: 0.053
     pve-multiplier: 1.0
     # 4 đợt sóng sao của animation
     nova:
       hit-ticks: [13, 25, 38, 63]
+      weights: [1, 1, 1, 2]
+    enemy-stat:
+      stat: PVP_DAMAGE_REDUCTION
+      seconds: 5
+      amount:
+        base: 2
+        per-level: 0.08
     fx:
       animation: skill
       sounds:
@@ -1574,13 +1584,13 @@ abilities:
       - 'tiêu: các khối đất trồi lên gây'
       - '%damage% sát thương, rồi vỡ tung'
       - 'đá gây thêm %damage_final% sát thương'
-    cooldown: 10
+    cooldown: 55
     pvp-multiplier: 0.6
     range: 12
     cast-delay-ticks: 8
     damage:
-      base: 2
-      per-level: 0.07
+      base: 2.4
+      per-level: 0.079
     pve-multiplier: 1.0
     nova:
       # khối đất trồi lên (1,4 giây) và vỡ tung đá (3,6 giây)
@@ -1655,13 +1665,13 @@ abilities:
     description:
       - 'Phóng lưỡi đá nặng vào mục tiêu,'
       - 'gây %damage% sát thương'
-    cooldown: 12
+    cooldown: 25
     pvp-multiplier: 0.4
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 3.5
-      per-level: 0.12
+      base: 4
+      per-level: 0.132
     pve-multiplier: 1.0
     fx:
       animation: skill
@@ -1685,13 +1695,13 @@ abilities:
       - 'Phóng lưỡi dung nham, gây %damage%'
       - 'sát thương và giảm %enemy%% Tỉ lệ'
       - 'chí mạng của mục tiêu %enemy_seconds% giây'
-    cooldown: 8
+    cooldown: 35
     pvp-multiplier: 0.5
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 2.5
-      per-level: 0.1
+      base: 4.5
+      per-level: 0.149
     pve-multiplier: 1.0
     enemy-stat:
       stat: CRITICAL_STRIKE_CHANCE
@@ -1721,13 +1731,13 @@ abilities:
       - 'Phóng lưỡi bào tử, gây %damage%'
       - 'sát thương và giảm %enemy% Sát thương'
       - 'của mục tiêu trong %enemy_seconds% giây'
-    cooldown: 8
+    cooldown: 35
     pvp-multiplier: 0.5
     range: 14
     cast-delay-ticks: 18
     damage:
-      base: 2.5
-      per-level: 0.1
+      base: 4.5
+      per-level: 0.149
     pve-multiplier: 1.0
     enemy-stat:
       stat: ATTACK_DAMAGE
@@ -1757,7 +1767,7 @@ abilities:
     description:
       - 'Khi giao tranh, chủ nhân được'
       - '+%buff%% %buff_stat% trong %seconds% giây'
-    cooldown: 18
+    cooldown: 35
     range: 12
     trigger: combat
     buff:
@@ -1790,8 +1800,8 @@ abilities:
     shield:
       below-percent: 50
       hearts:
-        base: 2
-        per-level: 0.05
+        base: 3
+        per-level: 0.075
       seconds: 6
     enemy-stat:
       stat: ATTACK_DAMAGE
@@ -1829,13 +1839,13 @@ abilities:
     description:
       - 'Phóng lưỡi gió vào mục tiêu,'
       - 'gây %damage% sát thương'
-    cooldown: 10
+    cooldown: 25
     pvp-multiplier: 0.4
     range: 14
     cast-delay-ticks: 14
     damage:
-      base: 2.5
-      per-level: 0.1
+      base: 4
+      per-level: 0.132
     fx:
       animation: skill
       sounds:
@@ -1857,13 +1867,13 @@ abilities:
       - 'Bắn gai băng vào mục tiêu,'
       - 'gây %damage% sát thương và làm'
       - 'chậm %seconds% giây'
-    cooldown: 9
+    cooldown: 35
     pvp-multiplier: 0.5
     range: 14
     cast-delay-ticks: 16
     damage:
-      base: 3
-      per-level: 0.1
+      base: 4.5
+      per-level: 0.149
     debuff:
       type: slow
       seconds: 2
@@ -1939,12 +1949,12 @@ abilities:
     description:
       - 'Gọi sóng nổ trong %radius% ô quanh'
       - 'mục tiêu, gây %damage% sát thương'
-    cooldown: 9
+    cooldown: 55
     range: 12
     cast-delay-ticks: 18
     damage:
-      base: 4
-      per-level: 0.13
+      base: 5.5
+      per-level: 0.182
     area:
       radius: 3
     fx:
@@ -1963,13 +1973,13 @@ abilities:
     description:
       - 'Lặn xuống rồi trồi lên đớp mục'
       - 'tiêu, gây %damage% sát thương'
-    cooldown: 10
+    cooldown: 25
     pvp-multiplier: 0.4
     range: 10
     cast-delay-ticks: 18
     damage:
-      base: 2.5
-      per-level: 0.1
+      base: 4
+      per-level: 0.132
     fx:
       animation: skill
       sounds:
@@ -1987,15 +1997,15 @@ abilities:
     description:
       - 'Lặn xuống rồi trồi lên cắn mục'
       - 'tiêu, gây %damage% sát thương và'
-      - 'giảm %enemy% %enemy_stat% của nó'
+      - 'giảm %enemy% %enemy_stat% của kẻ địch'
       - 'trong %enemy_seconds% giây'
-    cooldown: 9
+    cooldown: 35
     pvp-multiplier: 0.5
     range: 10
     cast-delay-ticks: 18
     damage:
-      base: 3
-      per-level: 0.1
+      base: 4.5
+      per-level: 0.149
     enemy-stat:
       stat: MAX_HEALTH
       seconds: 3
