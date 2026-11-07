@@ -510,6 +510,14 @@ public final class PetManager {
         return p.pos.clone().add(0, h + s().nametagOffset, 0);
     }
 
+    /** 0.22.0: the pet name with its level, as on the name tag (no hunger mark). */
+    public String nameWithLevel(PetData d) {
+        String level = com.dex.boxpet.gui.PetIcons.level(plugin, d.level);
+        String colour = level.substring(0, level.indexOf('>') + 1);
+        return com.dex.boxpet.config.Messages.apply(s().nametagFormat, "name", displayName(d),
+                "level_colour", colour, "level", String.valueOf(d.level), "hungry", "");
+    }
+
     public String nametagText(ActivePet p) {
         String level = com.dex.boxpet.gui.PetIcons.level(plugin, p.data.level);
         String colour = level.substring(0, level.indexOf('>') + 1);

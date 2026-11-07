@@ -40,20 +40,19 @@ sit:
 
 toggle:
   hide-others-on: '<success>✔ Đã ẩn pet của người khác'
-  hide-others-off: '<success>✔ Đã hiện lại pet của người khác'
+  hide-others-off: '<error>✘ Đã hiện lại pet của người khác'
   chat-on: '<success>✔ Đã bật trò chuyện của pet'
-  chat-off: '<success>✔ Đã tắt trò chuyện của pet'
+  chat-off: '<error>✘ Đã tắt trò chuyện của pet'
   cast-on: '<success>✔ Đã bật thông báo kỹ năng của pet'
-  cast-off: '<success>✔ Đã tắt thông báo kỹ năng của pet'
+  cast-off: '<error>✘ Đã tắt thông báo kỹ năng của pet'
 
 
-# 0.21.0: khoe pet ra chat (/pet khoe, hoặc gõ [pet] trong tin nhắn)
+# 0.22.0: [pet] trong chat (InteractiveChat dùng %boxpet_active_name_level% và %boxpet_active_card%)
 showcase-chat:
-  # tên pet trong chat, rê chuột vào để xem thẻ
+  # tên pet kèm cấp như tên trên đầu pet, rê chuột vào để xem thẻ
   tag: '<white>[%pet%<white>]'
-  line: '<text>%player% <gray>khoe pet {pet}'
-  none: '<error>✘ Hãy thả pet ra trước khi khoe'
-  cooldown: '<error>✘ Vừa khoe xong. Thử lại sau <text>%wait% giây'
+  # khi người chơi chưa thả pet mà gõ [pet]
+  no-pet: '<gray>[Chưa thả pet]'
 
 behaviour:
   mode: '<success>✔ Chế độ chiến đấu của pet: <text>%mode%'

@@ -194,10 +194,9 @@ pet-chat:
 showcase:
   seconds: 10
   cooldown-seconds: 30
-  # giây chờ giữa 2 lần /pet khoe (khoe ra chat)
-  chat-cooldown-seconds: 30
-  # gõ [pet] trong chat để khoe pet đang thả (rê chuột xem thẻ)
-  chat-token: true
+  # BoxPet tự thay [pet] trong chat (chỉ khi KHÔNG dùng InteractiveChat; có InteractiveChat thì để false và dùng
+  # placeholder %boxpet_active_name_level% / %boxpet_active_card% trong CustomPlaceholders của InteractiveChat)
+  chat-token: false
 
 release:
   # thả pet thì trả lại 1 kẹo (mã trong items.yml), '' = không trả

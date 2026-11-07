@@ -45,9 +45,25 @@ public final class PapiExpansion extends PlaceholderExpansion {
         if (pd == null) return "";
         PetData a = pd.active();
         PetType t = a == null ? null : plugin.pets().type(a);
-        return switch (params.toLowerCase()) {
+        String lower = params.toLowerCase();
+        if (lower.startsWith("active_card_")) {
+            if (a == null) return "";
+            try {
+                int n = Integer.parseInt(lower.substring("active_card_".length()));
+                var lines = com.dex.boxpet.gui.PetIcons.showcaseLines(plugin, a);
+                return n >= 1 && n <= lines.size() ? Text.legacy(lines.get(n - 1)) : "";
+            } catch (NumberFormatException ex) {
+                return "";
+            }
+        }
+        return switch (lower) {
             case "active_name" -> a == null ? "" : Text.legacy(plugin.pets().displayName(a));
             case "active_name_plain" -> a == null ? "" : Text.plain(plugin.pets().displayName(a));
+            // 0.22.0: for InteractiveChat [pet]: "[Name [Lv.12]]" and the pet card (lines joined by \n)
+            case "active_name_level" -> a == null ? Text.legacy(plugin.messages().raw("showcase-chat.no-pet"))
+                    : Text.legacy(plugin.messages().raw("showcase-chat.tag", "pet", plugin.pets().nameWithLevel(a)));
+            case "active_card" -> a == null ? "" : String.join("\n",
+                    com.dex.boxpet.gui.PetIcons.showcaseLines(plugin, a).stream().map(Text::legacy).toList());
             case "active_type" -> a == null ? "" : a.type;
             case "active_level" -> a == null ? "" : String.valueOf(a.level);
             case "active_rarity" -> a == null ? "" : Text.legacy(plugin.pets().rarity(a).coloured());

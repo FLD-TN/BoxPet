@@ -19,10 +19,11 @@ import org.jetbrains.annotations.NotNull;
 /** {@code /pet [summon <name> | dismiss | hideothers | chat | rename <name>]} (spec 12, 13). */
 public final class PetCommand implements TabExecutor {
 
-    private static final List<String> SUBS = List.of("summon", "dismiss", "hideothers", "chat", "thongbao", "rename", "khoe",
-            "chedo", "muctieu");
+    private static final List<String> SUBS = List.of("dismiss", "hideothers", "chat", "thongbao", "rename", "chedo", "muctieu");
     private static final List<String> MODES = List.of("tancong", "phongthu", "thanthien");
     private static final List<String> TARGETS = List.of("tatca", "nguoi", "mob");
+    /** Shown by tab completion (mob is written quaivat). */
+    private static final List<String> TARGET_WORDS = List.of("tatca", "nguoi", "quaivat");
 
     private final BoxPetPlugin plugin;
 
@@ -46,15 +47,6 @@ public final class PetCommand implements TabExecutor {
             return true;
         }
         switch (args[0].toLowerCase(Locale.ROOT)) {
-            case "summon" -> {
-                if (args.length < 2) {
-                    plugin.messages().send(p, "usage.summon");
-                    return true;
-                }
-                PetData pet = find(pd, String.join(" ", java.util.Arrays.copyOfRange(args, 1, args.length)));
-                if (pet == null) plugin.messages().send(p, "summon.not-found", "name", args[1]);
-                else StorageMenu.summon(plugin, p, pet);
-            }
             case "dismiss" -> {
                 PetData active = pd.active();
                 if (active == null) {
@@ -73,10 +65,6 @@ public final class PetCommand implements TabExecutor {
                 pd.dirty = true;
                 plugin.pets().applyHiddenFor(p);
                 plugin.messages().send(p, pd.hideOthers ? "toggle.hide-others-on" : "toggle.hide-others-off");
-            }
-            case "khoe" -> {
-                String key = plugin.chat().showInChat(p);
-                if (key != null) plugin.messages().send(p, key, "wait", String.valueOf(Math.max(1, plugin.chat().chatShowWait(p.getUniqueId()))));
             }
             case "chedo" -> {
                 String arg = args.length > 1 ? args[1].toLowerCase(java.util.Locale.ROOT) : "";
@@ -155,14 +143,14 @@ public final class PetCommand implements TabExecutor {
         List<String> out = new ArrayList<>();
         if (args.length == 1) {
             for (String s : SUBS) if (s.startsWith(args[0].toLowerCase(Locale.ROOT))) out.add(s);
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("summon") && sender instanceof Player p) {
-            PlayerData pd = plugin.pets().data(p.getUniqueId());
-            if (pd != null) {
-                for (PetData d : pd.pets.values()) {
-                    String n = d.customName.isEmpty() ? d.type : Text.plain(d.customName).replace(' ', '_');
-                    if (n.toLowerCase(Locale.ROOT).startsWith(args[1].toLowerCase(Locale.ROOT))) out.add(n);
-                }
-            }
+        } else if (args.length == 2) {
+            // 0.22.0: the choices of /pet chedo and /pet muctieu
+            List<String> choices = switch (args[0].toLowerCase(Locale.ROOT)) {
+                case "chedo" -> MODES;
+                case "muctieu" -> TARGET_WORDS;
+                default -> List.of();
+            };
+            for (String s : choices) if (s.startsWith(args[1].toLowerCase(Locale.ROOT))) out.add(s);
         }
         return out;
     }
