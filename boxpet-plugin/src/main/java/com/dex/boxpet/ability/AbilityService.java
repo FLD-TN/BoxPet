@@ -199,7 +199,7 @@ public final class AbilityService {
                 fx(p, a, o);
                 if (a.vfx != null) onOwner(p, a, a.vfx.life());
                 announce(p, a);
-                p.cooldown = a.cooldownTicks;
+                p.cooldown = a.fullCooldownTicks();
                 if (a.areaRadius > 0 && (a.damage.base() > 0 || !a.enemyStat.isEmpty())) domain(p, a);
                 // 0.16.1: a heal with a buff section also gives the owner that stat
                 if (!a.buffStat.isEmpty()) {
@@ -218,7 +218,7 @@ public final class AbilityService {
                 o.addPotionEffect(new PotionEffect(type, 120, amp, true, false, true));
                 if (p.cooldown <= 0) {
                     fx(p, a, o);
-                    p.cooldown = a.cooldownTicks;
+                    p.cooldown = a.fullCooldownTicks();
                 }
             }
             case BUFF -> {
@@ -233,7 +233,7 @@ public final class AbilityService {
                 }
                 if (!myTurn(p)) return;
                 used(p);
-                p.cooldown = a.cooldownTicks;
+                p.cooldown = a.fullCooldownTicks();
                 buff(p, a, target);
             }
             case PROJECTILE, STRIKE, MARK, METEOR, ORBIT, ZONE, TETHER, NOVA -> {
@@ -252,7 +252,7 @@ public final class AbilityService {
                 }
                 if (!myTurn(p)) return;
                 used(p);
-                p.cooldown = a.cooldownTicks;
+                p.cooldown = a.fullCooldownTicks();
                 announce(p, a);
                 cast(p, a, target);
             }
@@ -1135,7 +1135,7 @@ public final class AbilityService {
             }
             if (!myTurn(p)) return;
             used(p);
-            p.shieldReadyAt = now + a.cooldownTicks * 50L;
+            p.shieldReadyAt = now + a.fullCooldownTicks() * 50L;
             buff(p, a, attacker);
             return;
         }
@@ -1148,7 +1148,7 @@ public final class AbilityService {
         double hearts = a.shieldHearts.at(p.data.level, p.rarity.statMultiplier());
         int amp = Math.max(0, (int) Math.ceil(hearts / 2.0) - 1);
         p.owner.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, a.shieldTicks, amp, true, false, true));
-        p.shieldReadyAt = now + a.cooldownTicks * 50L;
+        p.shieldReadyAt = now + a.fullCooldownTicks() * 50L;
         p.shieldDebuffUntil = now + a.shieldTicks * 50L;
         fx(p, a, p.owner);
         announce(p, a);

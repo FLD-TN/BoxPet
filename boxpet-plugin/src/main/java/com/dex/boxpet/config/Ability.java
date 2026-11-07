@@ -157,6 +157,39 @@ public final class Ability {
     public final double lineTo;
     public final double lineWidth;
 
+    /**
+     * 0.20.4: ticks from the cast until everything of the skill is over: wind-up, hits, buffs, stats taken from enemies,
+     * marks, shields, heals over time, domains, zones. The cooldown only starts after this.
+     */
+    public int activeTicks() {
+        int t = 0;
+        if (hits > 1) t = Math.max(t, (hits - 1) * hitInterval);
+        int lastHit = 0;
+        for (int h : novaHits) lastHit = Math.max(lastHit, h);
+        if (type == Type.NOVA || ((type == Type.HEAL) && areaRadius > 0)) t = Math.max(t, lastHit);
+        boolean buffs = !buffStat.isEmpty() || !buff2Stat.isEmpty() || !buffChoices.isEmpty();
+        if (buffs) t = Math.max(t, buffTicks);
+        if (!enemyStat.isEmpty()) {
+            int enemyEnd = enemyDomain ? buffTicks : enemyTicks;
+            // a stat taken on a hit lasts from that hit on
+            t = Math.max(t, (type == Type.NOVA || type == Type.HEAL ? lastHit : 0) + enemyEnd);
+        }
+        if (debuff != Debuff.NONE) t = Math.max(t, debuffTicks);
+        if (markBonus.base() > 0) t = Math.max(t, markTicks);
+        if (type == Type.SHIELD || (type == Type.HEAL && shieldHearts.base() > 0)) t = Math.max(t, shieldTicks);
+        if (healPulses > 1) t = Math.max(t, (healPulses - 1) * healInterval);
+        if (type == Type.ZONE) t = Math.max(t, zoneTicks);
+        if (type == Type.TETHER) t = Math.max(t, tetherTicks);
+        if (type == Type.ORBIT) t = Math.max(t, orbitTicks);
+        if (type.combat()) t += castDelay;
+        return t;
+    }
+
+    /** Ticks between two casts: the skill's whole duration, then the cooldown. */
+    public int fullCooldownTicks() {
+        return cooldownTicks + activeTicks();
+    }
+
     public double novaWeight(int hit) {
         return hit < novaWeights.size() ? novaWeights.get(hit) : 1.0;
     }
