@@ -75,7 +75,8 @@ public final class CollectionMenu extends Menu {
             rows.add(plugin.menus().text(score >= m.score() ? "collection.milestone-done" : "collection.milestone-todo",
                     "score", String.valueOf(m.score()), "label", m.label(), "stats", stats.toString()));
         }
-        set(4, icon(Material.NETHER_STAR, plugin.menus().name("collection.info", "score", String.valueOf(score)),
+        set(4, icon(Material.NETHER_STAR, plugin.menus().name("collection.info", "score", String.valueOf(score),
+                "owned", String.valueOf(score), "total", String.valueOf(plugin.types().size())),
                 plugin.menus().lore("collection.info", Map.of("milestones", rows), "score", String.valueOf(score),
                         "owned", String.valueOf(plugin.collectionService().score(pd)), "total", String.valueOf(plugin.types().size()))), null);
         set(45, button("common.back", Material.ARROW), click -> new MainMenu(plugin, player).open());
