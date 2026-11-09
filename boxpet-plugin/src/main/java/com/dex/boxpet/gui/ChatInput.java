@@ -47,15 +47,31 @@ public final class ChatInput implements Listener {
         if (p != null) p.timeout().cancel();
     }
 
+    /**
+     * 0.25.4: the exact text the player typed (same approach as BoxClans). {@code e.message()} is not used: chat
+     * plugins (EzChat, Essentials, CMI...) rewrite it before us, turning {@code &d} into a real colour or stripping
+     * it, which made pet names lose their colours. The signed message is what the client sent; the original message
+     * (written back as {@code &} codes, hex as {@code &#RRGGBB}) is the fallback for unsigned chat.
+     */
+    static String typed(AsyncChatEvent e) {
+        try {
+            if (e.signedMessage() != null) {
+                String raw = e.signedMessage().message();
+                if (raw != null) return raw;
+            }
+        } catch (RuntimeException | LinkageError ignored) {
+            // unsigned chat or older API: use the original component below
+        }
+        return AMPERSAND.serialize(e.originalMessage());
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(AsyncChatEvent e) {
         Pending p = pending.remove(e.getPlayer().getUniqueId());
         if (p == null) return;
         e.setCancelled(true);
         p.timeout().cancel();
-        // 0.25.3: a chat plugin may already have turned &d / &#RRGGBB into real colours before this runs; write them
-        // back as & codes so the typed colours survive (same result as /pet rename). Text without colours is unchanged.
-        String text = AMPERSAND.serialize(e.message()).trim();
+        String text = typed(e).trim();
         Bukkit.getScheduler().runTask(plugin, () -> {
             if (!e.getPlayer().isOnline()) return;
             if (text.equalsIgnoreCase("huy") || text.equalsIgnoreCase("hủy") || text.equalsIgnoreCase("cancel")) {
