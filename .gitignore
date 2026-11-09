@@ -10,3 +10,4 @@ libs/ModelEngine-*.jar
 libs/MythicLib-*.jar
 # bought model packs: their ToS forbid sharing, never committed
 PetModel/
+video/

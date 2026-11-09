@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +16,9 @@ import org.bukkit.scheduler.BukkitTask;
 
 /** One chat line of input (rename). "huy" cancels; times out after menu.input-timeout-seconds. */
 public final class ChatInput implements Listener {
+
+    private static final LegacyComponentSerializer AMPERSAND = LegacyComponentSerializer.builder()
+            .character('&').hexColors().build();
 
     private record Pending(Consumer<String> onInput, Runnable onCancel, BukkitTask timeout) {
     }
@@ -50,7 +53,9 @@ public final class ChatInput implements Listener {
         if (p == null) return;
         e.setCancelled(true);
         p.timeout().cancel();
-        String text = PlainTextComponentSerializer.plainText().serialize(e.message()).trim();
+        // 0.25.3: a chat plugin may already have turned &d / &#RRGGBB into real colours before this runs; write them
+        // back as & codes so the typed colours survive (same result as /pet rename). Text without colours is unchanged.
+        String text = AMPERSAND.serialize(e.message()).trim();
         Bukkit.getScheduler().runTask(plugin, () -> {
             if (!e.getPlayer().isOnline()) return;
             if (text.equalsIgnoreCase("huy") || text.equalsIgnoreCase("hủy") || text.equalsIgnoreCase("cancel")) {
