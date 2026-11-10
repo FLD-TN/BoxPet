@@ -283,6 +283,7 @@ public final class PetActions {
                 if (v < 0 || v > 100) return "admin.set-invalid";
                 before = String.valueOf(live.fullness);
                 live.fullness = v;
+                live.drainMs = System.currentTimeMillis();
             }
             default -> {
                 return "admin.set-field";

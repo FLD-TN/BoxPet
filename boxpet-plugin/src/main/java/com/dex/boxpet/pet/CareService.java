@@ -30,30 +30,51 @@ public final class CareService {
 
     // ------------------------------------------------------------------ every second
 
-    void second(ActivePet p, long now) {
-        // fullness drains only with the owner online and the pet out (spec 11.3)
-        long elapsed = Math.max(0, now - p.lastDrainCheck);
-        p.lastDrainCheck = now;
-        if (!p.deadHidden) p.data.drainMs += elapsed;
+    /** Time stamps below this are the pre-0.27.0 meaning of PetData#drainMs (banked ms, always far smaller). */
+    public static final long EPOCH_MIN = 1_000_000_000_000L;
+
+    /**
+     * 0.27.0: brings a pet's fullness up to {@code now}. Every pet loses 1 point per drain-minutes-per-point in real
+     * time: out, resting in storage, owner offline, server off. Computed from a time stamp, so offline pets cost nothing
+     * until they are read again.
+     *
+     * @return points lost
+     */
+    public int settle(PetData d, long now) {
         long per = s().drainMinutesPerPoint * 60_000L;
-        boolean changed = false;
-        while (p.data.drainMs >= per && p.data.fullness > 0) {
-            p.data.drainMs -= per;
-            int before = p.data.fullness;
-            p.data.fullness--;
-            p.data.dirty = true;
-            changed = true;
-            if (before >= s().littleHungry && p.data.fullness < s().littleHungry && p.data.fullness > 0) {
-                plugin.chat().say(p, "little-hungry");
-            }
-            if (p.data.fullness == 0) {
+        if (d.drainMs < EPOCH_MIN) {
+            // pets from before 0.27.0 (or brand new): count from now, keeping the part of a point already banked
+            d.drainMs = now - Math.max(0, Math.min(d.drainMs, per - 1));
+            d.dirty = true;
+        }
+        if (now <= d.drainMs) return 0;
+        long points = (now - d.drainMs) / per;
+        if (points <= 0) return 0;
+        int before = d.fullness;
+        if (points >= d.fullness) {
+            d.fullness = 0;
+            d.drainMs = now;
+        } else {
+            d.fullness -= (int) points;
+            d.drainMs += points * per;
+        }
+        d.dirty = true;
+        return before - d.fullness;
+    }
+
+    void second(ActivePet p, long now) {
+        int before = p.data.fullness;
+        if (settle(p.data, now) > 0) {
+            int after = p.data.fullness;
+            if (before >= s().littleHungry && after < s().littleHungry && after > 0) plugin.chat().say(p, "little-hungry");
+            if (after == 0 && before > 0) {
                 p.lastHungryChat = now;
                 plugin.chat().say(p, "hungry");
                 plugin.pets().refreshBonus(p);
                 plugin.pets().refreshStats(p);
             }
         }
-        if (p.data.fullness == 0) p.data.drainMs = Math.min(p.data.drainMs, per);
+        boolean changed = p.data.fullness != before;
         autoFeed(p);
         if (changed) plugin.pets().refreshNametag(p);
         if (p.hungry() && now - p.lastHungryChat > s().hungryRepeatSeconds * 1000L) {
@@ -160,6 +181,7 @@ public final class CareService {
      * @return how many were eaten (0 with the reason in {@code result[0]})
      */
     public int feed(Player player, PetData d, ItemsConfig.Consumable c, int max, FeedResult[] result) {
+        settle(d, System.currentTimeMillis());
         int eaten = 0;
         FeedResult why = FeedResult.NOTHING;
         boolean wasHungry = d.fullness <= 0;

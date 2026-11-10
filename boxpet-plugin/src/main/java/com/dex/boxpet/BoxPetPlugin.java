@@ -214,7 +214,7 @@ public final class BoxPetPlugin extends JavaPlugin {
                 settings.abilityDamageMultiplier, settings.abilityHealMultiplier);
         levels = new Levels(ConfigFiles.load(this, "levels.yml"), getLogger());
         xpSources = new XpSources(ConfigFiles.load(this, "xp-sources.yml"));
-        items = new ItemsConfig(ConfigFiles.load(this, "items.yml"));
+        items = new ItemsConfig(ConfigFiles.load(this, "items.yml"), settings.foodXpMultiplier);
         dialogues = new Dialogues(ConfigFiles.load(this, "dialogues.yml"));
         collectionConfig = new CollectionConfig(ConfigFiles.load(this, "collection.yml"));
     }

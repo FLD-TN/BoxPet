@@ -156,7 +156,10 @@ public final class PetManager {
             players.put(id, data);
             resetDay(data);
             long now = System.currentTimeMillis();
-            for (PetData pet : data.pets.values()) updateNeglect(pet, now);
+            for (PetData pet : data.pets.values()) {
+                updateNeglect(pet, now);
+                plugin.care().settle(pet, now);
+            }
             plugin.collectionService().apply(online, data);
             applyHiddenFor(online);
             PetData pet = data.active();
@@ -252,6 +255,7 @@ public final class PetManager {
         d.level = 1;
         d.bond = s().bondStart;
         d.fullness = s().fullnessStart;
+        d.drainMs = now;
         d.hatchedAt = now;
         d.createdAt = now;
         d.origin = origin;
@@ -812,6 +816,10 @@ public final class PetManager {
         }
         if (seconds % 2 == 0) visibleCap();
         if (seconds % 60 == 0) {
+            // 0.27.0: pets resting in storage get hungry too (the active pet is settled every second)
+            for (PlayerData pd : players.values()) {
+                for (PetData pet : pd.pets.values()) if (!pet.id.equals(pd.activePet)) plugin.care().settle(pet, now);
+            }
             for (PlayerData pd : players.values()) resetDay(pd);
             plugin.cataMines().ifPresent(com.dex.boxpet.hook.CataMinesHook::refresh);
         }

@@ -41,6 +41,8 @@ storage-slots:
 xp:
   # false = pet chỉ nhận EXP từ kẹo (cho ăn), bỏ qua mọi nguồn trong xp-sources.yml
   from-activities: false
+  # nhân EXP của mọi kẹo / đồ ăn EXP trong items.yml (lore tự cập nhật). 0.2 = còn 1/5
+  food-multiplier: 0.2
 
 # Đột phá: tới các cấp này và đầy EXP thì pet đứng lại, phải dùng Đá Đột Phá mới lên cấp tiếp.
 # Chỉ tính cấp nhỏ hơn cấp tối đa của độ hiếm (Thường tối đa 30: đột phá ở 9, 19, 29). Để [] là tắt.
@@ -156,8 +158,10 @@ bond:
 
 # Độ no 0-100 (BOXPET_SPEC 11.3): thức ăn và kẹo dùng chung một bụng
 fullness:
-  start: 50
-  # thả pet ra, mỗi bao nhiêu phút mất 1 điểm no (6 phút = 10 giờ từ 100 về 0)
+  # độ no của pet mới nở
+  start: 0
+  # mỗi bao nhiêu phút mất 1 điểm no (6 phút = 10 giờ từ 100 về 0). Mọi pet đều mất theo giờ thật:
+  # đang thả, nằm trong kho, chủ offline, kể cả lúc server tắt
   drain-minutes-per-point: 6
   # dưới mức này pet nhắc "hơi đói"
   little-hungry-below: 30

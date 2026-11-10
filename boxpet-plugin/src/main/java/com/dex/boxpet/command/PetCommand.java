@@ -176,8 +176,12 @@ public final class PetCommand implements TabExecutor {
             if (err == null && list != null) {
                 for (PetData d : list) if (d.id.equals(want) && d.state != PetData.State.DELETED) found = d;
             }
-            if (found == null) plugin.messages().send(viewer, "pet-view.not-found");
-            else new com.dex.boxpet.gui.PetViewMenu(plugin, viewer, found, name).open();
+            if (found == null) {
+                plugin.messages().send(viewer, "pet-view.not-found");
+                return;
+            }
+            plugin.care().settle(found, System.currentTimeMillis()); // 0.27.0: offline owner, fullness up to now (view only)
+            new com.dex.boxpet.gui.PetViewMenu(plugin, viewer, found, name).open();
         }));
     }
 

@@ -27,7 +27,11 @@ public final class PetData {
     public int neglectSteps;
     /** When it became the active pet (epoch ms), 0 when resting in storage. */
     public long activeSince;
-    /** Time with the owner online and the pet out, not yet turned into fullness loss (ms). */
+    /**
+     * 0.27.0: epoch ms the fullness drain is counted from (the DB column drain_ms). Fullness drains in real time for
+     * every pet, see CareService#settle. Values below CareService#EPOCH_MIN are the old meaning (banked ms of the pet
+     * being out) and are turned into a time stamp on the first settle.
+     */
     public long drainMs;
     /** Epoch day of {@link #foodBond}. */
     public long foodBondDay;
