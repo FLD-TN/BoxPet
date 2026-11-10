@@ -32,15 +32,7 @@ public final class ItemsConfig {
     public final EggLook breakthrough;
     public final Map<Material, Integer> vanillaFood = new HashMap<>();
 
-    /** 0.27.0: config.yml xp.food-multiplier, applied to the EXP of every candy. */
-    private final double xpMultiplier;
-
     public ItemsConfig(YamlConfiguration y) {
-        this(y, 1.0);
-    }
-
-    public ItemsConfig(YamlConfiguration y, double xpMultiplier) {
-        this.xpMultiplier = xpMultiplier;
         readConsumables(y.getConfigurationSection("candies"), true);
         readConsumables(y.getConfigurationSection("foods"), false);
         if (consumables.values().stream().noneMatch(Consumable::candy)) {
@@ -81,7 +73,7 @@ public final class ItemsConfig {
             Material m = Material.matchMaterial(s.getString("material", candy ? "SUGAR" : "COOKIE"));
             if (m == null || !m.isItem()) m = candy ? Material.SUGAR : Material.COOKIE;
             add(new Consumable(key.toLowerCase(Locale.ROOT), candy, s.getString("name", key), s.getString("color", "#FFFFFF"),
-                    m, s.getString("itemsadder", ""), s.getInt("custom-model-data", 0), Math.max(0, s.getDouble("xp", 0)) * xpMultiplier,
+                    m, s.getString("itemsadder", ""), s.getInt("custom-model-data", 0), Math.max(0, s.getDouble("xp", 0)),
                     Math.max(0, Math.min(100, s.getInt("fullness", candy ? 5 : 10))), Math.max(0, s.getInt("bond", candy ? 0 : 1)),
                     s.getStringList("lore")));
         }

@@ -41,8 +41,6 @@ storage-slots:
 xp:
   # false = pet chỉ nhận EXP từ kẹo (cho ăn), bỏ qua mọi nguồn trong xp-sources.yml
   from-activities: false
-  # nhân EXP của mọi kẹo / đồ ăn EXP trong items.yml (lore tự cập nhật). 0.2 = còn 1/5
-  food-multiplier: 0.2
 
 # Đột phá: tới các cấp này và đầy EXP thì pet đứng lại, phải dùng Đá Đột Phá mới lên cấp tiếp.
 # Chỉ tính cấp nhỏ hơn cấp tối đa của độ hiếm (Thường tối đa 30: đột phá ở 9, 19, 29). Để [] là tắt.

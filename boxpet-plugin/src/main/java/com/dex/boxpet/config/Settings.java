@@ -110,8 +110,6 @@ public final class Settings {
 
     // fullness
     public final int fullnessStart;
-    /** 0.27.0: multiplies the EXP of every candy / EXP food in items.yml (fullness drains in real time now). */
-    public final double foodXpMultiplier;
     public final int drainMinutesPerPoint;
     public final int littleHungry;
 
@@ -206,7 +204,6 @@ public final class Settings {
         bondStart = clamp(c.getInt("bond.start", 50));
         bondPetGain = Math.max(0, c.getInt("bond.pet-gain", 1));
         activityXp = c.getBoolean("xp.from-activities", false);
-        foodXpMultiplier = Math.max(0, c.getDouble("xp.food-multiplier", 0.2));
         abilityDamageMultiplier = Math.max(0, c.getDouble("abilities.damage-multiplier", 1.4));
         statMultiplier = Math.max(0, c.getDouble("stats.multiplier", 1.7));
         breakthroughStatBonus = Math.max(0, c.getDouble("breakthrough.stat-bonus-percent", 5));

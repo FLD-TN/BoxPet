@@ -1,6 +1,6 @@
 # BoxPet — vật phẩm (BOXPET_SPEC 9.1, 10.1, 11.3)
 # itemsadder: mã ItemsAdder để làm hình (namespace:id), để trống thì dùng material (+ custom-model-data)
-# Kẹo: XP cho pet và làm no. Thức ăn: làm no và tăng thân thiết (tối đa bond.food-max-per-day mỗi ngày).
+# Kẹo: XP cho pet và làm no (0.27.1: XP giảm còn 1/5 vì độ no trôi theo giờ thật). Thức ăn: làm no và tăng thân thiết (tối đa bond.food-max-per-day mỗi ngày).
 # Một pet chỉ ăn được khi độ no + vật phẩm <= 100.
 candies:
   candy_small:
@@ -8,33 +8,33 @@ candies:
     color: '#BFC7D5'
     material: SUGAR
     itemsadder: ''
-    xp: 100
+    xp: 20
     fullness: 5
   candy_medium:
     name: 'Kẹo Pet Vừa'
     color: '#7FDBFF'
     material: AMETHYST_SHARD
     itemsadder: ''
-    xp: 500
+    xp: 100
     fullness: 10
   candy_large:
     name: 'Kẹo Pet Lớn'
     color: '#C3B1E1'
     material: PRISMARINE_CRYSTALS
     itemsadder: ''
-    xp: 2000
+    xp: 400
     fullness: 20
   candy_super:
     name: 'Kẹo Pet Siêu Cấp'
     color: '#FFD166'
     material: NETHER_STAR
     itemsadder: ''
-    xp: 10000
+    xp: 2000
     fullness: 35
 
   # 0.26.0: đồ ăn tăng EXP (cùng loại với kẹo). Độ no là giới hạn thật: pet mất 1 no mỗi 6 phút,
-  # nên giá trị so sánh là XP trên mỗi điểm no. XP thật = xp ở đây x config.yml xp.food-multiplier
-  # (mặc định 0.2, số XP / no bên dưới đã nhân). Tổng XP tới cấp tối đa: Thường 45.675, Hiếm 106.600,
+  # nên giá trị so sánh là XP trên mỗi điểm no (mỗi pet mất 240 no mỗi ngày, cả trong kho / offline).
+  # Tổng XP tới cấp tối đa: Thường 45.675, Hiếm 106.600,
   # Sử thi 207.025, Huyền thoại 356.950.
   # Bánh Mì Năng Lượng: món cày được (shop, nhiệm vụ, rơi từ mob / mine) - 20 XP mỗi điểm no
   xp_food_bread:
@@ -42,7 +42,7 @@ candies:
     color: '#E8C07D'
     material: BREAD
     itemsadder: ''
-    xp: 500
+    xp: 100
     fullness: 5
   # Xiên Thịt Nướng: quà điểm danh, nhiệm vụ ngày, sự kiện - 40 XP mỗi điểm no
   xp_food_skewer:
@@ -50,7 +50,7 @@ candies:
     color: '#FF9F5A'
     material: COOKED_BEEF
     itemsadder: ''
-    xp: 2000
+    xp: 400
     fullness: 10
   # Súp Tinh Linh: crate thường - 80 XP mỗi điểm no
   xp_food_soup:
@@ -58,7 +58,7 @@ candies:
     color: '#7FDBFF'
     material: SUSPICIOUS_STEW
     itemsadder: ''
-    xp: 6000
+    xp: 1200
     fullness: 15
   # Lẩu Rồng: crate hiếm - 120 XP mỗi điểm no
   xp_food_hotpot:
@@ -66,7 +66,7 @@ candies:
     color: '#C9A7FF'
     material: RABBIT_STEW
     itemsadder: ''
-    xp: 15000
+    xp: 3000
     fullness: 25
   # Yến Tiệc Hoàng Kim: crate huyền thoại, top sự kiện - 250 XP mỗi điểm no
   xp_food_feast:
@@ -74,7 +74,7 @@ candies:
     color: '#FFD166'
     material: ENCHANTED_GOLDEN_APPLE
     itemsadder: ''
-    xp: 50000
+    xp: 10000
     fullness: 40
 
 foods:
