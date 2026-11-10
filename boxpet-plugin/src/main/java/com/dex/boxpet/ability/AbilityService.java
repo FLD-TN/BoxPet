@@ -69,7 +69,7 @@ public final class AbilityService {
     }
 
     public void start() {
-        task = Bukkit.getScheduler().runTaskTimer(plugin, this::tickVfx, 1L, 1L);
+        task = Bukkit.getScheduler().runTaskTimer(plugin, this::tickVfx, 1L, 1L); // global, no scope
     }
 
     public void stop() {
@@ -124,6 +124,16 @@ public final class AbilityService {
     // ------------------------------------------------------------------ per pet tick
 
     public void tick(ActivePet p) {
+        java.util.Set<UUID> before = hiddenScope;
+        hiddenScope = p.hiddenViewers.isEmpty() ? java.util.Set.of() : java.util.Set.copyOf(p.hiddenViewers);
+        try {
+            tickBoth(p);
+        } finally {
+            hiddenScope = before;
+        }
+    }
+
+    private void tickBoth(ActivePet p) {
         slotNow = 0;
         tickSkill(p);
         if (!p.hasSecond(plugin.settings().secondSkillLevel)) return;
@@ -187,12 +197,12 @@ public final class AbilityService {
                     double step = amount / a.healPulses;
                     amount = step;
                     for (int i = 1; i < a.healPulses; i++) {
-                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        later(() -> {
                             if (plugin.pets().active(p.ownerId) != p || !o.isOnline() || o.isDead()) return;
                             AttributeInstance mx = o.getAttribute(Attribute.GENERIC_MAX_HEALTH);
                             if (mx == null) return;
                             o.setHealth(Math.min(mx.getValue(), o.getHealth() + step));
-                            Effects.particle(o.getLocation().add(0, 1, 0), "HEART", 1, 0.3, 0);
+                            particle(o.getLocation().add(0, 1, 0), "HEART", 1, 0.3, 0);
                         }, (long) i * a.healInterval);
                     }
                 }
@@ -324,7 +334,7 @@ public final class AbilityService {
         plugin.pets().playAnimation(p, a.animation);
         sounds(p, a);
         particles(p, a, target, false);
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        later(() -> {
             if (!stillOn(p, target)) return;
             if (a.type == Ability.Type.METEOR) {
                 meteor(p, a, target);
@@ -350,7 +360,7 @@ public final class AbilityService {
             for (int i = 0; i < a.hits; i++) {
                 boolean first = i == 0;
                 if (first) act(p, a, target, true);
-                else Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                else later(() -> {
                     if (stillOn(p, target)) act(p, a, target, false);
                 }, (long) i * a.hitInterval);
             }
@@ -434,7 +444,7 @@ public final class AbilityService {
         String trail = a.particles.stream().filter(x -> x.at().equalsIgnoreCase("path")).map(Ability.ParticleFx::particle)
                 .findFirst().orElse("CRIT");
         for (double d = 0; d <= len; d += 0.6) {
-            Effects.particle(from.clone().add(dir.clone().multiply(d)), trail, 2, 0.05, 0);
+            particle(from.clone().add(dir.clone().multiply(d)), trail, 2, 0.05, 0);
         }
         Location mid = from.clone().add(dir.clone().multiply(len / 2));
         int n = 0;
@@ -453,7 +463,7 @@ public final class AbilityService {
     /** A model that follows {@code target} for {@code ticks} (bleed mark). */
     private void attachVfx(LivingEntity target, String model, String animation, int ticks, double yOffset) {
         Location at = target.getLocation().add(0, yOffset, 0);
-        PetVisual visual = PetVisual.create(at, model, 1.0, plugin.settings().viewDistance, null, null, false, plugin.getLogger());
+        PetVisual visual = hideFx(PetVisual.create(at, model, 1.0, plugin.settings().viewDistance, null, null, false, plugin.getLogger()));
         if (visual == null) return;
         if (!animation.isEmpty()) visual.play(animation);
         vfx.add(new Vfx(visual, at, target, 0, ticks, false, yOffset));
@@ -495,10 +505,10 @@ public final class AbilityService {
         Vector step = d.clone().normalize().multiply(0.5);
         Location cur = a1.clone();
         for (double t = 0; t < len; t += 0.5) {
-            Effects.particle(cur, part, 1, 0.02, 0);
+            particle(cur, part, 1, 0.02, 0);
             cur.add(step);
         }
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        later(() -> {
             if (plugin.pets().active(p.ownerId) != p || !to.isValid() || to.isDead()) return;
             if (damage(p, a, to, dmg, false)) {
                 applyDebuff(p, a, to, dmg);
@@ -518,16 +528,16 @@ public final class AbilityService {
             if (i > 0) at.add(rnd.nextDouble(-a.meteorSpread, a.meteorSpread), 0, rnd.nextDouble(-a.meteorSpread, a.meteorSpread));
             long start = i * 6L;
             for (long w = 0; w < a.meteorWarn; w += 5) {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> ring(at, radius, "FLAME"), start + w);
+                later(() -> ring(at, radius, "FLAME"), start + w);
             }
             // 0.9.1: the meteor itself, the skill's vfx model falling from the sky onto the ring
             if (a.vfx != null) {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> fall(a, at, a.meteorWarn), start);
+                later(() -> fall(a, at, a.meteorWarn), start);
             }
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            later(() -> {
                 if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
-                Effects.particle(at.clone().add(0, 0.5, 0), "EXPLOSION", 2, 0.5, 0);
-                Effects.particle(at.clone().add(0, 0.5, 0), "LAVA", 12, radius * 0.4, 0.05);
+                particle(at.clone().add(0, 0.5, 0), "EXPLOSION", 2, 0.5, 0);
+                particle(at.clone().add(0, 0.5, 0), "LAVA", 12, radius * 0.4, 0.05);
                 burst(a, at, radius);
                 Effects.sound(at, "entity.generic.explode", 0.7f, 1.2f);
                 double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
@@ -541,8 +551,8 @@ public final class AbilityService {
     private void fall(Ability a, Location at, int ticks) {
         Location top = at.clone().add(0, 12, 0);
         top.setPitch(90);
-        PetVisual visual = PetVisual.create(top, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null,
-                false, plugin.getLogger());
+        PetVisual visual = hideFx(PetVisual.create(top, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null,
+                false, plugin.getLogger()));
         if (visual == null) return;
         if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
         Vfx v = new Vfx(visual, top, null, 0, ticks, false, 0);
@@ -562,8 +572,8 @@ public final class AbilityService {
         List<PetVisual> orbs = new ArrayList<>();
         boolean[] gone = new boolean[count];
         for (int i = 0; i < count; i++) {
-            PetVisual visual = a.vfx == null ? null : PetVisual.create(p.owner.getLocation(), a.vfx.model(), a.vfx.scale(),
-                    plugin.settings().viewDistance, null, null, false, plugin.getLogger());
+            PetVisual visual = a.vfx == null ? null : hideFx(PetVisual.create(p.owner.getLocation(), a.vfx.model(), a.vfx.scale(),
+                    plugin.settings().viewDistance, null, null, false, plugin.getLogger()));
             if (visual != null && !a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
             orbs.add(visual);
         }
@@ -571,7 +581,7 @@ public final class AbilityService {
                 .findFirst().orElse("FLAME");
         int[] t = {0};
         BukkitTask[] task = new BukkitTask[1];
-        task[0] = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        task[0] = timer(() -> {
             boolean alive = plugin.pets().active(p.ownerId) == p && !p.abilityPaused() && p.owner.isOnline();
             if (!alive || ++t[0] > a.orbitTicks) {
                 for (PetVisual v : orbs) if (v != null) v.remove();
@@ -586,12 +596,12 @@ public final class AbilityService {
                 float yaw = (float) Math.toDegrees(ang) + 180;
                 at.setYaw(yaw);
                 if (orbs.get(i) != null) orbs.get(i).move(at, yaw, yaw);
-                Effects.particle(at, trail, 1, 0.05, 0);
+                particle(at, trail, 1, 0.05, 0);
                 for (LivingEntity e : at.getWorld().getNearbyLivingEntities(at, 1.3)) {
                     if (!validTarget(p.owner, e)) continue;
                     gone[i] = true;
                     if (orbs.get(i) != null) orbs.get(i).remove();
-                    Effects.particle(at, "EXPLOSION", 1, 0, 0);
+                    particle(at, "EXPLOSION", 1, 0, 0);
                     Effects.sound(at, "entity.generic.explode", 0.5f, 1.4f);
                     burst(a, e.getLocation(), 1.3);
                     if (damage(p, a, e, base, false)) applyDebuff(p, a, e, base);
@@ -606,8 +616,8 @@ public final class AbilityService {
         if (a.areaVfx.isEmpty() || at.getWorld() == null) return;
         Location l = at.clone();
         l.setYaw(0);
-        PetVisual visual = PetVisual.create(l, a.areaVfx, Math.max(0.3, radius), plugin.settings().viewDistance, null, null,
-                false, plugin.getLogger());
+        PetVisual visual = hideFx(PetVisual.create(l, a.areaVfx, Math.max(0.3, radius), plugin.settings().viewDistance, null, null,
+                false, plugin.getLogger()));
         if (visual == null) return;
         visual.play("skill");
         vfx.add(new Vfx(visual, l, null, 0, 14, false, 0));
@@ -621,15 +631,15 @@ public final class AbilityService {
         if (a.vfx != null) {
             Location l = c.clone();
             l.setYaw(0);
-            PetVisual visual = PetVisual.create(l, a.vfx.model(), Math.max(0.3, radius * a.vfx.scale()), plugin.settings().viewDistance,
-                    null, null, false, plugin.getLogger());
+            PetVisual visual = hideFx(PetVisual.create(l, a.vfx.model(), Math.max(0.3, radius * a.vfx.scale()), plugin.settings().viewDistance,
+                    null, null, false, plugin.getLogger()));
             if (visual != null) {
                 if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
                 vfx.add(new Vfx(visual, l, null, 0, a.zoneTicks, false, 0));
             }
         }
         for (int t = a.zoneInterval / 2; t <= a.zoneTicks; t += a.zoneInterval) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            later(() -> {
                 if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
                 if (a.vfx == null) ring(c, radius, "WITCH");
                 for (LivingEntity e : around(p.owner, c, radius)) {
@@ -650,8 +660,8 @@ public final class AbilityService {
         Vfx bound = null;
         if (a.vfx != null) {
             Location at = target.getLocation().add(0, a.vfx.yOffset(), 0);
-            PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
-                    plugin.getLogger());
+            PetVisual visual = hideFx(PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
+                    plugin.getLogger()));
             if (visual != null) {
                 if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
                 bound = new Vfx(visual, at, target, 0, a.tetherTicks, false, a.vfx.yOffset());
@@ -662,7 +672,7 @@ public final class AbilityService {
         double maxRange = a.range + 4;
         int[] t = {0};
         BukkitTask[] task = new BukkitTask[1];
-        task[0] = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+        task[0] = timer(() -> {
             boolean ok = plugin.pets().active(p.ownerId) == p && !p.abilityPaused() && target.isValid() && !target.isDead()
                     && target.getWorld() == p.pos.getWorld() && validTarget(p.owner, target)
                     && origin(p).distanceSquared(target.getLocation()) <= maxRange * maxRange && p.owner.hasLineOfSight(target);
@@ -680,7 +690,7 @@ public final class AbilityService {
                 for (double s = 0; s < len; s += 0.45) {
                     // a slight wave so it reads as a chain, not a laser
                     double wave = Math.sin(s * 2.2 + t[0] * 0.4) * 0.12;
-                    Effects.particle(cur.clone().add(0, wave, 0), part, 1, 0.01, 0);
+                    particle(cur.clone().add(0, wave, 0), part, 1, 0.01, 0);
                     cur.add(step);
                 }
             }
@@ -725,8 +735,8 @@ public final class AbilityService {
                 beamFrom = at.clone().add(away.normalize().multiply(a.beamBack * a.vfx.scale())).add(0, a.beamUp * a.vfx.scale(), 0);
             }
             // 0.11.5: no flash of the rest pose: the nova models keep it far under the ground (vfx/tools/extract.js)
-            PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
-                    plugin.getLogger());
+            PetVisual visual = hideFx(PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
+                    plugin.getLogger()));
             if (visual != null) {
                 if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
                 shown = new Vfx(visual, at, atPet || line ? null : target, 0, a.vfx.life(), false, a.vfx.yOffset());
@@ -745,7 +755,7 @@ public final class AbilityService {
         for (int hit = 0; hit < a.novaHits.size(); hit++) {
             int t = a.novaHits.get(hit);
             double dmg = base * a.novaWeight(hit);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            later(() -> {
                 if (plugin.pets().active(p.ownerId) != p || p.abilityPaused()) return;
                 // follows the target while it lives, else the last place it was
                 if (target.isValid() && !target.isDead() && target.getWorld() == center[0].getWorld()) center[0] = target.getLocation();
@@ -791,7 +801,7 @@ public final class AbilityService {
         double base = a.damage.at(p.data.level, p.rarity.statMultiplier());
         for (int hit = 0; hit < a.novaHits.size(); hit++) {
             double dmg = base * a.novaWeight(hit);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            later(() -> {
                 if (plugin.pets().active(p.ownerId) != p || p.abilityPaused() || !p.owner.isOnline()) return;
                 for (LivingEntity e : around(p.owner, p.owner.getLocation(), a.areaRadius)) {
                     // 0.14.1: an enemy player inside loses the stat for a short while, renewed every wave: it lasts
@@ -815,7 +825,7 @@ public final class AbilityService {
         Vector step = d.multiply(0.35 / len);
         Location cur = from.clone();
         for (double s = 0; s < len; s += 0.35) {
-            Effects.particle(cur, particle, 1, 0.02, 0);
+            particle(cur, particle, 1, 0.02, 0);
             cur.add(step);
         }
     }
@@ -823,7 +833,7 @@ public final class AbilityService {
     private static void ring(Location at, double radius, String particle) {
         for (int k = 0; k < 16; k++) {
             double ang = Math.PI * 2 * k / 16;
-            Effects.particle(at.clone().add(Math.cos(ang) * radius, 0.15, Math.sin(ang) * radius), particle, 1, 0, 0);
+            particle(at.clone().add(Math.cos(ang) * radius, 0.15, Math.sin(ang) * radius), particle, 1, 0, 0);
         }
     }
 
@@ -866,7 +876,7 @@ public final class AbilityService {
             if (a.enemyRadius > 0 && a.enemyDomain) {
                 // 0.16.0: lãnh địa, enemies inside lose the stat as long as they stay (renewed every half second)
                 for (int t = 0; t < a.buffTicks; t += 10) {
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    later(() -> {
                         if (plugin.pets().active(p.ownerId) != p || !p.owner.isOnline()) return;
                         for (LivingEntity e : around(p.owner, p.owner.getLocation(), a.enemyRadius)) {
                             if (e instanceof Player ep) plugin.stats().tempStat(plugin, ep, DEBUFF_KEY, a.enemyStat, v, a.buffRelative, 12);
@@ -898,8 +908,8 @@ public final class AbilityService {
     private void onEntity(Ability a, LivingEntity e, int ticks) {
         Location at = e.getLocation().add(0, a.vfx.yOffset(), 0);
         at.setPitch(0);
-        PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
-                plugin.getLogger());
+        PetVisual visual = hideFx(PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
+                plugin.getLogger()));
         if (visual == null) return;
         if (a.vfx.tint() != null) visual.tint(color(a.vfx.tint()));
         if (a.vfx.glow()) visual.fullBright();
@@ -911,8 +921,8 @@ public final class AbilityService {
     private void onOwner(ActivePet p, Ability a, int ticks) {
         Location at = p.owner.getLocation().add(0, a.vfx.yOffset(), 0);
         at.setYaw(p.owner.getBodyYaw());
-        PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
-                plugin.getLogger());
+        PetVisual visual = hideFx(PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
+                plugin.getLogger()));
         if (visual == null) return;
         if (a.vfx.tint() != null) visual.tint(color(a.vfx.tint()));
         if (a.vfx.glow()) visual.fullBright();
@@ -933,8 +943,8 @@ public final class AbilityService {
         if (a.vfx != null) {
             Location at = from.clone();
             at.setYaw(yawTo(from, target.getLocation()));
-            visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
-                    plugin.getLogger());
+            visual = hideFx(PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
+                    plugin.getLogger()));
             if (visual != null && !a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
         }
         double speed = a.vfx == null ? 0.8 : a.vfx.speed();
@@ -957,8 +967,8 @@ public final class AbilityService {
         Location at = target.getLocation().add(0, a.vfx.yOffset(), 0);
         at.setYaw(yawTo(p.pos, target.getLocation()));
         if (a.vfx.center() > 0) at = centeredOn(p, target, a.vfx);
-        PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
-                plugin.getLogger());
+        PetVisual visual = hideFx(PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null, false,
+                plugin.getLogger()));
         if (visual == null) return;
         if (a.vfx.tint() != null) visual.tint(color(a.vfx.tint()));
         if (a.vfx.glow()) visual.fullBright();
@@ -992,7 +1002,7 @@ public final class AbilityService {
     private void flipbook(PetVisual visual, Ability.VfxFx fx) {
         for (int i = 0; i < fx.frames().size(); i++) {
             String frame = fx.frames().get(i);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            later(() -> {
                 if (visual.removed()) return;
                 for (String part : fx.parts()) visual.swapPart(part, frame, part);
             }, i + 2L);
@@ -1014,7 +1024,7 @@ public final class AbilityService {
         if (a.areaRadius > 0) {
             // 0.8.0: area, every enemy around the impact
             Location c = target.getLocation();
-            Effects.particle(c.clone().add(0, 0.6, 0), "EXPLOSION", 1, 0, 0);
+            particle(c.clone().add(0, 0.6, 0), "EXPLOSION", 1, 0, 0);
             burst(a, c, a.areaRadius);
             ring(c, a.areaRadius, a.particles.stream().filter(x -> x.at().equalsIgnoreCase("target"))
                     .map(Ability.ParticleFx::particle).findFirst().orElse("CRIT"));
@@ -1081,10 +1091,10 @@ public final class AbilityService {
                 int times = Math.max(1, a.debuffTicks / 20);
                 double each = base * a.debuffDamageRatio;
                 for (int i = 1; i <= times; i++) {
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    later(() -> {
                         if (plugin.pets().active(p.ownerId) != p || !target.isValid() || target.isDead()) return;
                         if (damage(p, a, target, each, true)) {
-                            Effects.particle(target.getLocation().add(0, 1, 0), "DAMAGE_INDICATOR", 4, 0.2, 0.05);
+                            particle(target.getLocation().add(0, 1, 0), "DAMAGE_INDICATOR", 4, 0.2, 0.05);
                         }
                     }, i * 20L);
                 }
@@ -1128,6 +1138,16 @@ public final class AbilityService {
 
     /** {@code attacker}: whoever hit the owner, when known (buffs may burn / weaken them). */
     public void onOwnerDamaged(ActivePet p, double healthAfter, @Nullable LivingEntity attacker) {
+        java.util.Set<UUID> before = hiddenScope;
+        hiddenScope = p.hiddenViewers.isEmpty() ? java.util.Set.of() : java.util.Set.copyOf(p.hiddenViewers);
+        try {
+            damagedBoth(p, healthAfter, attacker);
+        } finally {
+            hiddenScope = before;
+        }
+    }
+
+    private void damagedBoth(ActivePet p, double healthAfter, @Nullable LivingEntity attacker) {
         slotNow = 0;
         ownerDamaged(p, healthAfter, attacker);
         if (!p.hasSecond(plugin.settings().secondSkillLevel)) return;
@@ -1150,7 +1170,7 @@ public final class AbilityService {
                 && attacker instanceof Player ap && validTarget(p.owner, ap)) {
             plugin.stats().tempStat(plugin, ap, DEBUFF_KEY, a.enemyStat, -a.enemyAmount.at(p.data.level, p.rarity.statMultiplier()),
                     false, a.enemyTicks);
-            Effects.particle(ap.getLocation().add(0, 1, 0), "CRIT", 6, 0.3, 0.1);
+            particle(ap.getLocation().add(0, 1, 0), "CRIT", 6, 0.3, 0.1);
         }
         // 0.20.6: hurt / low-hp skills and shields only react to someone hitting the owner, never to falls, fire,
         // cactus...: no pre-stacking Giáp Gai by jumping down, no cooldown lost to a small fall
@@ -1189,7 +1209,7 @@ public final class AbilityService {
         if (a.blastRadius > 0) {
             // 0.8.0: the shield comes up with a shockwave that pushes enemies away (Sculk)
             Location o = p.owner.getLocation();
-            Effects.particle(o.clone().add(0, 1, 0), "SONIC_BOOM", 1, 0, 0);
+            particle(o.clone().add(0, 1, 0), "SONIC_BOOM", 1, 0, 0);
             burst(a, o, a.blastRadius);
             Effects.sound(o, "entity.warden.sonic_boom", 0.6f, 1.4f);
             for (LivingEntity e : around(p.owner, o, a.blastRadius)) {
@@ -1200,8 +1220,8 @@ public final class AbilityService {
         }
         if (a.vfx != null) {
             Location at = p.owner.getLocation().add(0, a.vfx.yOffset(), 0);
-            PetVisual visual = PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null,
-                    false, plugin.getLogger());
+            PetVisual visual = hideFx(PetVisual.create(at, a.vfx.model(), a.vfx.scale(), plugin.settings().viewDistance, null, null,
+                    false, plugin.getLogger()));
             if (visual != null) {
                 if (!a.vfx.animation().isEmpty()) visual.play(a.vfx.animation());
                 vfx.add(new Vfx(visual, at, p.owner, 0, Math.min(a.shieldTicks, a.vfx.life()), false, a.vfx.yOffset()));
@@ -1232,7 +1252,7 @@ public final class AbilityService {
     private void sounds(ActivePet p, Ability a) {
         for (Ability.SoundFx s : a.sounds) {
             if (s.delay() <= 0) Effects.sound(p.pos, s.sound(), s.volume(), s.pitch());
-            else Bukkit.getScheduler().runTaskLater(plugin, () -> Effects.sound(p.pos, s.sound(), s.volume(), s.pitch()), s.delay());
+            else later(() -> Effects.sound(p.pos, s.sound(), s.volume(), s.pitch()), s.delay());
         }
     }
 
@@ -1249,10 +1269,10 @@ public final class AbilityService {
                     case "target" -> target.getLocation().add(0, target.getHeight() * 0.6, 0);
                     default -> origin(p);
                 };
-                Effects.particle(loc, f.particle(), f.count(), f.spread(), f.speed());
+                particle(loc, f.particle(), f.count(), f.spread(), f.speed());
             };
             if (f.delay() <= 0) r.run();
-            else Bukkit.getScheduler().runTaskLater(plugin, r, f.delay());
+            else later(r, f.delay());
         }
     }
 
@@ -1286,6 +1306,69 @@ public final class AbilityService {
         }
     }
 
+
+    // ------------------------------------------------------------------ 0.28.3: hidden for viewers hiding the pet
+
+    /** Viewers who hide the pet whose skill is running (hide-others toggle or the visible cap); main thread only. */
+    private static java.util.Set<UUID> hiddenScope = java.util.Set.of();
+
+    /** A skill model: force-hidden for the viewers who hide the casting pet. */
+    private static @Nullable PetVisual hideFx(@Nullable PetVisual visual) {
+        if (visual == null || hiddenScope.isEmpty()) return visual;
+        for (UUID id : hiddenScope) {
+            Player viewer = Bukkit.getPlayer(id);
+            if (viewer != null) visual.hiddenFor(viewer, true);
+        }
+        return visual;
+    }
+
+    /** Skill particles: everyone sees them except the viewers hiding the casting pet. */
+    private static void particle(Location at, String name, int count, double spread, double speed) {
+        particleFor(hiddenScope, at, name, count, spread, speed);
+    }
+
+    private static void particleFor(java.util.Set<UUID> hidden, Location at, String name, int count, double spread, double speed) {
+        if (hidden.isEmpty()) {
+            Effects.particle(at, name, count, spread, speed);
+            return;
+        }
+        org.bukkit.Particle type = Effects.particle(name);
+        org.bukkit.World w = at.getWorld();
+        if (type == null || w == null) return;
+        for (Player viewer : w.getPlayers()) {
+            if (hidden.contains(viewer.getUniqueId()) || viewer.getLocation().distanceSquared(at) > 96 * 96) continue;
+            viewer.spawnParticle(type, at, Math.max(1, count), spread, spread, spread, speed);
+        }
+    }
+
+    /** runTaskLater that keeps the hidden scope of the skill that scheduled it. */
+    private BukkitTask later(Runnable r, long delay) {
+        java.util.Set<UUID> scope = hiddenScope;
+        return Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            java.util.Set<UUID> before = hiddenScope;
+            hiddenScope = scope;
+            try {
+                r.run();
+            } finally {
+                hiddenScope = before;
+            }
+        }, delay);
+    }
+
+    /** runTaskTimer that keeps the hidden scope of the skill that started it. */
+    private BukkitTask timer(Runnable r, long delay, long period) {
+        java.util.Set<UUID> scope = hiddenScope;
+        return Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            java.util.Set<UUID> before = hiddenScope;
+            hiddenScope = scope;
+            try {
+                r.run();
+            } finally {
+                hiddenScope = before;
+            }
+        }, delay, period);
+    }
+
     /** A moving or attached VFX model, or a particle-only projectile. */
     private static final class Vfx {
         final @Nullable PetVisual visual;
@@ -1303,6 +1386,8 @@ public final class AbilityService {
         Location travelFrom;
         int travelTicks;
         int age;
+        /** 0.28.3: viewers hiding the pet that made this vfx (its particle trail is not sent to them). */
+        final java.util.Set<UUID> hidden;
         /** Moves a free (not following) vfx each tick: the falling meteor. */
         java.util.function.UnaryOperator<Location> mover;
 
@@ -1315,6 +1400,7 @@ public final class AbilityService {
             this.life = life;
             this.projectile = projectile;
             this.yOffset = yOffset;
+            this.hidden = hiddenScope;
         }
 
         /** @return false when finished */
@@ -1338,7 +1424,7 @@ public final class AbilityService {
                 next.setYaw(yaw);
                 loc = next;
                 if (visual != null) visual.move(loc, yaw, yaw);
-                for (Ability.ParticleFx f : trail) Effects.particle(loc, f.particle(), f.count(), f.spread(), f.speed());
+                for (Ability.ParticleFx f : trail) particleFor(hidden, loc, f.particle(), f.count(), f.spread(), f.speed());
                 return true;
             }
             if (mover != null) {
