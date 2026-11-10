@@ -24,6 +24,9 @@ permissions:
   boxpet.rename:
     description: Đặt tên cho pet
     default: true
+  boxpet.incubator.skip:
+    description: Ấp trứng xong ngay (miễn phí), dành cho rank zeus trở lên
+    default: false
   boxpet.admin:
     description: Lệnh /boxpet
     default: op

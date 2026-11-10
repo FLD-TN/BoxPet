@@ -108,8 +108,7 @@ incubator:
   placed: '<success>✔ Đã đặt trứng vào lò, nở sau <text>%time%'
   storage-full: '<error>✘ Kho pet đã đầy <muted>(%max% pet)<error>, hãy thả bớt pet trước'
   no-pet: '<error>✘ Không có pet nào để nở ra, hãy báo quản trị viên'
-  no-gems: '<error>✘ Không đủ <text>%cost% <#8245F8>Gem'
-  sped-up: '<success>✔ Đã ấp ngay với <text>%cost% <#8245F8>Gem'
+  skipped: '<success>✔ Trứng đã ấp xong, bấm vào để mở'
   hatched: '<success>✔ Trứng đã nở ra <text>%pet% <dark_gray>[%rarity%<dark_gray>]'
 
 hatched:

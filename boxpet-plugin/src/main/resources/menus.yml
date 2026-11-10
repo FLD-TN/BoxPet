@@ -574,7 +574,6 @@ confirm:
   evolve: '<#C9A7FF>Tiến hóa %pet% <gray>với %cost%<gray>?'
   release: '<#FF5C5C>Thả %pet% <#FF5C5C>đi vĩnh viễn?'
   admin-delete: '<#FF5C5C>Xoá pet %id%?'
-  speed-up: '<#C9A7FF>Ấp ngay với <white>%cost% <#8245F8>Gem<gray>?'
   'yes':
     name: '<#7CFC9A>Đồng ý'
     lore: []
@@ -643,14 +642,14 @@ incubator:
       - ''
       - '<gray>• Còn lại: <white>%time%'
       - '<gray>• Tiến độ: %bar%'
-  hatching-gem:
+  # 0.28.1: người có quyền boxpet.incubator.skip (rank zeus trở lên) ấp ngay miễn phí
+  hatching-skip:
     name: '%egg% <dark_gray>[%rarity%<dark_gray>]'
     lore:
       - '<#BFC7D5>Đang ấp'
       - ''
       - '<gray>• Còn lại: <white>%time%'
       - '<gray>• Tiến độ: %bar%'
-      - '<gray>• Ấp ngay: <white>%cost% <#8245F8>Gem'
       - ''
       - '<dark_gray>[<#7FDBFF>Chuột phải để ấp ngay<dark_gray>]'
   ready:

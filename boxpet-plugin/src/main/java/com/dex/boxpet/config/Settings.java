@@ -30,7 +30,6 @@ public final class Settings {
     public final int maxStorage;
     public final int defaultIncubator;
     public final int maxIncubator;
-    public final double gemPerMinute;
     public final int clickCooldownTicks;
     /** 0.21.0: "[pet]" in chat shows the active pet. */
     public final boolean chatShowToken;
@@ -163,7 +162,6 @@ public final class Settings {
         maxStorage = Math.max(defaultStorage, c.getInt("storage-slots.max", 200));
         defaultIncubator = Math.max(1, c.getInt("incubator.default-slots", 1));
         maxIncubator = Math.max(defaultIncubator, Math.min(7, c.getInt("incubator.max-slots", 5)));
-        gemPerMinute = Math.max(0, c.getDouble("incubator.gem-per-minute", 1));
         clickCooldownTicks = Math.max(0, c.getInt("menu.click-cooldown-ticks", 4));
         chatShowToken = c.getBoolean("showcase.chat-token", false);
         inputTimeoutSeconds = Math.max(5, c.getInt("menu.input-timeout-seconds", 30));

@@ -61,8 +61,7 @@ incubator:
   # ô ấp mặc định; thêm bằng quyền boxpet.incubator.<số> (tối đa max-slots, không quá 7)
   default-slots: 1
   max-slots: 5
-  # ấp ngay: số gem cho mỗi phút còn lại (0 = tắt)
-  gem-per-minute: 1
+  # ấp ngay (miễn phí, chuột phải vào trứng đang ấp): chỉ ai có quyền boxpet.incubator.skip (rank zeus trở lên)
 
 menu:
   click-cooldown-ticks: 4

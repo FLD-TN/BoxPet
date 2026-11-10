@@ -41,7 +41,9 @@ public final class IncubatorMenu extends Menu {
         int[] slots = slots();
         int unlocked = plugin.incubator().slots(player);
         long now = System.currentTimeMillis();
-        boolean gems = plugin.boxCore().isPresent() && plugin.boxCore().get().gemsAvailable() && plugin.settings().gemPerMinute > 0;
+        // 0.28.1: no gem speed-up any more; only boxpet.incubator.skip (zeus+) may finish an egg at once, for free.
+        // Without it nothing is shown: the egg simply hatches when its time is up.
+        boolean skip = player.hasPermission(com.dex.boxpet.pet.IncubatorService.SKIP_PERMISSION);
         for (int i = 0; i < slots.length; i++) {
             int index = i;
             IncubatorSlot s = pd.incubator.get(i);
@@ -60,13 +62,11 @@ public final class IncubatorMenu extends Menu {
             } else {
                 long left = (s.finishAt() - now + 999) / 1000;
                 long total = Math.max(1, (s.finishAt() - s.startedAt()) / 1000);
-                String key = gems ? "incubator.hatching-gem" : "incubator.hatching";
-                long cost = plugin.incubator().speedUpCost(s, now);
+                String key = skip ? "incubator.hatching-skip" : "incubator.hatching";
                 set(slots[i], decorate(icon, plugin.menus().name(key, "egg", petName, "rarity", r.coloured()),
                         plugin.menus().lore(key, "egg", petName, "rarity", r.coloured(), "time", Format.clock(left),
-                                "bar", Format.bar(total - left, total, 10, "<#7CFC9A>", "<dark_gray>"),
-                                "cost", Format.number(cost))), click -> {
-                    if (gems && click == ClickType.RIGHT) speedUp(index);
+                                "bar", Format.bar(total - left, total, 10, "<#7CFC9A>", "<dark_gray>"))), click -> {
+                    if (skip && click == ClickType.RIGHT) skip(index);
                 });
             }
         }
@@ -178,25 +178,15 @@ public final class IncubatorMenu extends Menu {
         }
     }
 
-    private void speedUp(int index) {
+    /** 0.28.1: boxpet.incubator.skip finishes the egg at once, free (checked again on click). */
+    private void skip(int index) {
         IncubatorSlot s = pd.incubator.get(index);
         if (s == null || s.ready(System.currentTimeMillis())) return;
-        long cost = plugin.incubator().speedUpCost(s, System.currentTimeMillis());
-        new ConfirmMenu(plugin, player, plugin.menus().text("confirm.speed-up", "cost", Format.number(cost)), () -> {
-            IncubatorSlot again = pd.incubator.get(index);
-            if (again == null) {
-                open();
-                return;
-            }
-            long c = plugin.incubator().speedUpCost(again, System.currentTimeMillis());
-            if (!plugin.boxCore().get().withdrawGems(player.getUniqueId(), c, "BoxPet incubator speed-up")) {
-                plugin.messages().send(player, "incubator.no-gems", "cost", Format.number(c));
-            } else {
-                plugin.incubator().finishNow(pd, again);
-                plugin.messages().send(player, "incubator.sped-up", "cost", Format.number(c));
-            }
-            open();
-        }, this::open).open();
+        if (!player.hasPermission(com.dex.boxpet.pet.IncubatorService.SKIP_PERMISSION)) return;
+        plugin.incubator().finishNow(pd, s);
+        plugin.messages().send(player, "incubator.skipped");
+        sound("block.amethyst_block.chime");
+        refresh();
     }
 
     @Override

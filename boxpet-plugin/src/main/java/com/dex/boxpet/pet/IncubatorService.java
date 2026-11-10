@@ -87,11 +87,8 @@ public final class IncubatorService {
         return s;
     }
 
-    /** Gem cost to finish now (spec 10.2): remaining minutes × gem-per-minute, at least 1. */
-    public long speedUpCost(IncubatorSlot s, long now) {
-        long minutes = (long) Math.ceil(Math.max(0, s.finishAt() - now) / 60_000.0);
-        return Math.max(1, (long) Math.ceil(minutes * plugin.settings().gemPerMinute));
-    }
+    /** 0.28.1: finish an egg at once, free (rank zeus and up); replaces the gem speed-up. */
+    public static final String SKIP_PERMISSION = "boxpet.incubator.skip";
 
     public void finishNow(PlayerData pd, IncubatorSlot s) {
         pd.incubator.put(s.slot(), s.finishNow(System.currentTimeMillis()));
