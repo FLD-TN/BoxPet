@@ -1,6 +1,6 @@
 allprojects {
     group = "com.dex"
-    version = "0.25.4"
+    version = "0.26.0"
 }
 
 subprojects {

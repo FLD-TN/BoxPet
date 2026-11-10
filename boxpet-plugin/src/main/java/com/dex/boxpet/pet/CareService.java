@@ -14,7 +14,8 @@ import org.bukkit.entity.Player;
 public final class CareService {
 
     public enum FeedResult {
-        OK, FULL, MAX_LEVEL, BREAKTHROUGH, NOTHING
+        /** OK_NO_XP: candies eaten by a pet at its max level, fullness only (0.26.0). */
+        OK, OK_NO_XP, FULL, MAX_LEVEL, BREAKTHROUGH, NOTHING
     }
 
     private final BoxPetPlugin plugin;
@@ -99,6 +100,8 @@ public final class CareService {
                 if (id == null || pd.pantryAmounts[i] <= 0) continue;
                 ItemsConfig.Consumable c = plugin.items().get(id);
                 if (c == null || c.candy() != candies) continue;
+                // 0.26.0: auto-feed never spends candies on a max-level pet (no EXP to gain); feeding by hand still can
+                if (c.candy() && p.data.level >= plugin.pets().rarity(p.data).maxLevel()) continue;
                 int n = feed(p.owner, p.data, c, pd.pantryAmounts[i], result);
                 if (n <= 0) continue;
                 pd.pantryAmounts[i] -= n;
@@ -161,15 +164,10 @@ public final class CareService {
         FeedResult why = FeedResult.NOTHING;
         boolean wasHungry = d.fullness <= 0;
         int maxLevel = plugin.pets().rarity(d).maxLevel();
+        // 0.26.0: candies are always edible (the owner may have nothing else): at max level they only fill the stomach,
+        // on a full breakthrough level the EXP is kept past full and carried over after the breakthrough
+        boolean noXp = c.candy() && d.level >= maxLevel;
         for (int i = 0; i < max; i++) {
-            if (c.candy() && d.level >= maxLevel) {
-                why = FeedResult.MAX_LEVEL;
-                break;
-            }
-            if (c.candy() && plugin.xp().needsBreakthrough(d)) {
-                why = FeedResult.BREAKTHROUGH;
-                break;
-            }
             if (d.fullness + c.fullness() > 100) {
                 why = FeedResult.FULL;
                 break;
@@ -184,7 +182,7 @@ public final class CareService {
         boolean out = p != null && p.data == d;
         if (eaten > 0) {
             d.dirty = true;
-            why = FeedResult.OK;
+            why = noXp ? FeedResult.OK_NO_XP : FeedResult.OK;
             if (out) {
                 plugin.pets().playAnimation(p, "interact");
                 Effects.sound(p.pos, "entity.generic.eat", 0.8f, 1.1f);

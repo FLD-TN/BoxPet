@@ -65,7 +65,12 @@ public final class XpService {
             d.xp = 0;
             return false;
         }
-        if (needsBreakthrough(d)) return false;
+        // 0.26.0: on a full breakthrough level the EXP is kept past full (carried over after the breakthrough)
+        if (needsBreakthrough(d)) {
+            d.xp += amount;
+            d.dirty = true;
+            return true;
+        }
         int before = d.level;
         d.xp += amount;
         climb(d, max);

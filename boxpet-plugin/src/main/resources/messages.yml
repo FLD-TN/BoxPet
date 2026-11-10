@@ -90,6 +90,8 @@ care:
   auto-fed: '<success>✔ %pet% <success>đã tự ăn <text>x%amount% <muted>(no %fullness%/100)'
   auto-empty: '<error>✘ Hộp thức ăn không còn đồ %pet% <error>ăn được'
   candy-eaten: '<success>✔ %pet% <success>đã ăn <text>x%amount% %item% <muted>(+%xp% XP, no %fullness%/100)'
+  # 0.26.0: pet đã đạt cấp tối đa vẫn ăn được kẹo, chỉ tăng độ no
+  candy-eaten-no-xp: '<success>✔ %pet% <success>đã ăn <text>x%amount% %item% <muted>(cấp tối đa, không nhận XP, no %fullness%/100)'
   food-eaten: '<success>✔ %pet% <success>đã ăn <text>x%amount% %item% <muted>(no %fullness%/100)'
   full: '<error>✘ %pet% <error>đã no, không ăn thêm được <muted>(no %fullness%/100)'
   max-level: '<error>✘ %pet% <error>đã đạt cấp tối đa'

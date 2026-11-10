@@ -138,7 +138,8 @@ public final class InteractListener implements Listener {
         String petName = plugin.pets().displayName(pet);
         if (eaten > 0) {
             take(p, slot, held, eaten);
-            plugin.messages().send(p, c.candy() ? "care.candy-eaten" : "care.food-eaten", "pet", petName,
+            String key = !c.candy() ? "care.food-eaten" : why[0] == CareService.FeedResult.OK_NO_XP ? "care.candy-eaten-no-xp" : "care.candy-eaten";
+            plugin.messages().send(p, key, "pet", petName,
                     "amount", String.valueOf(eaten), "item", "<" + c.color() + ">" + c.name(),
                     "fullness", String.valueOf(pet.fullness), "xp", com.dex.boxpet.text.Format.number(Math.round(c.xp() * eaten)));
         } else if (why[0] == CareService.FeedResult.FULL) {

@@ -32,6 +32,50 @@ candies:
     xp: 10000
     fullness: 35
 
+  # 0.26.0: đồ ăn tăng EXP (cùng loại với kẹo). Độ no là giới hạn thật: pet đang thả mất 1 no mỗi 6 phút,
+  # nên giá trị so sánh là XP trên mỗi điểm no. Tổng XP tới cấp tối đa: Thường 45.675, Hiếm 106.600,
+  # Sử thi 207.025, Huyền thoại 356.950.
+  # Bánh Mì Năng Lượng: món cày được (shop, nhiệm vụ, rơi từ mob / mine) - 100 XP mỗi điểm no
+  xp_food_bread:
+    name: 'Bánh Mì Năng Lượng'
+    color: '#E8C07D'
+    material: BREAD
+    itemsadder: ''
+    xp: 500
+    fullness: 5
+  # Xiên Thịt Nướng: quà điểm danh, nhiệm vụ ngày, sự kiện - 200 XP mỗi điểm no
+  xp_food_skewer:
+    name: 'Xiên Thịt Nướng'
+    color: '#FF9F5A'
+    material: COOKED_BEEF
+    itemsadder: ''
+    xp: 2000
+    fullness: 10
+  # Súp Tinh Linh: crate thường - 400 XP mỗi điểm no
+  xp_food_soup:
+    name: 'Súp Tinh Linh'
+    color: '#7FDBFF'
+    material: SUSPICIOUS_STEW
+    itemsadder: ''
+    xp: 6000
+    fullness: 15
+  # Lẩu Rồng: crate hiếm - 600 XP mỗi điểm no
+  xp_food_hotpot:
+    name: 'Lẩu Rồng'
+    color: '#C9A7FF'
+    material: RABBIT_STEW
+    itemsadder: ''
+    xp: 15000
+    fullness: 25
+  # Yến Tiệc Hoàng Kim: crate huyền thoại, top sự kiện - 1.250 XP mỗi điểm no
+  xp_food_feast:
+    name: 'Yến Tiệc Hoàng Kim'
+    color: '#FFD166'
+    material: ENCHANTED_GOLDEN_APPLE
+    itemsadder: ''
+    xp: 50000
+    fullness: 40
+
 foods:
   food_small:
     name: 'Thức Ăn Pet'
