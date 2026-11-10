@@ -23,6 +23,14 @@ public final class PetTypes {
     private final Map<String, PetType> byId = new LinkedHashMap<>();
 
     public PetTypes(File folder, Rarities rarities, Logger log) {
+        this(folder, rarities, log, id -> 0.0);
+    }
+
+    /**
+     * @param jarNametagOffset nametag-offset of the jar's copy of a pet file, used when the server file has no such
+     *                         key (files made before 0.26.3 get the measured value with a jar swap only)
+     */
+    public PetTypes(File folder, Rarities rarities, Logger log, java.util.function.Function<String, Double> jarNametagOffset) {
         File[] files = folder.listFiles((d, n) -> n.toLowerCase(Locale.ROOT).endsWith(".yml"));
         if (files == null) return;
         List<PetType> loaded = new ArrayList<>();
@@ -33,7 +41,10 @@ public final class PetTypes {
                 continue;
             }
             try {
-                loaded.add(read(id, YamlConfiguration.loadConfiguration(f), rarities, log));
+                YamlConfiguration y = YamlConfiguration.loadConfiguration(f);
+                PetType t = read(id, y, rarities, log);
+                t.nametagOffset = y.contains("nametag-offset") ? y.getDouble("nametag-offset") : jarNametagOffset.apply(id);
+                loaded.add(t);
             } catch (RuntimeException ex) {
                 log.warning("pets/" + f.getName() + ": " + ex.getMessage() + " (skipped)");
             }

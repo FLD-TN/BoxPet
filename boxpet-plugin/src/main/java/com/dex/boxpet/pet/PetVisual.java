@@ -169,6 +169,10 @@ public final class PetVisual {
     }
 
     /** Height of the model's main hitbox at the current scale (1 block when it has none). */
+    public double scale() {
+        return scale;
+    }
+
     public double height() {
         return height * scale;
     }

@@ -34,3 +34,5 @@ stats:
     per-level: 0.02
 # kỹ năng trong abilities.yml
 ability: griffon_ra
+# tên + bong bóng thoại cao thêm bao nhiêu block (model cao hơn hitbox thì tên bị che)
+nametag-offset: 0.3

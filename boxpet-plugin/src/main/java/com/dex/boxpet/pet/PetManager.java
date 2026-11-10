@@ -506,8 +506,13 @@ public final class PetManager {
     }
 
     private Location nametagLocation(ActivePet p) {
-        double h = p.visual == null ? 1 : p.visual.height();
-        return p.pos.clone().add(0, h + s().nametagOffset, 0);
+        return p.pos.clone().add(0, nameHeight(p) + s().nametagOffset, 0);
+    }
+
+    /** 0.26.3: top of the model for the name / speech bubble: hitbox height + the pet's nametag-offset, both scaled. */
+    public double nameHeight(ActivePet p) {
+        if (p.visual == null) return 1;
+        return p.visual.height() + (p.type == null ? 0 : p.type.nametagOffset * p.visual.scale());
     }
 
     /** 0.22.0: the pet name with its level, as on the name tag (no hunger mark). */

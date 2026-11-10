@@ -65,6 +65,11 @@ public final class PetType {
     public final String ability2;
     /** 0.11.0: bones of the model that stay hidden (config hide-bones), e.g. a pack skill effect given to another pet. */
     public List<String> hideBones = List.of();
+    /**
+     * 0.26.3: extra height of the name and speech bubble above the model's hitbox, in blocks at scale 1 (config
+     * nametag-offset). For models drawn taller than their hitbox (ears, hats), whose name sank into the model.
+     */
+    public double nametagOffset = 0;
 
     public PetType(String id, String name, String color, String family, Role role, String icon, Material iconFallback,
                    String rarity, int eggWeight, List<Stage> stages, Map<String, String> animations,

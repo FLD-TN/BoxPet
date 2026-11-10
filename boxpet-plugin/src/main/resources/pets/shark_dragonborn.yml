@@ -39,3 +39,5 @@ bonus-stat:
   stat: PVP_DAMAGE
   base: 0.5
   per-level: 0.03
+# tên + bong bóng thoại cao thêm bao nhiêu block (model cao hơn hitbox thì tên bị che)
+nametag-offset: 0.55

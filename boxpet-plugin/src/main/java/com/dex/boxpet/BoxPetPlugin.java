@@ -164,6 +164,17 @@ public final class BoxPetPlugin extends JavaPlugin {
                 + " abilities, storage " + settings.storageType);
     }
 
+    /** 0.26.3: nametag-offset of the jar's pets/<id>.yml (0 when the jar has no such pet or key). */
+    private double jarNametagOffset(String id) {
+        try (java.io.InputStream in = getResource("pets/" + id + ".yml")) {
+            if (in == null) return 0;
+            return org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(
+                    new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getDouble("nametag-offset", 0);
+        } catch (java.io.IOException ex) {
+            return 0;
+        }
+    }
+
     @Override
     public void onDisable() {
         if (!enabled) {
@@ -198,7 +209,7 @@ public final class BoxPetPlugin extends JavaPlugin {
         messages.load();
         menus.load();
         rarities = new Rarities(ConfigFiles.load(this, "rarities.yml"), getLogger());
-        types = new PetTypes(new File(getDataFolder(), "pets"), rarities, getLogger());
+        types = new PetTypes(new File(getDataFolder(), "pets"), rarities, getLogger(), this::jarNametagOffset);
         abilities = new Abilities(ConfigFiles.load(this, "abilities.yml"), getLogger(),
                 settings.abilityDamageMultiplier, settings.abilityHealMultiplier);
         levels = new Levels(ConfigFiles.load(this, "levels.yml"), getLogger());
