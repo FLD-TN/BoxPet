@@ -69,10 +69,8 @@ showcase:
   hidden: '<error>✘ Pet đang bị ẩn, không khoe được'
 
 autofeed:
-  locked: '<error>✘ Bạn chưa mở khoá tính năng tự động cho ăn'
-  not-food: '<error>✘ Chỉ bỏ được kẹo hoặc thức ăn pet vào hộp'
-  box-full: '<error>✘ Hộp thức ăn đã đầy'
-  inventory-full: '<error>✘ Túi đồ đã đầy'
+  # 0.28.0: tính năng tự động cho ăn đã bỏ, đồ còn trong hộp được trả lại khi vào server
+  returned: '<success>✔ Đã trả lại <text>%amount% <success>vật phẩm từ hộp thức ăn tự động vào túi đồ'
 
 breakthrough:
   ready: '<#FF9F5A>(!) %pet% <#FF9F5A>đã đầy EXP cấp %level%, cần đột phá để lên cấp tiếp (EXP dư được giữ lại)'
@@ -86,9 +84,6 @@ care:
   petted-gain: '<success>✔ Vuốt ve %pet%<success>, thân thiết <text>+%amount% <muted>(%bond%/100)'
   # action bar khi chưa tới lúc tăng thân thiết
   petted-wait: '<muted>Thân thiết tăng lại sau <text>%time%'
-  # tự động cho ăn (action bar)
-  auto-fed: '<success>✔ %pet% <success>đã tự ăn <text>x%amount% <muted>(no %fullness%/100)'
-  auto-empty: '<error>✘ Hộp thức ăn không còn đồ %pet% <error>ăn được'
   candy-eaten: '<success>✔ %pet% <success>đã ăn <text>x%amount% %item% <muted>(+%xp% XP, no %fullness%/100)'
   # 0.26.0: pet đã đạt cấp tối đa vẫn ăn được kẹo, chỉ tăng độ no
   candy-eaten-no-xp: '<success>✔ %pet% <success>đã ăn <text>x%amount% %item% <muted>(cấp tối đa, không nhận XP, no %fullness%/100)'

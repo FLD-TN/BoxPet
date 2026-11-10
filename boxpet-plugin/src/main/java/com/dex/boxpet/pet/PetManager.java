@@ -161,6 +161,7 @@ public final class PetManager {
                 plugin.care().settle(pet, now);
             }
             plugin.collectionService().apply(online, data);
+            returnFoodBox(online, data);
             applyHiddenFor(online);
             PetData pet = data.active();
             if (pet != null) {
@@ -172,6 +173,41 @@ public final class PetManager {
                 }, s().joinAppearTicks);
             }
         }));
+    }
+
+    /**
+     * 0.28.0: auto feed was removed; whatever was left in its food box goes back to the inventory (dropped at the
+     * player's feet when full), once, then the box is emptied for good.
+     */
+    private void returnFoodBox(Player player, PlayerData data) {
+        int given = 0;
+        for (int i = 0; i < PlayerData.PANTRY_SIZE; i++) {
+            String id = data.pantryIds[i];
+            int amount = data.pantryAmounts[i];
+            data.pantryIds[i] = null;
+            data.pantryAmounts[i] = 0;
+            if (id == null || amount <= 0) continue;
+            com.dex.boxpet.config.ItemsConfig.Consumable c = plugin.items().get(id);
+            if (c == null) continue;
+            org.bukkit.inventory.ItemStack one = plugin.itemFactory().consumable(c, 1);
+            int left = amount;
+            while (left > 0) {
+                org.bukkit.inventory.ItemStack stack = one.clone();
+                int n = Math.min(left, Math.max(1, stack.getMaxStackSize()));
+                stack.setAmount(n);
+                left -= n;
+                for (org.bukkit.inventory.ItemStack rest : player.getInventory().addItem(stack).values()) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), rest);
+                }
+            }
+            given += amount;
+        }
+        if (given > 0 || data.autoFeed) {
+            data.autoFeed = false;
+            data.dirty = true;
+            save(data);
+        }
+        if (given > 0) plugin.messages().send(player, "autofeed.returned", "amount", String.valueOf(given));
     }
 
     public void quit(Player player) {

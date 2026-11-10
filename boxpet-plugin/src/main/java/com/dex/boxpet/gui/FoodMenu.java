@@ -34,6 +34,11 @@ public final class FoodMenu extends Menu {
     }
 
     @Override
+    protected int autoRefreshSeconds() {
+        return 20;
+    }
+
+    @Override
     protected void draw() {
         if (!owner.pets.containsKey(pet.id)) {
             player.closeInventory();

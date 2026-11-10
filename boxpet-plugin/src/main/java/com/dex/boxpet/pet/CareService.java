@@ -75,7 +75,6 @@ public final class CareService {
             }
         }
         boolean changed = p.data.fullness != before;
-        autoFeed(p);
         if (changed) plugin.pets().refreshNametag(p);
         if (p.hungry() && now - p.lastHungryChat > s().hungryRepeatSeconds * 1000L) {
             p.lastHungryChat = now;
@@ -97,49 +96,6 @@ public final class CareService {
     }
 
     // ------------------------------------------------------------------ auto feed (0.6.0)
-
-    /**
-     * At or under the chosen fullness, the pet out eats from the auto feed box: the chosen kind first (candies or
-     * foods), each kind slot by slot from left to right, as much of a slot as still fits, then the next slot.
-     */
-    public static final String AUTOFEED_PERMISSION = "boxpet.autofeed";
-
-    private void autoFeed(ActivePet p) {
-        com.dex.boxpet.data.PlayerData pd = p.player;
-        if (!pd.autoFeed || p.deadHidden) return;
-        if (p.data.fullness > pd.autoFeedAt) {
-            pd.autoFeedWarned = false;
-            return;
-        }
-        if (!p.owner.hasPermission(AUTOFEED_PERMISSION)) return;
-        int eaten = 0;
-        FeedResult[] result = new FeedResult[1];
-        for (int pass = 0; pass < 2; pass++) {
-            boolean candies = (pass == 0) == pd.autoFeedCandyFirst;
-            for (int i = 0; i < com.dex.boxpet.data.PlayerData.PANTRY_SIZE; i++) {
-                String id = pd.pantryIds[i];
-                if (id == null || pd.pantryAmounts[i] <= 0) continue;
-                ItemsConfig.Consumable c = plugin.items().get(id);
-                if (c == null || c.candy() != candies) continue;
-                // 0.26.0: auto-feed never spends candies on a max-level pet (no EXP to gain); feeding by hand still can
-                if (c.candy() && p.data.level >= plugin.pets().rarity(p.data).maxLevel()) continue;
-                int n = feed(p.owner, p.data, c, pd.pantryAmounts[i], result);
-                if (n <= 0) continue;
-                pd.pantryAmounts[i] -= n;
-                if (pd.pantryAmounts[i] <= 0) pd.pantryIds[i] = null;
-                pd.dirty = true;
-                eaten += n;
-            }
-        }
-        if (eaten > 0) {
-            pd.autoFeedWarned = false;
-            plugin.messages().actionBar(p.owner, "care.auto-fed", "pet", plugin.pets().displayName(p.data),
-                    "amount", String.valueOf(eaten), "fullness", String.valueOf(p.data.fullness));
-        } else if (!pd.autoFeedWarned) {
-            pd.autoFeedWarned = true;
-            plugin.messages().send(p.owner, "care.auto-empty", "pet", plugin.pets().displayName(p.data));
-        }
-    }
 
     // ------------------------------------------------------------------ petting (spec 11.2)
 

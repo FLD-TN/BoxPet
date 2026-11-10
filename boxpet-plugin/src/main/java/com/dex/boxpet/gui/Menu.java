@@ -79,6 +79,7 @@ public abstract class Menu implements InventoryHolder {
         refresh();
         player.openInventory(inventory);
         onOpen();
+        startAutoRefresh();
     }
 
     protected void onOpen() {
@@ -88,7 +89,36 @@ public abstract class Menu implements InventoryHolder {
     protected void onClose() {
     }
 
+    /** 0.28.0: seconds between redraws while the menu stays open (fullness, levels move on their own), 0 = never. */
+    protected int autoRefreshSeconds() {
+        return 0;
+    }
+
+    private org.bukkit.scheduler.@Nullable BukkitTask autoRefresh;
+
+    private void startAutoRefresh() {
+        int every = autoRefreshSeconds();
+        if (every <= 0 || autoRefresh != null) return;
+        long ticks = every * 20L;
+        autoRefresh = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if (!player.isOnline() || player.getOpenInventory().getTopInventory().getHolder(false) != this) {
+                stopAutoRefresh();
+                return;
+            }
+            if (closeIfStale()) return;
+            refresh();
+        }, ticks, ticks);
+    }
+
+    private void stopAutoRefresh() {
+        if (autoRefresh != null) {
+            autoRefresh.cancel();
+            autoRefresh = null;
+        }
+    }
+
     void closed() {
+        stopAutoRefresh();
         onClose();
     }
 

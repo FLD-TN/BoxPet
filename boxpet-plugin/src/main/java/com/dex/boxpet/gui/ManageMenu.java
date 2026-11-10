@@ -47,6 +47,11 @@ public final class ManageMenu extends Menu {
     }
 
     @Override
+    protected int autoRefreshSeconds() {
+        return 20;
+    }
+
+    @Override
     protected void draw() {
         boolean active = pet.id.equals(owner.activePet);
         set(13, PetIcons.card(plugin, pet, PetIcons.status(plugin, pet, active), List.of()), null);
@@ -85,23 +90,7 @@ public final class ManageMenu extends Menu {
         }
         set(29, button("manage.feed", Material.COOKIE, "pet", name, "fullness", String.valueOf(pet.fullness)),
                 click -> new FoodMenu(plugin, player, owner, pet).open());
-        // auto feed (rank perk): left = on / off, right = open the food box
-        if (!player.hasPermission(com.dex.boxpet.pet.CareService.AUTOFEED_PERMISSION)) {
-            set(41, button("manage.autofeed-locked", Material.HOPPER), click -> plugin.messages().send(player, "autofeed.locked"));
-        } else {
-            set(41, button(owner.autoFeed ? "manage.autofeed-on" : "manage.autofeed-off", Material.HOPPER,
-                    "at", String.valueOf(owner.autoFeedAt)), click -> {
-                if (click.isRightClick()) {
-                    new AutoFeedMenu(plugin, player, owner, pet).open();
-                    return;
-                }
-                owner.autoFeed = !owner.autoFeed;
-                owner.autoFeedWarned = false;
-                owner.dirty = true;
-                sound("ui.button.click");
-                refresh();
-            });
-        }
+        // 0.28.0: auto feed removed, slot 41 stays empty
         // breakthrough: only at full EXP on a breakthrough level
         if (plugin.xp().needsBreakthrough(pet)) {
             set(31, button("manage.breakthrough", Material.ECHO_SHARD, "level", String.valueOf(pet.level),

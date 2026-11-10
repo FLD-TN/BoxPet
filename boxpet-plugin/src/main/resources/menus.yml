@@ -246,16 +246,6 @@ filters:
     name: '<#C9A7FF>Lọc theo độ hiếm <dark_gray>[%option%<dark_gray>]'
     lore:
       - '<#BFC7D5>Chỉ hiện pet có độ hiếm này'
-  autofeed-at:
-    name: '<#FFD166>Bắt đầu ăn <dark_gray>[<white>%option%<dark_gray>]'
-    lore:
-      - '<#BFC7D5>Pet bắt đầu ăn khi độ no'
-      - '<#BFC7D5>bằng hoặc thấp hơn mức này'
-  autofeed-prefer:
-    name: '<#C9A7FF>Ưu tiên <dark_gray>[<white>%option%<dark_gray>]'
-    lore:
-      - '<#BFC7D5>Ăn hết loại này trước rồi'
-      - '<#BFC7D5>mới sang loại còn lại'
 
 # ------------------------------------------------------------------ /pet
 
@@ -487,33 +477,6 @@ manage:
       - '<#BFC7D5>Cần thả pet ra để vuốt ve'
       - ''
       - '<dark_gray>[<#7CFC9A>Chuột trái để vuốt ve<dark_gray>]'
-  autofeed-on:
-    name: '<#9FE6A0>Tự động cho ăn'
-    lore:
-      - '<#BFC7D5>Pet đang thả tự ăn đồ trong'
-      - '<#BFC7D5>hộp khi độ no còn %at%'
-      - ''
-      - '<gray>• Trạng thái: <#7CFC9A>✔ Đang bật'
-      - ''
-      - '<dark_gray>[<#FF8A8A>Chuột trái để tắt<dark_gray>]'
-      - '<dark_gray>[<#7FDBFF>Chuột phải để mở hộp thức ăn<dark_gray>]'
-  autofeed-off:
-    name: '<#9FE6A0>Tự động cho ăn'
-    lore:
-      - '<#BFC7D5>Pet đang thả tự ăn đồ trong'
-      - '<#BFC7D5>hộp khi độ no còn %at%'
-      - ''
-      - '<gray>• Trạng thái: <#FF4D4D>✘ Đang tắt'
-      - ''
-      - '<dark_gray>[<#7CFC9A>Chuột trái để bật<dark_gray>]'
-      - '<dark_gray>[<#7FDBFF>Chuột phải để mở hộp thức ăn<dark_gray>]'
-  autofeed-locked:
-    name: '<#9FE6A0>Tự động cho ăn'
-    lore:
-      - '<#BFC7D5>Pet đang thả tự ăn đồ trong'
-      - '<#BFC7D5>hộp khi đói'
-      - ''
-      - '<gray>• Trạng thái: <#FF4D4D>✘ Chưa mở khoá'
   showcase:
     name: '<#FFD166>Khoe pet'
     lore:
@@ -652,40 +615,6 @@ breakthrough:
 
 # ------------------------------------------------------------------ tự động cho ăn
 
-autofeed:
-  title: '<dark_gray>Tự động cho ăn'
-  at-option: 'Độ no còn %value%'
-  prefer-food: 'Thức ăn trước'
-  prefer-candy: 'Kẹo trước'
-  take: '<dark_gray>[<#7CFC9A>Chuột trái để lấy ra<dark_gray>]'
-  info:
-    name: '<#9FE6A0>Hộp thức ăn'
-    lore:
-      - '<#BFC7D5>Bấm vào kẹo hoặc thức ăn'
-      - '<#BFC7D5>trong túi đồ để bỏ vào hộp'
-      - ''
-      - '<#BFC7D5>Pet đang thả tới mức đã chọn'
-      - '<#BFC7D5>thì tự ăn cho tới khi no'
-      - '<#BFC7D5>Ăn từ trái qua phải, hết ô'
-      - '<#BFC7D5>này mới sang ô sau'
-      - ''
-      - '<gray>Hộp dùng chung cho mọi pet'
-  # (không dùng on / off làm tên mục: YAML đọc thành true / false)
-  enabled:
-    name: '<#7CFC9A>Tự động cho ăn'
-    lore:
-      - '<gray>• Trạng thái: <#7CFC9A>✔ Đang bật'
-      - ''
-      - '<dark_gray>[<#FF8A8A>Chuột trái để tắt<dark_gray>]'
-  disabled:
-    name: '<#FF8A8A>Tự động cho ăn'
-    lore:
-      - '<gray>• Trạng thái: <#FF4D4D>✘ Đang tắt'
-      - ''
-      - '<dark_gray>[<#7CFC9A>Chuột trái để bật<dark_gray>]'
-  unknown:
-    name: '<#FF8A8A>Vật phẩm không còn tồn tại'
-    lore: []
 
 # ------------------------------------------------------------------ lò ấp
 

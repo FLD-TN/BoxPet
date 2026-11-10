@@ -65,6 +65,11 @@ public final class StorageMenu extends Menu {
     }
 
     @Override
+    protected int autoRefreshSeconds() {
+        return 20;
+    }
+
+    @Override
     protected void draw() {
         List<PetData> list = list();
         int pages = Math.max(1, (list.size() + SLOTS.length - 1) / SLOTS.length);
