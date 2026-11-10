@@ -100,8 +100,8 @@ egg:
   invalid: '<error>✘ Quả trứng này không còn hợp lệ, hãy báo quản trị viên'
 
 egg-opened:
-  title: '%egg%'
-  subtitle: '<gray>mở ra từ trứng ngẫu nhiên <dark_gray>[%rarity%<dark_gray>]'
+  title: '<#FFD166>Đã mở ra'
+  subtitle: '%egg% <dark_gray>[%rarity%<dark_gray>]'
 
 incubator:
   full: '<error>✘ Lò ấp đã đầy'
@@ -112,8 +112,8 @@ incubator:
   hatched: '<success>✔ Trứng đã nở ra <text>%pet% <dark_gray>[%rarity%<dark_gray>]'
 
 hatched:
-  title: '%pet%'
-  subtitle: '<gray>đã nở ra <dark_gray>[%rarity%<dark_gray>]'
+  title: '<#FFD166>Đã nở ra'
+  subtitle: '%pet% <dark_gray>[%rarity%<dark_gray>]'
 
 level-up:
   title: '<#FFD166>Lên cấp %level%'
