@@ -2,7 +2,7 @@
 
 Thú cưng 3D cho BoxPvP (Paper 1.21.1). Pet là model ModelEngine trên một "dummy" (chỉ gửi packet, không có mob thật):
 không chắn đòn, không bị đánh, không kẹt. Mọi pet cộng chỉ số MMOItems; thêm một vai trò: chiến đấu, hỗ trợ
-hoặc kinh tế (cộng hệ số BoxCore). Thiết kế đầy đủ: [BOXPET_SPEC.md](BOXPET_SPEC.md).
+hoặc kinh tế (cộng hệ số BoxCore).
 
 ## Cần có trên server
 
@@ -91,3 +91,17 @@ Không có server thử trên máy build, nên các điểm sau phải xem tận
 5. Hướng và tốc độ của VFX (cầu lửa, vết chém, đánh dấu) nhìn đúng.
 6. Sát thương pet tính là của chủ: điểm hạ gục, BoxClans, top sát thương MyBoxMobs.
 7. Pet kinh tế: `/boxcore check <người>` hiện dòng "Cộng thêm (pet)".
+
+## Build
+
+```
+./gradlew build
+```
+
+Repo chỉ có mã nguồn, không chứa file jar nào (trừ `gradle/wrapper/gradle-wrapper.jar` chuẩn của Gradle).
+Trước khi build, tự đặt các jar sau vào thư mục `libs/` ở gốc repo:
+
+- `ModelEngine-R4.1.1.jar` - jar plugin ModelEngine
+- `MythicLib-1.7.jar` - jar plugin MythicLib
+- `boxclans-api-1.4.4.jar` - build từ [BoxClans](https://github.com/FLD-TN/BoxClans) (`boxclans-api/build/libs/`)
+- `boxcore-api-1.4.0.jar` - build từ [BoxCore](https://github.com/FLD-TN/BoxCore) (`boxcore-api/build/libs/`)
